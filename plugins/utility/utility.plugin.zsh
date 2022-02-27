@@ -73,6 +73,13 @@ alias pbc='pbcopy'
 alias pbp='pbpaste'
 
 #
+# Help
+#
+
+# Load more specific 'run-help' function from $fpath.
+(( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
+
+#
 # Cleanup
 #
 
