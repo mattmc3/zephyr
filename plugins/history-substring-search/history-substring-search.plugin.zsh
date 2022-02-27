@@ -2,7 +2,7 @@
 # External
 #
 
-zephyr-clone-external history-substring-search zsh-users/zsh-history-substring-search
+-zephyr-clone-subplugin history-substring-search zsh-users/zsh-history-substring-search
 source ${0:A:h}/external/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 #

@@ -8,7 +8,7 @@ ZEPHYRDIR=${0:A:h}
 # Functions
 #
 
-function zephyr-clone-external {
+function -zephyr-clone-subplugin {
   local plugin_name=$1
   local repo=$2
   local plugin_dir=$ZEPHYRDIR/plugins/$plugin_name/external/${2:t}

@@ -2,7 +2,7 @@
 # External
 #
 
-zephyr-clone-external autosuggestions zsh-users/zsh-autosuggestions
+-zephyr-clone-subplugin autosuggestions zsh-users/zsh-autosuggestions
 source ${0:A:h}/external/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 #
