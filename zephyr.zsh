@@ -23,7 +23,9 @@ function zephyr-clone-external {
   fi
 }
 
-function zephyr-update-external {
+function zephyr-update {
+  echo "Updating zephyr..."
+  git -C "$ZEPHYRDIR" pull
   local d
   for d in $ZEPHYRDIR/plugins/**/external/*/.git/..; do
     echo "Updating ${d:A:t}..."
