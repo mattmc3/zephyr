@@ -32,41 +32,43 @@ function zephyr-update {
 }
 
 #
-# Default plugins
+# Plugins
 #
 
-if ! (( $#plugins )); then
-  plugins=(
-    environment
-    terminal
-    editor
-    history
-    directory
-    utility
-    abbreviations
-    autosuggestions
-    history-substring-search
-    zfunctions
-    confd
-    completions
-    prompt
-    syntax-highlighting
-  )
-fi
+zplugins_default=(
+  environment
+  terminal
+  editor
+  history
+  directory
+  utility
+  abbreviations
+  autosuggestions
+  history-substring-search
+  prompt
+  zfunctions
+  confd
+  completions
+  syntax-highlighting
+)
 
-for plugin in $plugins; do
-  plugin_dir=$ZEPHYRDIR/plugins/$plugin
-  if [[ ! -d $plugin_dir ]]; then
-    echo "Plugin not found '$plugin'"
+zstyle -a ':zephyr:load' plugins \
+  'zplugins' \
+    || zplugins=($zplugins_default)
+
+for zplugin in $zplugins; do
+  zplugin_dir=$ZEPHYRDIR/plugins/$zplugin
+  if [[ ! -d $zplugin_dir ]]; then
+    echo "Plugin not found '$zplugin'"
     continue
   fi
-  source $plugin_dir/$plugin.plugin.zsh
-  if [[ -d $plugin_dir/functions ]]; then
-    fpath+="$plugin_dir/functions"
-    for f in $plugin_dir/functions/*(.N); do
+  source $zplugin_dir/$zplugin.plugin.zsh
+  if [[ -d $zplugin_dir/functions ]]; then
+    fpath+="$zplugin_dir/functions"
+    for f in $zplugin_dir/functions/*(.N); do
       autoload -Uz $f
     done
     unset f
   fi
 done
-unset plugin plugin_dir
+unset zplugin{s,s_default,_dir,}
