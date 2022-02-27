@@ -24,12 +24,10 @@ function -zephyr-clone-subplugin {
 }
 
 function zephyr-update {
-  echo "Updating zephyr..."
-  git -C "$ZEPHYRDIR" pull
   local d
-  for d in $ZEPHYRDIR/plugins/**/external/*/.git/..; do
+  for d in $ZEPHYRDIR/**/.git/..; do
     echo "Updating ${d:A:t}..."
-    git -C "${d:A}" pull
+    git -C "${d:A}" pull --ff --rebase --autostash
   done
 }
 
