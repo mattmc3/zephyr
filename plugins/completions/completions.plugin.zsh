@@ -14,6 +14,14 @@ zephyr-clone-external completions zsh-users/zsh-completions
 fpath=(${0:A:h}/external $fpath)
 
 #
+# Custom
+#
+
+if [[ -d ${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions ]]; then
+  fpath+=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions
+fi
+
+#
 # Options
 #
 
