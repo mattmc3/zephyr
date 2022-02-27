@@ -54,7 +54,6 @@ if ! (( $#plugins )); then
 fi
 
 for plugin in $plugins; do
-  echo $plugin
   plugin_dir=$ZEPHYRDIR/plugins/$plugin
   if [[ ! -d $plugin_dir ]]; then
     echo "Plugin not found '$plugin'"
