@@ -43,6 +43,7 @@ if ! (( $#plugins )); then
     history
     directory
     utility
+    abbreviations
     autosuggestions
     history-substring-search
     zfunctions
