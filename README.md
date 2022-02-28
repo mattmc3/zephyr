@@ -20,8 +20,8 @@ work, but you will probably find that over time it's nice to customize.
 
 ## Plugins
 
-Zephyr loads all its plugins by default. The goal is a great out-of-the-box Zsh
-experience without a ton of configuration.
+Zephyr loads all its highly curated plugins by default. The goal is a great
+out-of-the-box Zsh experience for most people with the base configuration.
 
 However, you might decide you don't want to load everything Zephyr includes, or you
 might want to add some 3rd party plugins yourself. Never fear - you can easily customize
