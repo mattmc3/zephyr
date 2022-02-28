@@ -8,16 +8,56 @@ ZEPHYRDIR=${0:A:h}
 # Functions
 #
 
-function -zephyr-clone-subplugin {
-  local plugin_name=$1
-  local repo=$2
-  local plugin_dir=$ZEPHYRDIR/plugins/$plugin_name/external/${2:t}
-  local initfile initfiles
+declare -A _zephyr_loaded_plugins
+function -zephyr-load-plugin {
+  local zplugin=$1
+  local options=${2:-none}
+
+  # ensure we don't double-load a plugin
+  if (($+_zephyr_loaded_plugins[$zplugin])); then
+    return
+  fi
+
+  # determine whether this is a zephyr or external plugin
+  local zplugin_dir
+  if [[ $zplugin = */* ]]; then
+    zplugin_dir=$ZEPHYRDIR/.external/${zplugin:t}
+    [[ -d $zplugin_dir ]] || -zephyr-clone $zplugin
+    zplugin=${zplugin:t}
+  else
+    zplugin_dir=$ZEPHYRDIR/plugins/$zplugin
+  fi
+
+  if [[ ! -d $zplugin_dir ]]; then
+    echo >&2 "Plugin not found '$zplugin'" && return 1
+  fi
+
+  # load the plugin
+  if [[ $options = 'defer' ]]; then
+    (( ${+functions[zsh-defer]} )) || -zephyr-load-plugin romkatv/zsh-defer
+    zsh-defer source $zplugin_dir/$zplugin.plugin.zsh
+  else
+    source $zplugin_dir/$zplugin.plugin.zsh
+  fi
+  if [[ -d $zplugin_dir/functions ]]; then
+    fpath+="$zplugin_dir/functions"
+    local f
+    for f in $zplugin_dir/functions/*(.N); do
+      autoload -Uz $f
+    done
+  fi
+
+  _zephyr_loaded_plugins[$plugin_name]=true
+}
+
+function -zephyr-clone {
+  local repo=$1
+  local plugin_dir=$ZEPHYRDIR/.external/${1:t}
   if [[ ! -d $plugin_dir ]]; then
     git clone -q --depth 1 --recursive --shallow-submodules https://github.com/$repo $plugin_dir
-    initfile=$plugin_dir/${2:t}.plugin.zsh
+    local initfile=$plugin_dir/${1:t}.plugin.zsh
     if [[ ! -e $initfile ]]; then
-      initfiles=($plugin_dir/*.plugin.{z,}sh(N) $plugin_dir/*.{z,}sh{-theme,}(N))
+      local initfiles=($plugin_dir/*.plugin.{z,}sh(N) $plugin_dir/*.{z,}sh{-theme,}(N))
       [[ ${#initfiles[@]} -gt 0 ]] && ln -sf ${initfiles[1]} $initfile
     fi
   fi
@@ -57,18 +97,7 @@ zstyle -a ':zephyr:load' plugins \
     || zplugins=($zplugins_default)
 
 for zplugin in $zplugins; do
-  zplugin_dir=$ZEPHYRDIR/plugins/$zplugin
-  if [[ ! -d $zplugin_dir ]]; then
-    echo "Plugin not found '$zplugin'"
-    continue
-  fi
-  source $zplugin_dir/$zplugin.plugin.zsh
-  if [[ -d $zplugin_dir/functions ]]; then
-    fpath+="$zplugin_dir/functions"
-    for f in $zplugin_dir/functions/*(.N); do
-      autoload -Uz $f
-    done
-    unset f
-  fi
+  -zephyr-load-plugin $zplugin
 done
-unset zplugin{s,s_default,_dir,}
+unset zplugin{s,s_default,} _zephyr_loaded_plugins
+

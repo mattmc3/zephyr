@@ -2,11 +2,8 @@
 # External
 #
 
--zephyr-clone-subplugin utility romkatv/zsh-defer
-source ${0:A:h}/external/zsh-defer/zsh-defer.plugin.zsh
-
--zephyr-clone-subplugin utility romkatv/zsh-bench
-path+=${0:A:h}/external/zsh-bench
+-zephyr-clone romkatv/zsh-bench
+path+=$ZEPHYRDIR/.external/zsh-bench
 
 #
 # Aliases

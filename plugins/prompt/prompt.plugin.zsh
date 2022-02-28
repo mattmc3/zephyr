@@ -2,14 +2,14 @@
 # External
 #
 
--zephyr-clone-subplugin prompt miekg/lean
--zephyr-clone-subplugin prompt ohmyzsh/ohmyzsh
--zephyr-clone-subplugin prompt romkatv/powerlevel10k
--zephyr-clone-subplugin prompt sindresorhus/pure
+-zephyr-clone miekg/lean
+-zephyr-clone ohmyzsh/ohmyzsh
+-zephyr-clone romkatv/powerlevel10k
+-zephyr-clone sindresorhus/pure
 
-fpath+="${0:A:h}/external/lean"
-fpath+="${0:A:h}/external/powerlevel10k"
-fpath+="${0:A:h}/external/pure"
+fpath+="$ZEPHYRDIR/.external/lean"
+fpath+="$ZEPHYRDIR/.external/powerlevel10k"
+fpath+="$ZEPHYRDIR/.external/pure"
 
 #
 # Options

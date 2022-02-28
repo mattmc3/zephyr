@@ -10,8 +10,8 @@ fi
 # External
 #
 
--zephyr-clone-subplugin completions zsh-users/zsh-completions
-fpath=(${0:A:h}/external $fpath)
+-zephyr-clone zsh-users/zsh-completions
+fpath=($ZEPHYRDIR/.external/zsh-completions $fpath)
 
 #
 # Custom
