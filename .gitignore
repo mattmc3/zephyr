@@ -1,5 +1,4 @@
 ~*
 *.zwc
 *.zwc.old
-external/
 .external/
