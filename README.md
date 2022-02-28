@@ -106,12 +106,18 @@ zstyle ':zephyr:defer' plugins $dplugins
 
 ## Syntax Highlighting
 
-To use [fast-syntax-highlighting][fast-syntax-highlighting] instead of the zsh-users
-[syntax highlighter][zsh-syntax-highlighting] add the following to your `.zshrc` before
-sourcing Zephyr:
+To use [zsh-syntax-highlighting] instead of [fast-syntax-highlighting] add the following
+to your `.zshrc` before sourcing Zephyr:
 
 ```zsh
-zstyle ':zephyr:plugin:syntax-highlighting' use-fast-syntax-highlighting 'yes'
+zstyle ':zephyr:plugin:syntax-highlighting' repo 'zsh-users/zsh-syntax-highlighting'
+```
+
+Loading syntax highlighting is deferred. If you don't want to defer loading, you can
+disable that like this:
+
+```zsh
+zstyle ':zephyr:plugin:syntax-highlighting' defer 'no'
 ```
 
 ## External Plugins
@@ -124,7 +130,7 @@ The following curated list of external plugins is available with Zephyr:
 - [Oh-My-Zsh themes][ohmyzsh-themes]
 
 **Plugins:**
-- Syntax highlighting via [zsh-syntax-highlighting] or [fast-syntax-highlighting]
+- Syntax highlighting via [fast-syntax-highlighting]
 - Auto suggestions via [zsh-autosuggestions]
 - History substring search via [zsh-history-substring-search]
 - Additional completions via [zsh-completions]
