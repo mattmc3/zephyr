@@ -1,4 +1,4 @@
-# Zsh Zephyr
+# :wind_face: Zsh Zephyr
 
 A Zsh framework as nice as a cool summer breeze
 
