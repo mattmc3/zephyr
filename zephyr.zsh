@@ -92,12 +92,25 @@ zplugins_default=(
   syntax-highlighting
 )
 
+zstyle -a ':zephyr:clone' plugins \
+  'zplugins_clone' \
+    || zplugins_clone=()
+for zplugin in $zplugins_clone; do
+  -zephyr-clone $zplugin
+done
+
 zstyle -a ':zephyr:load' plugins \
   'zplugins' \
     || zplugins=($zplugins_default)
-
 for zplugin in $zplugins; do
   -zephyr-load-plugin $zplugin
 done
-unset zplugin{s,s_default,} _zephyr_loaded_plugins
 
+zstyle -a ':zephyr:defer' plugins \
+  'zplugins_defer' \
+    || zplugins_defer=()
+for zplugin in $zplugins_defer; do
+  -zephyr-load-plugin $zplugin defer
+done
+
+unset zplugin{s,s_default,s_clone,s_defer,} _zephyr_loaded_plugins
