@@ -168,6 +168,7 @@ autoload -Uz compinit
 if [[ -z "$ZSH_COMPDUMP" ]]; then
   ZSH_COMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump
 fi
+[[ -d "${ZSH_COMPDUMP:h}" ]] || mkdir -p "${ZSH_COMPDUMP:h}"
 _comp_files=($ZSH_COMPDUMP(Nmh-20))
 if (( $#_comp_files )); then
   compinit -i -C -d "$ZSH_COMPDUMP"
