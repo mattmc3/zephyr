@@ -91,9 +91,13 @@ zplugins=(
   directory
   utility
   abbreviations
-  autosuggestions
-  history-substring-search
   prompt
+  zfunctions
+  confd
+  completions
+  syntax-highlighting
+  history-substring-search
+  autosuggestions
 
   # 3rd party plugins
   zshzoo/magic-enter

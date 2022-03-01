@@ -85,13 +85,13 @@ zplugins_default=(
   directory
   utility
   abbreviations
-  autosuggestions
-  history-substring-search
   prompt
   zfunctions
   confd
   completions
   syntax-highlighting
+  history-substring-search
+  autosuggestions
 )
 
 zstyle -a ':zephyr:clone' plugins \
