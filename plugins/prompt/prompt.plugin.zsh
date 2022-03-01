@@ -19,16 +19,23 @@ fpath+="$ZEPHYRDIR/.external/pure"
 setopt PROMPT_SUBST  # expand parameters in prompt variables
 
 #
+# Init
+#
+
+fpath+="${0:A:h}/functions"
+autoload -Uz promptinit && promptinit
+zstyle -a ':zephyr:plugin:prompt' theme 'prompt_argv'
+if [[ "$TERM" == (dumb|linux|*bsd*) ]] || (( $#prompt_argv < 1 )); then
+  prompt 'off'
+else
+  prompt "$prompt_argv[@]"
+fi
+unset prompt_argv
+
+#
 # Formatting
 #
 
 # https://unix.stackexchange.com/questions/685666/zsh-how-do-i-remove-block-prefixes-when-writing-multi-line-statements-in-intera
 # use 2 space indent for each new level
 PS2='${${${(%):-%_}//[^ ]}// /  }    '
-
-#
-# Init
-#
-
-fpath+="${0:A:h}/functions"
-autoload -Uz promptinit && promptinit

@@ -10,44 +10,45 @@ ZEPHYRDIR=${0:A:h}
 
 declare -A _zephyr_loaded_plugins
 function -zephyr-load-plugin {
-  local zplugin=$1
-  local options=${2:-none}
+  # variables in this function need to not conflict with ones in loaded plugins
+  local _zephyr_plugin=$1
+  local _zephyr_opts=${2:-none}
 
   # ensure we don't double-load a plugin
-  if (($+_zephyr_loaded_plugins[$zplugin])); then
+  if (($+_zephyr_loaded_plugins[$_zephyr_plugin])); then
     return
   fi
 
   # determine whether this is a zephyr or external plugin
-  local zplugin_dir
-  if [[ $zplugin = */* ]]; then
-    zplugin_dir=$ZEPHYRDIR/.external/${zplugin:t}
-    [[ -d $zplugin_dir ]] || -zephyr-clone $zplugin
-    zplugin=${zplugin:t}
+  local _zephyr_plugin_dir
+  if [[ $_zephyr_plugin = */* ]]; then
+    _zephyr_plugin_dir=$ZEPHYRDIR/.external/${_zephyr_plugin:t}
+    [[ -d $_zephyr_plugin_dir ]] || -zephyr-clone $_zephyr_plugin
+    _zephyr_plugin=${_zephyr_plugin:t}
   else
-    zplugin_dir=$ZEPHYRDIR/plugins/$zplugin
+    _zephyr_plugin_dir=$ZEPHYRDIR/plugins/$_zephyr_plugin
   fi
 
-  if [[ ! -d $zplugin_dir ]]; then
-    echo >&2 "Plugin not found '$zplugin'" && return 1
+  if [[ ! -d $_zephyr_plugin_dir ]]; then
+    echo >&2 "Plugin not found '$_zephyr_plugin'" && return 1
   fi
 
   # load the plugin
-  if [[ $options = 'defer' ]]; then
+  if [[ $_zephyr_opts = 'defer' ]]; then
     (( ${+functions[zsh-defer]} )) || -zephyr-load-plugin romkatv/zsh-defer
-    zsh-defer source $zplugin_dir/$zplugin.plugin.zsh
+    zsh-defer source $_zephyr_plugin_dir/$_zephyr_plugin.plugin.zsh
   else
-    source $zplugin_dir/$zplugin.plugin.zsh
+    source $_zephyr_plugin_dir/$_zephyr_plugin.plugin.zsh
   fi
-  if [[ -d $zplugin_dir/functions ]]; then
-    fpath+="$zplugin_dir/functions"
+  if [[ -d $_zephyr_plugin_dir/functions ]]; then
+    fpath+="$_zephyr_plugin_dir/functions"
     local f
-    for f in $zplugin_dir/functions/*(.N); do
+    for f in $_zephyr_plugin_dir/functions/*(.N); do
       autoload -Uz $f
     done
   fi
 
-  _zephyr_loaded_plugins[$plugin_name]=true
+  _zephyr_loaded_plugins[$_zephyr_plugin]=true
 }
 
 function -zephyr-clone {
