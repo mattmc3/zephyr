@@ -55,7 +55,8 @@ function -zephyr-clone {
   local repo=$1
   local plugin_dir=$ZEPHYRDIR/.external/${1:t}
   if [[ ! -d $plugin_dir ]]; then
-    git clone -q --depth 1 --recursive --shallow-submodules https://github.com/$repo $plugin_dir
+    echo "Cloning $repo..."
+    git clone --quiet --depth 1 --recursive --shallow-submodules https://github.com/$repo $plugin_dir
     local initfile=$plugin_dir/${1:t}.plugin.zsh
     if [[ ! -e $initfile ]]; then
       local initfiles=($plugin_dir/*.plugin.{z,}sh(N) $plugin_dir/*.{z,}sh{-theme,}(N))
