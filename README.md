@@ -27,6 +27,7 @@ Add the following snippet to your `.zshrc`:
 [[ -d ${ZDOTDIR:-~}/.zephyr ]] ||
   git clone https://github.com/zshzoo/zephyr ${ZDOTDIR:-~}/.zephyr
 source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
+prompt pure
 ```
 
 ## Customizing
@@ -93,7 +94,6 @@ zplugins=(
   autosuggestions
   history-substring-search
   prompt
-  zfunctions
 
   # 3rd party plugins
   zshzoo/magic-enter
@@ -103,6 +103,7 @@ zplugins=(
   rupa/z
 
   # load these last
+  zfunctions
   confd
   completions
   syntax-highlighting
