@@ -33,7 +33,7 @@ However, you might decide you don't want to load everything Zephyr includes, or 
 might want to add some 3rd party plugins yourself. Never fear - you can easily customize
 which plugins are loaded with the following zstyles:
 
-### Plugins
+### Regular Plugins
 
 Load (source) regular Zsh plugins with `zstyle ':zephyr:load' plugins $zplugins`:
 
