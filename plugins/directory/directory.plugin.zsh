@@ -14,6 +14,7 @@ setopt PUSHD_TO_HOME        # push to home directory when no argument is given
 setopt CDABLE_VARS          # change directory to a path stored in a variable
 setopt MULTIOS              # write to multiple descriptors
 setopt EXTENDED_GLOB        # use extended globbing syntax
+setopt GLOB_DOTS            # include dotfiles when globbing
 unsetopt CLOBBER            # do not overwrite existing files with > and >>
                             # use >! and >>! to bypass
 
