@@ -4,7 +4,19 @@
 
 Tired of slow, bloated, outdated Zsh frameworks? Want something that works great
 out-of-the-box, is crazy fast, is a breeze to set up, has all the features of a modern
-shell, and grows with you on your Zsh journey? You're in the right place.
+shell, is easy to build off, and grows with you on your Zsh journey? You're in the right
+place.
+
+## Goals
+
+Zephyr's goals can be described as F.R.E.S.C.O:
+
+- **Fast!** - Zephyr shouldn't bog down your Zsh
+- **Reliable** - Zephyr updates should not break your Zsh config
+- **Extendable** - Zephyr should grow with you
+- **Simple** - Zephyr's out-of-the-box configuration should work well for most people
+- **Configurable** - Zephyr should let you customize
+- **Outstanding** - Zephyr should be a delight to use
 
 ## Installation
 
@@ -27,15 +39,45 @@ you use it over time.
 
 Zephyr comes with a highly curated set of of plugins by default, and doesn't come with
 everything out there. The goal is a great out-of-the-box Zsh experience for most people
-with the base configuration that you can build on.
+with a base configuration that you can easily build on. You may have noticed Zephyr has
+a bit of a [fish shell][fish] bias - many of its plugins bring fish features to Zsh.
 
-However, you might decide you don't want to load everything Zephyr includes, or you
-might want to add some 3rd party plugins yourself. Never fear - you can easily customize
-which plugins are loaded with the following zstyles:
+However, you might decide you don't everything Zephyr includes, or you might want to add
+some 3rd party plugins yourself. Never fear - you can easily customize which plugins are
+loaded.
 
-### Regular Plugins
+### Additional 3rd Party Plugins
 
-Load (source) regular Zsh plugins with `zstyle ':zephyr:load' plugins $zplugins`:
+You can load additional 3rd party Zsh plugins with:
+
+```zsh
+zstyle ':zephyr:load' additional-plugins $zplugins
+```
+
+For example:
+
+```zsh
+zplugins=(
+  zshzoo/magic-enter
+  zshzoo/macos
+  rummik/zsh-tailf
+  peterhurford/up.zsh
+  rupa/z
+)
+zstyle ':zephyr:load' additional-plugins $zplugins
+```
+
+### Full plugin control
+
+You can fully control which Zephyr plugins and 3rd party plugins are loaded via this
+zstyle:
+
+```zsh
+zstyle ':zephyr:load' plugins $zplugins
+```
+
+Note that with this customization, you won't need the `additional-plugins` zstyle
+described above. For example:
 
 ```zsh
 # order matters
@@ -70,18 +112,17 @@ zstyle ':zephyr:load' plugins $zplugins
 
 ### Clone-only Plugins
 
-Some repos you might want to just clone and not try to source as a plugin. To do that,
-use:
+You might want to just clone some repos and not try to source them as plugins. This can
+be handy for Zsh scripts you want to add to your `$path` or `$fpath`. To do that use:
 
 ```zsh
-cloneplugins=(...)
 zstyle ':zephyr:clone' plugins $cloneplugins
 ```
 
 For example:
 
 ```zsh
-cplugins=(
+cloneplugins=(
   # this isn't a Zsh plugin, but maybe we want it cloned
   # to set up our terminal color scheme
   mbadolato/iTerm2-Color-Schemes
@@ -92,7 +133,7 @@ cplugins=(
   # this isn't a Zsh plugin, but we want to add it to our $PATH
   romkatv/zsh-bench
 )
-zstyle ':zephyr:clone' plugins $cplugins
+zstyle ':zephyr:clone' plugins $cloneplugins
 path=($path $ZEPHYRDIR/.external/zsh-bench)
 fpath=($fpath $ZEPHYRDIR/.external/pure)
 ```
@@ -110,12 +151,12 @@ zstyle ':zephyr:defer' plugins $deferplugins
 For example:
 
 ```zsh
-# these plugins are slow or we don't need them right away, so let's defer their load
-dplugins=(
+# these plugins may be slow or don't need loaded right away
+deferplugins=(
   olets/zsh-abbr
   zdharma-continuum/fast-syntax-highlighting
 )
-zstyle ':zephyr:defer' plugins $dplugins
+zstyle ':zephyr:defer' plugins $deferplugins
 ```
 
 ## Syntax Highlighting
@@ -144,7 +185,7 @@ The following curated list of external plugins is available with Zephyr:
 - [Oh-My-Zsh themes][ohmyzsh-themes]
 
 **Plugins:**
-- Syntax highlighting via [fast-syntax-highlighting]
+- Syntax highlighting via [fast-syntax-highlighting] or [zsh-syntax-highlighting]
 - Auto suggestions via [zsh-autosuggestions]
 - History substring search via [zsh-history-substring-search]
 - Additional completions via [zsh-completions]
