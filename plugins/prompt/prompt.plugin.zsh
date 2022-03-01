@@ -1,4 +1,12 @@
 #
+# Requirements
+#
+
+if [[ "$TERM" == 'dumb' ]]; then
+  return 1
+fi
+
+#
 # External
 #
 
@@ -24,18 +32,34 @@ setopt PROMPT_SUBST  # expand parameters in prompt variables
 
 fpath+="${0:A:h}/functions"
 autoload -Uz promptinit && promptinit
-zstyle -a ':zephyr:plugin:prompt' theme 'prompt_argv'
-if [[ "$TERM" == (dumb|linux|*bsd*) ]] || (( $#prompt_argv < 1 )); then
-  prompt 'off'
-else
-  prompt "$prompt_argv[@]"
+zstyle -s ':zephyr:plugin:prompt' theme 'zephyr_theme' || zephyr_theme=pure
+if [[ "$zephyr_theme" != "" ]]; then
+  prompt "$zephyr_theme"
 fi
-unset prompt_argv
 
 #
-# Formatting
+# Customize
 #
 
-# https://unix.stackexchange.com/questions/685666/zsh-how-do-i-remove-block-prefixes-when-writing-multi-line-statements-in-intera
-# use 2 space indent for each new level
-PS2='${${${(%):-%_}//[^ ]}// /  }    '
+if [[ "$zephyr_theme" = "pure" ]]; then
+  # show exit code on right
+  precmd_pipestatus() {
+    local exitcodes="${(j.|.)pipestatus}"
+    if [[ "$exitcodes" != "0" ]]; then
+      RPROMPT="%F{$prompt_pure_colors[prompt:error]}[$exitcodes]%f"
+    else
+      RPROMPT=
+    fi
+  }
+  add-zsh-hook precmd precmd_pipestatus
+
+  # https://unix.stackexchange.com/questions/685666/zsh-how-do-i-remove-block-prefixes-when-writing-multi-line-statements-in-intera
+  # use 2 space indent for each new level
+  PS2='${${${(%):-%_}//[^ ]}// /  }    '
+fi
+
+#
+# Cleanup
+#
+
+unset zephyr_theme
