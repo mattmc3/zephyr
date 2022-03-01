@@ -102,7 +102,10 @@ done
 zstyle -a ':zephyr:load' plugins \
   'zplugins' \
     || zplugins=($zplugins_default)
-for zplugin in $zplugins; do
+zstyle -a ':zephyr:load' additional-plugins \
+  'zplugins_addtl' \
+    || zplugins_addtl=()
+for zplugin in $zplugins $zplugins_addtl; do
   -zephyr-load-plugin $zplugin
 done
 
@@ -113,4 +116,4 @@ for zplugin in $zplugins_defer; do
   -zephyr-load-plugin $zplugin defer
 done
 
-unset zplugin{s,s_default,s_clone,s_defer,} _zephyr_loaded_plugins
+unset zplugin{s,s_default,s_addtl,s_clone,s_defer,} _zephyr_loaded_plugins
