@@ -148,18 +148,32 @@ The following curated list of external plugins is available with Zephyr:
 - Auto suggestions via [zsh-autosuggestions]
 - History substring search via [zsh-history-substring-search]
 - Additional completions via [zsh-completions]
+- Abbreviation support via [zsh-abbr]
 
 **Utilities:**
 - [zsh-defer]
 - [zsh-bench]
 
+## Credits
+
+Zephyr is a derivative work of the following great projects:
+
+- [Oh-My-Zsh][ohmyzsh]
+- [Prezto][prezto]
+- [zsh-utils][zsh-utils]
+
+
 [fast-syntax-highlighting]:      https://github.com/zdharma-continuum/fast-syntax-highlighting
 [ohmyzsh-themes]:                https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+[ohmyzsh]:                       https://github.com/ohmyzsh/ohmyzsh
 [powerlevel10k]:                 https://github.com/romkatv/powerlevel10k
+[prezto]:                        https://github.com/sorin-ionescu/prezto
 [pure]:                          https://github.com/sindresorhus/pure
+[zsh-abbr]:                      https://github.com/olets/zsh-abbr
 [zsh-autosuggestions]:           https://github.com/zsh-users/zsh-autosuggestions
-[zsh-completions]:               https://github.com/zsh-users/zsh-completions
 [zsh-bench]:                     https://github.com/romkatv/zsh-bench
+[zsh-completions]:               https://github.com/zsh-users/zsh-completions
 [zsh-defer]:                     https://github.com/romkatv/zsh-defer
 [zsh-history-substring-search]:  https://github.com/zsh-users/zsh-history-substring-search
 [zsh-syntax-highlighting]:       https://github.com/zsh-users/zsh-syntax-highlighting
+[zsh-utils]:                     https://github.com/belak/zsh-utils
