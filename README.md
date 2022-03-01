@@ -71,7 +71,14 @@ zstyle ':zephyr:load' plugins $zplugins
 ### Clone-only Plugins
 
 Some repos you might want to just clone and not try to source as a plugin. To do that,
-use `zstyle ':zephyr:clone' plugins $cloneplugins`. For example:
+use:
+
+```zsh
+cloneplugins=(...)
+zstyle ':zephyr:clone' plugins $cloneplugins
+```
+
+For example:
 
 ```zsh
 cplugins=(
@@ -92,8 +99,15 @@ fpath=($fpath $ZEPHYRDIR/.external/pure)
 
 ### Deferred Plugins
 
-Some plugins are slow to load or youdon't need them to be active right away. You can
-specify plugins to defer load with ``zstyle ':zephyr:defer' plugins $deferplugins`:
+Some plugins are slow to load or you don't need them to be active right away. You can
+specify plugins to defer load with this zstyle:
+
+```
+deferplugins=(...)
+zstyle ':zephyr:defer' plugins $deferplugins
+```
+
+For example:
 
 ```zsh
 # these plugins are slow or we don't need them right away, so let's defer their load
