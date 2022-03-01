@@ -161,9 +161,11 @@ Zephyr is a derivative work of the following great projects:
 - [Oh-My-Zsh][ohmyzsh]
 - [Prezto][prezto]
 - [zsh-utils][zsh-utils]
+- [fish][fish]
 
 
 [fast-syntax-highlighting]:      https://github.com/zdharma-continuum/fast-syntax-highlighting
+[fish]:                          https://fishshell.com/
 [ohmyzsh-themes]:                https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 [ohmyzsh]:                       https://github.com/ohmyzsh/ohmyzsh
 [powerlevel10k]:                 https://github.com/romkatv/powerlevel10k
