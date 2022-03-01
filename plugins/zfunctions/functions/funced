@@ -10,7 +10,7 @@ fi
 if [[ ! -f "$ZFUNCDIR/$1" ]]; then
   cat <<eos > "$ZFUNCDIR/$1"
 # Add function internals here.
-# Do NOT include function definition (ie: omit 'function $1() {').
+# Do NOT include function definition (ie: omit 'function $1 {').
 # See: http://zsh.sourceforge.net/Doc/Release/Functions.html#Autoloading-Functions
 eos
 fi
