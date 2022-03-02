@@ -71,6 +71,11 @@ function _zephyr_clone_prompt {
   if [[ ! -d $prompt_dir ]]; then
     echo "Cloning prompt $repo..."
     git clone --quiet --depth 1 --recursive --shallow-submodules https://github.com/$repo $prompt_dir
+    local initfile=$prompt_dir/prompt_${1:t}_setup
+    if [[ ! -e $initfile ]]; then
+      local initfiles=($prompt_dir/*.zsh-theme(N))
+      [[ ${#initfiles[@]} -gt 0 ]] && echo ". ${initfiles[1]}" >| $initfile
+    fi
   fi
 }
 

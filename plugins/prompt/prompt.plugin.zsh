@@ -18,7 +18,6 @@ unset _zephyr_prompts{s,}
 #
 
 fpath+="${0:A:h}/functions"
-[[ -d "$ZEPHYRDIR"/.prompts/functions ]] && fpath+="$ZEPHYRDIR"/.prompts/functions
 for _prompt_dir in "$ZEPHYRDIR"/.prompts/*(/); do
   fpath+="$_prompt_dir"
 done
