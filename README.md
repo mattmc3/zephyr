@@ -153,6 +153,7 @@ fpath=($fpath $ZEPHYRDIR/.external/lean)
 ### Deferred Plugins
 
 *Note: [use with caution][deferred-init]*
+
 Some plugins are slow to load or you don't need them to be active right away. You can
 specify plugins to defer load with this zstyle:
 
@@ -213,6 +214,26 @@ The following curated list of external plugins is available with Zephyr:
 **Utilities:**
 - [zsh-defer] - Defer loading certain plugins ([use with caution][deferred-init])
 - [zsh-bench] - Benchmark your Zsh configuration
+
+## Benchmarks
+
+:wind_face: Zephyr is FAST! How fast? Here's the latest [zsh-bench] numbers from my
+2020 MacBook Air M1 running macOS Monterey and zsh 5.8 with the default Zephyr config
+and pure prompt:
+
+```shell
+==> benchmarking login shell of user zshzoo ...
+creates_tty=0
+has_compsys=1
+has_syntax_highlighting=1
+has_autosuggestions=1
+has_git_prompt=0
+first_prompt_lag_ms=58.072
+first_command_lag_ms=70.599
+command_lag_ms=11.057
+input_lag_ms=9.306
+exit_time_ms=44.254
+```
 
 ## Credits
 
