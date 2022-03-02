@@ -30,6 +30,18 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 prompt pure
 ```
 
+## Variables and functions
+
+Zephyr won't clutter your Zsh with tons of extra variables and functions. Obviously, it
+contains external plugins which will of course have their own variables and functions,
+but Zephyr itself provides only a few, simple things:
+
+|                  | purpose                         |
+| ---------------- | ------------------------------- |
+| `ZEPHYRDIR`      | The install location for Zephyr |
+| `zephyr-update ` | Update Zephyr and its plugins   |
+
+
 ## Customizing
 
 Zephyr uses zstyles for customization. But, it doesn't require any configuration at all
@@ -59,6 +71,7 @@ For example:
 
 ```zsh
 zplugins=(
+  mattmc3/zman
   zshzoo/magic-enter
   zshzoo/macos
   rummik/zsh-tailf
@@ -84,6 +97,7 @@ described above. For example:
 # order matters
 zplugins=(
   # 3rd party plugins
+  mattmc3/zman
   zshzoo/magic-enter
   zshzoo/macos
   rummik/zsh-tailf
@@ -127,14 +141,14 @@ cloneplugins=(
   mbadolato/iTerm2-Color-Schemes
 
   # this is a prompt, not a plugin, so clone it and add to fpath
-  sindresorhus/pure
+  miekg/lean
 
   # this isn't a Zsh plugin, but we want to add it to our $PATH
   romkatv/zsh-bench
 )
 zstyle ':zephyr:clone' plugins $cloneplugins
 path=($path $ZEPHYRDIR/.external/zsh-bench)
-fpath=($fpath $ZEPHYRDIR/.external/pure)
+fpath=($fpath $ZEPHYRDIR/.external/lean)
 ```
 
 ### Deferred Plugins
@@ -174,7 +188,30 @@ disable that like this:
 zstyle ':zephyr:plugin:syntax-highlighting' defer 'no'
 ```
 
-## External Plugins
+## Prompts
+
+Zephyr supports the Zsh built-in prompt command, and including the prompt plugin will
+run [promptinit]. Zephyr comes with a few popular prompts, including [pure],
+[powerlevel10k], and the [Oh-My-Zsh][ohmyzsh] [themes][ohmyzsh-themes].
+
+To change your prompt, you simply call `prompt $theme` in your `.zshrc`.
+
+For example:
+
+```zsh
+# use powerlevel10k
+prompt powerlevel10k
+```
+
+For [Oh-My-Zsh themes][ohmyzsh-themes], you must set the omz `$ZSH_THEME` variable like
+so:
+
+```zsh
+ZSH_THEME=robbyrussell
+prompt omz
+```
+
+## Included 3rd Party Plugins
 
 The following curated list of external plugins is available with Zephyr:
 
@@ -210,6 +247,7 @@ Zephyr is a derivative work of the following great projects:
 [ohmyzsh]:                       https://github.com/ohmyzsh/ohmyzsh
 [powerlevel10k]:                 https://github.com/romkatv/powerlevel10k
 [prezto]:                        https://github.com/sorin-ionescu/prezto
+[promptinit]:                    https://github.com/zsh-users/zsh/blob/master/Functions/Prompts/promptinit
 [pure]:                          https://github.com/sindresorhus/pure
 [zsh-abbr]:                      https://github.com/olets/zsh-abbr
 [zsh-autosuggestions]:           https://github.com/zsh-users/zsh-autosuggestions
