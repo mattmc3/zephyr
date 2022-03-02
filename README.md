@@ -174,16 +174,16 @@ zstyle ':zephyr:defer' plugins $deferplugins
 ## Prompts
 
 Zephyr supports the Zsh built-in prompt command, and including the prompt plugin will
-run [promptinit]. Zephyr comes with a few popular prompts, including [pure],
-[powerlevel10k], and the [Oh-My-Zsh][ohmyzsh] [themes][ohmyzsh-themes].
+run [promptinit]. Zephyr comes with a few popular prompts, including [pure] and the
+[Oh-My-Zsh][ohmyzsh] [themes][ohmyzsh-themes].
 
-To change your prompt, you simply call `prompt $theme` in your `.zshrc`.
+To change your prompt, you simply call `prompt $theme` after sourcing Zephyr in your
+`.zshrc`.
 
 For example:
 
 ```zsh
-# use powerlevel10k
-prompt powerlevel10k
+prompt pure
 ```
 
 For [Oh-My-Zsh themes][ohmyzsh-themes], you must set the omz `$ZSH_THEME` variable like
@@ -200,7 +200,7 @@ The following curated list of external plugins is available with Zephyr:
 
 **Prompts:**
 - [pure]
-- [powerlevel10k]
+- [starship]
 - [Oh-My-Zsh themes][ohmyzsh-themes]
 
 **Plugins:**
@@ -223,13 +223,13 @@ Zephyr is a derivative work of the following great projects:
 - [fish][fish]
 
 
-[fish]:                          https://fishshell.com/
+[fish]:                          https://fishshell.com
 [ohmyzsh-themes]:                https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 [ohmyzsh]:                       https://github.com/ohmyzsh/ohmyzsh
-[powerlevel10k]:                 https://github.com/romkatv/powerlevel10k
 [prezto]:                        https://github.com/sorin-ionescu/prezto
 [promptinit]:                    https://github.com/zsh-users/zsh/blob/master/Functions/Prompts/promptinit
 [pure]:                          https://github.com/sindresorhus/pure
+[starship]:                      https://starship.rs
 [zsh-autosuggestions]:           https://github.com/zsh-users/zsh-autosuggestions
 [zsh-bench]:                     https://github.com/romkatv/zsh-bench
 [zsh-completions]:               https://github.com/zsh-users/zsh-completions
