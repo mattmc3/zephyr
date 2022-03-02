@@ -172,22 +172,6 @@ deferplugins=(
 zstyle ':zephyr:defer' plugins $deferplugins
 ```
 
-## Syntax Highlighting
-
-To use [zsh-syntax-highlighting] instead of [fast-syntax-highlighting] add the following
-to your `.zshrc` before sourcing Zephyr:
-
-```zsh
-zstyle ':zephyr:plugin:syntax-highlighting' repo 'zsh-users/zsh-syntax-highlighting'
-```
-
-Loading syntax highlighting is deferred. If you don't want to defer loading, you can
-disable that like this:
-
-```zsh
-zstyle ':zephyr:plugin:syntax-highlighting' defer 'no'
-```
-
 ## Prompts
 
 Zephyr supports the Zsh built-in prompt command, and including the prompt plugin will
@@ -221,11 +205,10 @@ The following curated list of external plugins is available with Zephyr:
 - [Oh-My-Zsh themes][ohmyzsh-themes]
 
 **Plugins:**
-- Syntax highlighting via [fast-syntax-highlighting] or [zsh-syntax-highlighting]
+- Syntax highlighting via [zsh-syntax-highlighting]
 - Auto suggestions via [zsh-autosuggestions]
 - History substring search via [zsh-history-substring-search]
 - Additional completions via [zsh-completions]
-- Abbreviation support via [zsh-abbr]
 
 **Utilities:**
 - [zsh-defer]
@@ -241,7 +224,6 @@ Zephyr is a derivative work of the following great projects:
 - [fish][fish]
 
 
-[fast-syntax-highlighting]:      https://github.com/zdharma-continuum/fast-syntax-highlighting
 [fish]:                          https://fishshell.com/
 [ohmyzsh-themes]:                https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 [ohmyzsh]:                       https://github.com/ohmyzsh/ohmyzsh
@@ -249,7 +231,6 @@ Zephyr is a derivative work of the following great projects:
 [prezto]:                        https://github.com/sorin-ionescu/prezto
 [promptinit]:                    https://github.com/zsh-users/zsh/blob/master/Functions/Prompts/promptinit
 [pure]:                          https://github.com/sindresorhus/pure
-[zsh-abbr]:                      https://github.com/olets/zsh-abbr
 [zsh-autosuggestions]:           https://github.com/zsh-users/zsh-autosuggestions
 [zsh-bench]:                     https://github.com/romkatv/zsh-bench
 [zsh-completions]:               https://github.com/zsh-users/zsh-completions
