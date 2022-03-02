@@ -43,9 +43,9 @@ everything out there. The goal is a great out-of-the-box Zsh experience for most
 with a base configuration that you can easily build on. You may have noticed Zephyr has
 a bit of a [fish shell][fish] bias - many of its plugins bring fish features to Zsh.
 
-However, you might decide you don't everything Zephyr includes, or you might want to add
-some 3rd party plugins yourself. Never fear - you can easily customize which plugins are
-loaded.
+However, you might decide you don't want everything Zephyr includes, or you might want to
+add some 3rd party plugins yourself. Never fear - you can easily customize which plugins
+are loaded.
 
 ### Additional 3rd Party Plugins
 
