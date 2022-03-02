@@ -5,11 +5,11 @@
 _zephyr_clone_plugin ohmyzsh/ohmyzsh
 _zephyr_clone_prompt sindresorhus/pure
 
-zstyle -a ':zephyr:prompt' repos \
+zstyle -a ':zephyr:prompt' plugins \
   '_zephyr_prompts' \
     || _zephyr_prompts=()
 for _zephyr_prompt in $_zephyr_prompts; do
-  -zephyr-load-prompt $_zephyr_prompt
+  _zephyr_clone_prompt $_zephyr_prompt
 done
 unset _zephyr_prompts{s,}
 
