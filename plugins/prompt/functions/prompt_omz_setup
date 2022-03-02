@@ -1,5 +1,5 @@
 ### make sure we have OMZ set up properly
-local ZSH="${ZSH:-$ZEPHYRDIR/plugins/prompt/external/ohmyzsh}"
+local ZSH="${ZSH:-$ZEPHYRDIR/.external/ohmyzsh}"
 local ZSH_CUSTOM="${ZSH_CUSTOM:-$ZSH/custom}"
 local ZSH_THEME=${ZSH_THEME:-robbyrussell}
 
