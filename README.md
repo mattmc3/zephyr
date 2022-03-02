@@ -111,7 +111,6 @@ zplugins=(
   history
   directory
   utility
-  abbreviations
   prompt
   zfunctions
   confd

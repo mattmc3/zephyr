@@ -84,7 +84,6 @@ zplugins_default=(
   history
   directory
   utility
-  abbreviations
   prompt
   zfunctions
   confd
