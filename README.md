@@ -152,6 +152,7 @@ fpath=($fpath $ZEPHYRDIR/.external/lean)
 
 ### Deferred Plugins
 
+*Note: [use with caution][deferred-init]*
 Some plugins are slow to load or you don't need them to be active right away. You can
 specify plugins to defer load with this zstyle:
 
@@ -210,7 +211,7 @@ The following curated list of external plugins is available with Zephyr:
 - Additional completions via [zsh-completions]
 
 **Utilities:**
-- [zsh-defer] - Defer loading certain plugins ([use with caution](https://github.com/romkatv/zsh-bench#deferred-initialization))
+- [zsh-defer] - Defer loading certain plugins ([use with caution][deferred-init])
 - [zsh-bench] - Benchmark your Zsh configuration
 
 ## Credits
@@ -237,3 +238,4 @@ Zephyr is a derivative work of the following great projects:
 [zsh-history-substring-search]:  https://github.com/zsh-users/zsh-history-substring-search
 [zsh-syntax-highlighting]:       https://github.com/zsh-users/zsh-syntax-highlighting
 [zsh-utils]:                     https://github.com/belak/zsh-utils
+[deferred-init]:                 https://github.com/romkatv/zsh-bench#deferred-initialization
