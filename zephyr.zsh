@@ -65,6 +65,15 @@ function _zephyr_clone_plugin {
   fi
 }
 
+function _zephyr_clone_prompt {
+  local repo=$1
+  local prompt_dir=$ZEPHYRDIR/.prompts/${1:t}
+  if [[ ! -d $prompt_dir ]]; then
+    echo "Cloning prompt $repo..."
+    git clone --quiet --depth 1 --recursive --shallow-submodules https://github.com/$repo $prompt_dir
+  fi
+}
+
 function zephyr-update {
   local d
   for d in $ZEPHYRDIR/**/.git/..; do
@@ -118,4 +127,4 @@ for zplugin in $zplugins_defer; do
 done
 
 unset zplugin{s,s_default,s_addtl,s_clone,s_defer,} _zephyr_loaded_plugins
-unfunction_zephyr_clone_plugin
+unfunction _zephyr_load_plugin _zephyr_clone_{plugin,prompt}
