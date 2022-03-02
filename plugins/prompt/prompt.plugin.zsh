@@ -17,8 +17,7 @@ unset _zephyr_prompts{s,}
 # Add prompts to fpath
 #
 
-fpath+="${0:A:h}/functions"
-for _prompt_dir in "$ZEPHYRDIR"/.prompts/*(/); do
+for _prompt_dir in "$ZEPHYRDIR"/prompts/*(/); do
   fpath+="$_prompt_dir"
 done
 unset _prompt_dir

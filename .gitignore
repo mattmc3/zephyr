@@ -3,3 +3,6 @@
 *.zwc.old
 .external/
 .prompts/
+contribs/
+prompts/*/
+!prompts/functions

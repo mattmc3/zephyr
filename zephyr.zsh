@@ -22,7 +22,7 @@ function _zephyr_load_plugin {
   # determine whether this is a zephyr or external plugin
   local _zephyr_plugin_dir
   if [[ $_zephyr_plugin = */* ]]; then
-    _zephyr_plugin_dir=$ZEPHYRDIR/.external/${_zephyr_plugin:t}
+    _zephyr_plugin_dir=$ZEPHYRDIR/contribs/${_zephyr_plugin:t}
     [[ -d $_zephyr_plugin_dir ]] || _zephyr_clone_plugin $_zephyr_plugin
     _zephyr_plugin=${_zephyr_plugin:t}
   else
@@ -53,7 +53,7 @@ function _zephyr_load_plugin {
 
 function _zephyr_clone_plugin {
   local repo=$1
-  local plugin_dir=$ZEPHYRDIR/.external/${1:t}
+  local plugin_dir=$ZEPHYRDIR/contribs/${1:t}
   if [[ ! -d $plugin_dir ]]; then
     echo "Cloning plugin $repo..."
     git clone --quiet --depth 1 --recursive --shallow-submodules https://github.com/$repo $plugin_dir
@@ -67,7 +67,7 @@ function _zephyr_clone_plugin {
 
 function _zephyr_clone_prompt {
   local repo=$1
-  local prompt_dir=$ZEPHYRDIR/.prompts/${1:t}
+  local prompt_dir=$ZEPHYRDIR/prompts/${1:t}
   if [[ ! -d $prompt_dir ]]; then
     echo "Cloning prompt $repo..."
     git clone --quiet --depth 1 --recursive --shallow-submodules https://github.com/$repo $prompt_dir

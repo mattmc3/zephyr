@@ -160,8 +160,8 @@ cloneplugins=(
   romkatv/zsh-bench
 )
 zstyle ':zephyr:clone' plugins $cloneplugins
-path=($path $ZEPHYRDIR/.external/zsh-bench)
-fpath=($fpath $ZEPHYRDIR/.external/lean)
+path=($path $ZEPHYRDIR/contribs/zsh-bench)
+fpath=($fpath $ZEPHYRDIR/contribs/lean)
 ```
 
 ### Deferred Plugins
