@@ -38,7 +38,7 @@ but Zephyr itself provides only a few, simple things:
 
 |                  | purpose                         |
 | ---------------- | ------------------------------- |
-| `ZEPHYRDIR`      | The install location for Zephyr |
+| `$ZEPHYRDIR`     | The install location for Zephyr |
 | `zephyr-update ` | Update Zephyr and its plugins   |
 
 
