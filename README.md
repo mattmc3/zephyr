@@ -210,8 +210,8 @@ The following curated list of external plugins is available with Zephyr:
 - Additional completions via [zsh-completions]
 
 **Utilities:**
-- [zsh-defer]
-- [zsh-bench]
+- [zsh-defer] - Defer loading certain plugins ([use with caution](https://github.com/romkatv/zsh-bench#deferred-initialization))
+- [zsh-bench] - Benchmark your Zsh configuration
 
 ## Credits
 
