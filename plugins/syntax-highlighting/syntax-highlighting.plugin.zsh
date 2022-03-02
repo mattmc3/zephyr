@@ -2,4 +2,4 @@
 # External
 #
 
--zephyr-load-plugin zsh-users/zsh-syntax-highlighting
+_zephyr_load_plugin zsh-users/zsh-syntax-highlighting

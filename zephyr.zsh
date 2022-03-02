@@ -9,7 +9,7 @@ ZEPHYRDIR=${0:A:h}
 #
 
 declare -A _zephyr_loaded_plugins
-function -zephyr-load-plugin {
+function _zephyr_load_plugin {
   # variables in this function need to not conflict with ones in loaded plugins
   local _zephyr_plugin=$1
   local _zephyr_opts=${2:-none}
@@ -23,7 +23,7 @@ function -zephyr-load-plugin {
   local _zephyr_plugin_dir
   if [[ $_zephyr_plugin = */* ]]; then
     _zephyr_plugin_dir=$ZEPHYRDIR/.external/${_zephyr_plugin:t}
-    [[ -d $_zephyr_plugin_dir ]] || -zephyr-clone-plugin $_zephyr_plugin
+    [[ -d $_zephyr_plugin_dir ]] || _zephyr_clone_plugin $_zephyr_plugin
     _zephyr_plugin=${_zephyr_plugin:t}
   else
     _zephyr_plugin_dir=$ZEPHYRDIR/plugins/$_zephyr_plugin
@@ -35,7 +35,7 @@ function -zephyr-load-plugin {
 
   # load the plugin
   if [[ $_zephyr_opts = 'defer' ]]; then
-    (( ${+functions[zsh-defer]} )) || -zephyr-load-plugin romkatv/zsh-defer
+    (( ${+functions[zsh-defer]} )) || _zephyr_load_plugin romkatv/zsh-defer
     zsh-defer source $_zephyr_plugin_dir/$_zephyr_plugin.plugin.zsh
   else
     source $_zephyr_plugin_dir/$_zephyr_plugin.plugin.zsh
@@ -51,11 +51,11 @@ function -zephyr-load-plugin {
   _zephyr_loaded_plugins[$_zephyr_plugin]=true
 }
 
-function -zephyr-clone-plugin {
+function _zephyr_clone_plugin {
   local repo=$1
   local plugin_dir=$ZEPHYRDIR/.external/${1:t}
   if [[ ! -d $plugin_dir ]]; then
-    echo "Cloning $repo..."
+    echo "Cloning plugin $repo..."
     git clone --quiet --depth 1 --recursive --shallow-submodules https://github.com/$repo $plugin_dir
     local initfile=$plugin_dir/${1:t}.plugin.zsh
     if [[ ! -e $initfile ]]; then
@@ -97,7 +97,7 @@ zstyle -a ':zephyr:clone' plugins \
   'zplugins_clone' \
     || zplugins_clone=()
 for zplugin in $zplugins_clone; do
-  -zephyr-clone-plugin $zplugin
+  _zephyr_clone_plugin $zplugin
 done
 
 zstyle -a ':zephyr:load' additional-plugins \
@@ -107,15 +107,15 @@ zstyle -a ':zephyr:load' plugins \
   'zplugins' \
     || zplugins=($zplugins_default)
 for zplugin in $zplugins_addtl $zplugins; do
-  -zephyr-load-plugin $zplugin
+  _zephyr_load_plugin $zplugin
 done
 
 zstyle -a ':zephyr:defer' plugins \
   'zplugins_defer' \
     || zplugins_defer=()
 for zplugin in $zplugins_defer; do
-  -zephyr-load-plugin $zplugin defer
+  _zephyr_load_plugin $zplugin defer
 done
 
 unset zplugin{s,s_default,s_addtl,s_clone,s_defer,} _zephyr_loaded_plugins
-unfunction -zephyr-clone-plugin
+unfunction_zephyr_clone_plugin

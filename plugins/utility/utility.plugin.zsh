@@ -2,7 +2,7 @@
 # External
 #
 
--zephyr-clone-plugin romkatv/zsh-bench
+_zephyr_clone_plugin romkatv/zsh-bench
 path+=$ZEPHYRDIR/.external/zsh-bench
 
 #

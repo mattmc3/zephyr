@@ -2,7 +2,7 @@
 # External
 #
 
--zephyr-load-plugin zsh-users/zsh-history-substring-search
+_zephyr_load_plugin zsh-users/zsh-history-substring-search
 
 #
 # Key Bindings
