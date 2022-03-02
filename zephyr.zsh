@@ -23,7 +23,7 @@ function -zephyr-load-plugin {
   local _zephyr_plugin_dir
   if [[ $_zephyr_plugin = */* ]]; then
     _zephyr_plugin_dir=$ZEPHYRDIR/.external/${_zephyr_plugin:t}
-    [[ -d $_zephyr_plugin_dir ]] || -zephyr-clone $_zephyr_plugin
+    [[ -d $_zephyr_plugin_dir ]] || -zephyr-clone-plugin $_zephyr_plugin
     _zephyr_plugin=${_zephyr_plugin:t}
   else
     _zephyr_plugin_dir=$ZEPHYRDIR/plugins/$_zephyr_plugin
@@ -51,7 +51,7 @@ function -zephyr-load-plugin {
   _zephyr_loaded_plugins[$_zephyr_plugin]=true
 }
 
-function -zephyr-clone {
+function -zephyr-clone-plugin {
   local repo=$1
   local plugin_dir=$ZEPHYRDIR/.external/${1:t}
   if [[ ! -d $plugin_dir ]]; then
@@ -97,7 +97,7 @@ zstyle -a ':zephyr:clone' plugins \
   'zplugins_clone' \
     || zplugins_clone=()
 for zplugin in $zplugins_clone; do
-  -zephyr-clone $zplugin
+  -zephyr-clone-plugin $zplugin
 done
 
 zstyle -a ':zephyr:load' additional-plugins \
@@ -118,3 +118,4 @@ for zplugin in $zplugins_defer; do
 done
 
 unset zplugin{s,s_default,s_addtl,s_clone,s_defer,} _zephyr_loaded_plugins
+unfunction -zephyr-clone-plugin

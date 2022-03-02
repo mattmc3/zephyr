@@ -2,9 +2,9 @@
 # External
 #
 
--zephyr-clone ohmyzsh/ohmyzsh
--zephyr-clone romkatv/powerlevel10k
--zephyr-clone sindresorhus/pure
+-zephyr-clone-plugin ohmyzsh/ohmyzsh
+-zephyr-clone-plugin romkatv/powerlevel10k
+-zephyr-clone-plugin sindresorhus/pure
 
 fpath+="$ZEPHYRDIR/.external/powerlevel10k"
 fpath+="$ZEPHYRDIR/.external/pure"
