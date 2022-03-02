@@ -101,13 +101,13 @@ for zplugin in $zplugins_clone; do
   -zephyr-clone $zplugin
 done
 
-zstyle -a ':zephyr:load' plugins \
-  'zplugins' \
-    || zplugins=($zplugins_default)
 zstyle -a ':zephyr:load' additional-plugins \
   'zplugins_addtl' \
     || zplugins_addtl=()
-for zplugin in $zplugins $zplugins_addtl; do
+zstyle -a ':zephyr:load' plugins \
+  'zplugins' \
+    || zplugins=($zplugins_default)
+for zplugin in $zplugins_addtl $zplugins; do
   -zephyr-load-plugin $zplugin
 done
 

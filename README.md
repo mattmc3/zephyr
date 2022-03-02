@@ -83,7 +83,14 @@ described above. For example:
 ```zsh
 # order matters
 zplugins=(
-  # zephyr plugins
+  # 3rd party plugins
+  zshzoo/magic-enter
+  zshzoo/macos
+  rummik/zsh-tailf
+  peterhurford/up.zsh
+  rupa/z
+
+  # zephyr built-in plugins
   environment
   terminal
   editor
@@ -98,19 +105,6 @@ zplugins=(
   syntax-highlighting
   history-substring-search
   autosuggestions
-
-  # 3rd party plugins
-  zshzoo/magic-enter
-  zshzoo/macos
-  rummik/zsh-tailf
-  peterhurford/up.zsh
-  rupa/z
-
-  # load these last
-  zfunctions
-  confd
-  completions
-  syntax-highlighting
 )
 zstyle ':zephyr:load' plugins $zplugins
 ```
