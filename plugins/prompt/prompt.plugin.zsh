@@ -2,12 +2,10 @@
 # External
 #
 
--zephyr-clone miekg/lean
 -zephyr-clone ohmyzsh/ohmyzsh
 -zephyr-clone romkatv/powerlevel10k
 -zephyr-clone sindresorhus/pure
 
-fpath+="$ZEPHYRDIR/.external/lean"
 fpath+="$ZEPHYRDIR/.external/powerlevel10k"
 fpath+="$ZEPHYRDIR/.external/pure"
 
