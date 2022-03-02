@@ -7,17 +7,6 @@ out-of-the-box, is crazy fast, is a breeze to set up, has all the features of a 
 shell, is easy to build off, and grows with you on your Zsh journey? You're in the right
 place.
 
-## Goals
-
-Zephyr's goals can be described as F.R.E.S.C.O:
-
-- **Fast!** - Zephyr shouldn't bog down your Zsh
-- **Reliable** - Zephyr updates should not break your Zsh config
-- **Extendable** - Zephyr should grow with you
-- **Simple** - Zephyr's out-of-the-box configuration should work well for most people
-- **Configurable** - Zephyr should let you customize
-- **Outstanding** - Zephyr should be a delight to use
-
 ## Installation
 
 Add the following snippet to your `.zshrc`:
@@ -29,6 +18,31 @@ Add the following snippet to your `.zshrc`:
 source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 prompt pure
 ```
+
+## Goals
+
+Zephyr's goals can be described as F.R.E.S.C.O:
+
+- **Fast!** - Zephyr shouldn't bog down your Zsh
+- **Reliable** - Zephyr updates should not break your Zsh config
+- **Extendable** - Zephyr should grow with you
+- **Simple** - Zephyr's out-of-the-box configuration should work well for most people
+- **Configurable** - Zephyr should let you customize
+- **Outstanding** - Zephyr should be a delight to use
+
+## Features
+
+- Auto suggestions via [zsh-autosuggestions]
+- Robust command completions, including extras via [zsh-completions]
+- Automatically source anything in a `${ZDOTDIR:-$HOME/.config/zsh}/conf.d` directory
+- Autoload functions in a `${ZDOTDIR:-$HOME/.config/zsh}/functions` directory
+- Better [Zsh options][zsh-setopts] than the defaults
+- History substring search via [zsh-history-substring-search]
+- Syntax highlighting via [zsh-syntax-highlighting]
+- Great prompt support, including [pure]
+- Great keybindings
+- Terminal window enhancements
+- Easily add your own plugins from GitHub
 
 ## Variables and functions
 
@@ -246,6 +260,7 @@ Zephyr is a derivative work of the following great projects:
 
 
 [fish]:                          https://fishshell.com
+[deferred-init]:                 https://github.com/romkatv/zsh-bench#deferred-initialization
 [ohmyzsh-themes]:                https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 [ohmyzsh]:                       https://github.com/ohmyzsh/ohmyzsh
 [prezto]:                        https://github.com/sorin-ionescu/prezto
@@ -257,6 +272,6 @@ Zephyr is a derivative work of the following great projects:
 [zsh-completions]:               https://github.com/zsh-users/zsh-completions
 [zsh-defer]:                     https://github.com/romkatv/zsh-defer
 [zsh-history-substring-search]:  https://github.com/zsh-users/zsh-history-substring-search
+[zsh-setopts]:                   https://zsh.sourceforge.io/Doc/Release/Options.html
 [zsh-syntax-highlighting]:       https://github.com/zsh-users/zsh-syntax-highlighting
 [zsh-utils]:                     https://github.com/belak/zsh-utils
-[deferred-init]:                 https://github.com/romkatv/zsh-bench#deferred-initialization
