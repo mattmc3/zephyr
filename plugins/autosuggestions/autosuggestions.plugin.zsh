@@ -14,7 +14,7 @@ zstyle -s ':zephyr:plugin:autosuggestions:color' found \
   'ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE' || ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 
 # disable highlighting
-if ! zstyle -t ':zephyr:plugin:autosuggestions' color; then
+if ! zstyle -T ':zephyr:plugin:autosuggestions' color; then
   ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=''
 fi
 
