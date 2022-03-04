@@ -67,10 +67,10 @@ but Zephyr itself provides only a few, simple things:
 
 ## Customizing
 
-Zephyr uses zstyles for customization. But, it doesn't require any configuration at all
-to work out-of-the-box. However, over time you might find that it's nice to customize.
+Zephyr doesn't require any configuration at all to work out-of-the-box. However, over
+time you will likely want to tweak the configuration. Zephyr makes that easy.
 
-## Plugins
+### Plugins
 
 Zephyr comes with a highly curated set of of plugins by default, and doesn't come with
 everything out there. The goal is a great out-of-the-box Zsh experience for most people
@@ -81,21 +81,18 @@ However, you might decide you don't want everything Zephyr includes, or you migh
 to add some 3rd party plugins yourself. Never fear - you can easily customize which
 plugins are loaded.
 
-## .zephyr.plugins file
+### .zephyr.plugins file
 
 Zephyr will create a `$ZDOTDIR/.zephyr.plugins` file for you on init. In it, you can
 list the plugins you want to load.
 
-### Clone-only Plugins
-
-You might want to just clone some repos and not try to source them as plugins. To do
-that, add the `kind:clone` option to your plugin:
+If prefer a different file name, you can pass that to `zephyr init`:
 
 ```zsh
-# .zephyr.plugins
-# this isn't a Zsh plugin, but maybe we want it cloned
-# to set up our terminal color scheme
-mbadolato/iTerm2-Color-Schemes kind:clone
+# .zshrc
+# clone and source zephyr and then call init with
+# a custom plugins file
+zephyr init ~/.zsh_plugins.txt
 ```
 
 ### Prompt Plugins
@@ -125,6 +122,18 @@ Similar to $PATH plugins, you may have a plugin that you need added to your `fpa
 ```zsh
 # this is a utility, add it to our $PATH
 miekg/lean kind:fpath
+```
+
+### Clone-only Plugins
+
+You might want to just clone some repos and not try to source them as plugins. To do
+that, add the `kind:clone` option to your plugin:
+
+```zsh
+# .zephyr.plugins
+# this isn't a Zsh plugin, but maybe we want it cloned
+# to set up our terminal color scheme
+mbadolato/iTerm2-Color-Schemes kind:clone
 ```
 
 ### Deferred Plugins
