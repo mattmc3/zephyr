@@ -1,11 +1,4 @@
 #
-# External
-#
-
-_zephyr_clone_plugin romkatv/zsh-bench
-path+=$ZEPHYRDIR/contribs/zsh-bench
-
-#
 # Aliases
 #
 

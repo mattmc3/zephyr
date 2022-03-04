@@ -2,7 +2,8 @@
 # External
 #
 
-_zephyr_load_plugin zsh-users/zsh-autosuggestions
+[[ -d $ZEPHYRDIR/contribs/zsh-autosuggestions ]] || _zephyr_clone zsh-users/zsh-autosuggestions
+source $ZEPHYRDIR/contribs/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
 
 #
 # Variables

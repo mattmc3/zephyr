@@ -6,3 +6,4 @@
 contribs/
 prompts/*/
 !prompts/functions
+.cache/

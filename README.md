@@ -2,20 +2,29 @@
 
 > A Zsh framework as nice as a cool summer breeze
 
-Tired of slow, bloated, outdated Zsh frameworks? Want something that works great
-out-of-the-box, is crazy fast, is a breeze to set up, has all the features of a modern
-shell, is easy to build off, and grows with you on your Zsh journey? You're in the right
-place.
+Zsh is a wonderful shell, but out-of-the-box it needs a bit of a boost. That's where
+Zephyr comes in. It's crazy fast, is a breeze to set up, brings modern features to your
+shell, is easy to build from, and grows with you on your Zsh journey.
+
+While other Zsh frameworks are outdated, slow, unmaintained, or over-complicated, Zephyr
+should feel like a fresh breeze.
 
 ## Installation
 
 Add the following snippet to your `.zshrc`:
 
 ```zsh
-# clone and source zephyr
+# clone zephyr
 [[ -d ${ZDOTDIR:-~}/.zephyr ]] ||
   git clone https://github.com/zshzoo/zephyr ${ZDOTDIR:-~}/.zephyr
+
+# source zephyr
 source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
+
+# initialize zephyr
+zephyr init
+
+# choose your prompt
 prompt pure
 ```
 
@@ -53,14 +62,13 @@ but Zephyr itself provides only a few, simple things:
 |                  | purpose                         |
 | ---------------- | ------------------------------- |
 | `$ZEPHYRDIR`     | The install location for Zephyr |
-| `zephyr-update ` | Update Zephyr and its plugins   |
+| `zephyr`         | The command to manage Zephyr    |
 
 
 ## Customizing
 
 Zephyr uses zstyles for customization. But, it doesn't require any configuration at all
-to work out-of-the-box. However, you will probably find that it's nice to customize as
-you use it over time.
+to work out-of-the-box. However, over time you might find that it's nice to customize.
 
 ## Plugins
 
@@ -69,99 +77,54 @@ everything out there. The goal is a great out-of-the-box Zsh experience for most
 with a base configuration that you can easily build on. You may have noticed Zephyr has
 a bit of a [fish shell][fish] bias - many of its plugins bring fish features to Zsh.
 
-However, you might decide you don't want everything Zephyr includes, or you might want to
-add some 3rd party plugins yourself. Never fear - you can easily customize which plugins
-are loaded.
+However, you might decide you don't want everything Zephyr includes, or you might want
+to add some 3rd party plugins yourself. Never fear - you can easily customize which
+plugins are loaded.
 
-### Additional 3rd Party Plugins
+## .zephyr.plugins file
 
-You can load additional 3rd party Zsh plugins with:
-
-```zsh
-zstyle ':zephyr:load' additional-plugins $zplugins
-```
-
-For example:
-
-```zsh
-zplugins=(
-  mattmc3/zman
-  zshzoo/magic-enter
-  zshzoo/macos
-  rummik/zsh-tailf
-  peterhurford/up.zsh
-  rupa/z
-)
-zstyle ':zephyr:load' additional-plugins $zplugins
-```
-
-### Full plugin control
-
-You can fully control which Zephyr plugins and 3rd party plugins are loaded via this
-zstyle:
-
-```zsh
-zstyle ':zephyr:load' plugins $zplugins
-```
-
-Note that with this customization, you won't need the `additional-plugins` zstyle
-described above. For example:
-
-```zsh
-# order matters
-zplugins=(
-  # 3rd party plugins
-  mattmc3/zman
-  zshzoo/magic-enter
-  zshzoo/macos
-  rummik/zsh-tailf
-  peterhurford/up.zsh
-  rupa/z
-
-  # zephyr built-in plugins
-  environment
-  terminal
-  editor
-  history
-  directory
-  utility
-  prompt
-  zfunctions
-  confd
-  completions
-  syntax-highlighting
-  history-substring-search
-  autosuggestions
-)
-zstyle ':zephyr:load' plugins $zplugins
-```
+Zephyr will create a `$ZDOTDIR/.zephyr.plugins` file for you on init. In it, you can
+list the plugins you want to load.
 
 ### Clone-only Plugins
 
-You might want to just clone some repos and not try to source them as plugins. This can
-be handy for Zsh scripts you want to add to your `$path` or `$fpath`. To do that use:
+You might want to just clone some repos and not try to source them as plugins. To do
+that, add the `kind:clone` option to your plugin:
 
 ```zsh
-zstyle ':zephyr:clone' plugins $cloneplugins
+# .zephyr.plugins
+# this isn't a Zsh plugin, but maybe we want it cloned
+# to set up our terminal color scheme
+mbadolato/iTerm2-Color-Schemes kind:clone
 ```
 
-For example:
+### Prompt Plugins
+
+Some plugins provide prompts or themes. To use a prompt plugin, add the `kind:prompt`
+option:
 
 ```zsh
-cloneplugins=(
-  # this isn't a Zsh plugin, but maybe we want it cloned
-  # to set up our terminal color scheme
-  mbadolato/iTerm2-Color-Schemes
+# this is a prompt, not a regular plugin
+sindresorhus/pure kind:prompt
+```
 
-  # this is a prompt, not a plugin, so clone it and add to fpath
-  miekg/lean
+### $PATH Plugins
 
-  # this isn't a Zsh plugin, but we want to add it to our $PATH
-  romkatv/zsh-bench
-)
-zstyle ':zephyr:clone' plugins $cloneplugins
-path=($path $ZEPHYRDIR/contribs/zsh-bench)
-fpath=($fpath $ZEPHYRDIR/contribs/lean)
+Some plugins provide utilities you want added to your path. To use a utility plugin like
+this, add the `kind:path` option:
+
+```zsh
+# this is a utility, add it to our $PATH
+romkatv/zsh-bench kind:path
+```
+
+### $fpath Plugins
+
+Similar to $PATH plugins, you may have a plugin that you need added to your `fpath`:
+
+```zsh
+# this is a utility, add it to our $PATH
+miekg/lean kind:fpath
 ```
 
 ### Deferred Plugins
@@ -169,29 +132,19 @@ fpath=($fpath $ZEPHYRDIR/contribs/lean)
 *Note: [use with caution][deferred-init]*
 
 Some plugins are slow to load or you don't need them to be active right away. You can
-specify plugins to defer load with this zstyle:
+specify plugins to defer load with the `kind:defer` option:
 
 ```
-deferplugins=(...)
-zstyle ':zephyr:defer' plugins $deferplugins
-```
-
-For example:
-
-```zsh
-# these plugins may be slow or don't need loaded right away
-deferplugins=(
-  olets/zsh-abbr
-  zdharma-continuum/fast-syntax-highlighting
-)
-zstyle ':zephyr:defer' plugins $deferplugins
+# this is a slow but useful plugin that
+# we don't need loaded right away
+olets/zsh-abbr kind:defer
 ```
 
 ## Prompts
 
 Zephyr supports the Zsh built-in prompt command, and including the prompt plugin will
-run [promptinit]. Zephyr comes with a few popular prompts, including [pure] and the
-[Oh-My-Zsh][ohmyzsh] [themes][ohmyzsh-themes].
+run [promptinit]. Zephyr comes with a few popular prompts, including [pure] and
+[starship].
 
 To change your prompt, you simply call `prompt $theme` after sourcing Zephyr in your
 `.zshrc`.
@@ -199,15 +152,8 @@ To change your prompt, you simply call `prompt $theme` after sourcing Zephyr in 
 For example:
 
 ```zsh
+# .zshrc
 prompt pure
-```
-
-For [Oh-My-Zsh themes][ohmyzsh-themes], you must set the omz `$ZSH_THEME` variable like
-so:
-
-```zsh
-ZSH_THEME=robbyrussell
-prompt omz
 ```
 
 ## Included 3rd Party Plugins
@@ -217,7 +163,6 @@ The following curated list of external plugins is available with Zephyr:
 **Prompts:**
 - [pure]
 - [starship]
-- [Oh-My-Zsh themes][ohmyzsh-themes]
 
 **Plugins:**
 - Syntax highlighting via [zsh-syntax-highlighting]

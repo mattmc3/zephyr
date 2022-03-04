@@ -10,7 +10,7 @@ fi
 # External
 #
 
-_zephyr_clone_plugin zsh-users/zsh-completions
+[[ -d $ZEPHYRDIR/contribs/zsh-completions ]] || _zephyr_clone zsh-users/zsh-completions
 fpath=($ZEPHYRDIR/contribs/zsh-completions $fpath)
 
 #

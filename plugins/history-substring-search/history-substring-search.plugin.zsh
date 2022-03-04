@@ -2,7 +2,8 @@
 # External
 #
 
-_zephyr_load_plugin zsh-users/zsh-history-substring-search
+[[ -d $ZEPHYRDIR/contribs/zsh-history-substring-search ]] || _zephyr_clone zsh-users/zsh-history-substring-search
+source $ZEPHYRDIR/contribs/zsh-history-substring-search/zsh-history-substring-search.plugin.zsh
 
 #
 # Key Bindings
