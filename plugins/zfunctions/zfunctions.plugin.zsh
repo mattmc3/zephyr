@@ -1,12 +1,19 @@
 # autoload functions dir like fish
-_zephyr_autoload_funcdir ${0:a:h}/functions
+
+0=${(%):-%x}
+fpath+="${0:a:h}/functions"
+local _fn; for _fn in "${0:a:h}/functions"/*(.N); do
+  autoload -Uz $_fn
+done
+unset _fn
 
 if [[ -z "$ZFUNCDIR" ]]; then
   ZFUNCDIR=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config/zsh}}/functions
 fi
 
-_zephyr_autoload_funcdir "$ZFUNCDIR"
-for _fndir in $ZFUNCDIR/**/*(/); do
-  _zephyr_autoload_funcdir $_fndir
+[[ -d "$ZFUNCDIR" ]] || return
+autoload-dir "$ZFUNCDIR"
+for _fndir in $ZFUNCDIR/**/*(N/); do
+  autoload-dir $_fndir
 done
 unset _fndir

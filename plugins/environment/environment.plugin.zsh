@@ -6,7 +6,12 @@
 # Functions
 #
 
-_zephyr_autoload_funcdir ${0:a:h}/functions
+0=${(%):-%x}
+fpath+="${0:a:h}/functions"
+local _fn; for _fn in "${0:a:h}/functions"/*(.N); do
+  autoload -Uz $_fn
+done
+unset _fn
 
 #
 # Smart URLs

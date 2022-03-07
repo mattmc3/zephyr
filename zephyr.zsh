@@ -1,18 +1,3 @@
-0=${(%):-%x}
-
-#
-# Functions
-#
-
-function _zephyr_autoload_funcdir {
-  [[ -d "$1" ]] || return 1
-  fpath+="$1"
-  local fn
-  for fn in "$1"/*(.N); do
-    autoload -Uz $fn
-  done
-}
-
 #
 # Plugin list
 #
@@ -40,4 +25,3 @@ done
 #
 
 unset _zephyr_plugin{s,s_default,}
-unfunction _zephyr_autoload_funcdir
