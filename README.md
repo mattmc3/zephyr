@@ -18,7 +18,7 @@ Add the following snippet to your `.zshrc`:
 source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 # choose your prompt
-prompt pure
+prompt starship
 ```
 
 ## Prompts
