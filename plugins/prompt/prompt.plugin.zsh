@@ -2,7 +2,7 @@
 # Add Zephyr prompts to fpath
 #
 
-autoad_funcdir ${0:a:h}/functions
+_zephyr_autoload_funcdir ${0:a:h}/functions
 
 #
 # Options

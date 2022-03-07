@@ -7,13 +7,6 @@ if [[ "$TERM" == 'dumb' ]]; then
 fi
 
 #
-# External
-#
-
-[[ -d $ZEPHYRDIR/contribs/zsh-completions ]] || _zephyr_clone zsh-users/zsh-completions
-fpath=($ZEPHYRDIR/contribs/zsh-completions $fpath)
-
-#
 # Custom
 #
 

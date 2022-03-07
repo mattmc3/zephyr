@@ -6,7 +6,7 @@
 # Functions
 #
 
-autoad_funcdir ${0:a:h}/functions
+_zephyr_autoload_funcdir ${0:a:h}/functions
 
 #
 # Smart URLs
