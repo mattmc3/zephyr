@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # show man pages in color
 # mb:=start blink-mode (bold,blue)
 # md:=start bold-mode (bold,blue)

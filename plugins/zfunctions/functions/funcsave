@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 ### funcsave
 # save a function to $ZFUNCDIR for lazy loading
 
