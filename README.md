@@ -12,7 +12,7 @@ Add the following snippet to your `.zshrc`:
 ```zsh
 # clone zephyr
 [[ -d ${ZDOTDIR:-~}/.zephyr ]] ||
-  git clone https://github.com/zshzoo/zephyr ${ZDOTDIR:-~}/.zephyr
+  git clone https://github.com/mattmc3/zephyr ${ZDOTDIR:-~}/.zephyr
 
 # source zephyr
 source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
