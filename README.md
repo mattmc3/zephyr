@@ -32,18 +32,18 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 prompt starship
 ```
 
-## Prompts
+## Plugins
 
-Zephyr supports the Zsh built-in prompt command, and including the prompt plugin will run [promptinit]. Zephyr comes with the [starship] prompt.
-
-To change your prompt, you simply call `prompt $theme` after sourcing Zephyr in your `.zshrc`.
-
-For example:
-
-```zsh
-# .zshrc
-prompt starship
-```
+- [completions](plugins/completions/readme.md)
+- confd
+- directory
+- editor
+- environment
+- history
+- prompt
+- terminal
+- utility
+- zfunctions
 
 ## Customizing
 
@@ -63,6 +63,19 @@ zephyr_plugins=(
   completions
 )
 zstyle ':zephyr:load' plugins $zephyr_plugins
+```
+
+### Prompts
+
+Zephyr supports the Zsh built-in prompt command, and including the prompt plugin will run [promptinit]. Zephyr comes with the [starship] prompt, but you can use whatever prompt you want.
+
+To change your prompt, you simply call `prompt $theme` after sourcing Zephyr in your `.zshrc`.
+
+For example:
+
+```zsh
+# .zshrc
+prompt starship
 ```
 
 ## Credits
