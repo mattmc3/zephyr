@@ -1,4 +1,4 @@
-# Completion
+# Completions
 
 Loads and configures <kbd>TAB</kbd> completion.
 
