@@ -2,17 +2,31 @@
 # Requirements
 #
 
-if [[ "$TERM" == 'dumb' ]]; then
-  return 1
-fi
+[[ "$TERM" != 'dumb' ]] || return 1
+0=${(%):-%x}
 
 #
 # Custom
 #
 
-if [[ -d ${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions ]]; then
-  fpath+=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions
+# you can use your own completions dir if you choose
+fpath=(${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN) $fpath)
+
+# if homebrew completions exist, use those
+if (( $+commands[brew] )); then
+  zstyle -s ':zephyr:brew:prefix' 'path' brew_prefix \
+    || brew_prefix="$(command brew --prefix 2>/dev/null)"
+  fpath=("$brew_prefix"/share/zsh/site-functions(-/FN) $fpath)
+  fpath=("$brew_prefix"/opt/curl/share/zsh/site-functions(-/FN) $fpath)
+  unset brew_prefix
 fi
+
+#
+# Variables
+#
+
+# Standard style used by default for 'list-colors'
+LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 
 #
 # Options
