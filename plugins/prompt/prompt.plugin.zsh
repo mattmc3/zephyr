@@ -3,7 +3,7 @@
 #
 
 0=${(%):-%x}
-fpath+="${0:a:h}/functions"
+fpath+="${0:A:h}/functions"
 
 #
 # Options

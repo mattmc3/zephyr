@@ -1,8 +1,8 @@
 # autoload functions dir like fish
 
 0=${(%):-%x}
-fpath+="${0:a:h}/functions"
-local _fn; for _fn in "${0:a:h}/functions"/*(.N); do
+fpath+="${0:A:h}/functions"
+local _fn; for _fn in "${0:A:h}/functions"/*(.N); do
   autoload -Uz $_fn
 done
 unset _fn
