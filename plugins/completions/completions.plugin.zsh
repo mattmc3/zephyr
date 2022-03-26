@@ -1,36 +1,18 @@
-#
-# Requirements
-#
+# region: Requirements
 
 [[ "$TERM" != 'dumb' ]] || return 1
 0=${(%):-%x}
 
-#
-# Custom
-#
+# endregion
 
-# you can use your own completions dir if you choose
-fpath=(${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN) $fpath)
-
-# if homebrew completions exist, use those
-if (( $+commands[brew] )); then
-  zstyle -s ':zephyr:brew:prefix' 'path' brew_prefix \
-    || brew_prefix="$(command brew --prefix 2>/dev/null)"
-  fpath=("$brew_prefix"/share/zsh/site-functions(-/FN) $fpath)
-  fpath=("$brew_prefix"/opt/curl/share/zsh/site-functions(-/FN) $fpath)
-  unset brew_prefix
-fi
-
-#
-# Variables
-#
+# region: Variables
 
 # Standard style used by default for 'list-colors'
 LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 
-#
-# Options
-#
+# endregion
+
+# region: Options
 
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
 setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
@@ -41,9 +23,95 @@ setopt EXTENDED_GLOB       # Needed for file modification glob modifiers with co
 unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
 unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
 
-#
-# Styles
-#
+# endregion
+
+# region: Functions
+
+function run-compinit {
+  # Load and initialize the completion system ignoring insecure directories with a
+  # cache time of 20 hours, so it should almost always regenerate the first time a
+  # shell is opened each day.
+
+  # References
+  # https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh#L31-L44
+  # https://github.com/sorin-ionescu/prezto/blob/master/runcoms/zlogin#L9-L15
+  # http://zsh.sourceforge.net/Doc/Release/Completion-System.html#Use-of-compinit
+  # https://gist.github.com/ctechols/ca1035271ad134841284#gistcomment-2894219
+  # https://htr3n.github.io/2018/07/faster-zsh/
+
+  emulate -L zsh
+  setopt local_options extended_glob
+
+  autoload -Uz compinit
+  if [[ -z "$ZSH_COMPDUMP" ]]; then
+    ZSH_COMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump
+  fi
+  [[ -d "${ZSH_COMPDUMP:h}" ]] || mkdir -p "${ZSH_COMPDUMP:h}"
+
+  # if compdump is less than 20 hours old, shortcut with `compinit -C`
+  # glob magic explained:
+  #   #q expands globs in conditional expressions
+  #   N - sets null_glob option (no error on 0 results)
+  #   mh-20 - modified less than 20 hours ago
+  local comp_files=($ZSH_COMPDUMP(Nmh-20))
+  if (( $#comp_files )); then
+    compinit -i -C -d "$ZSH_COMPDUMP"
+  else
+    compinit -i -d "$ZSH_COMPDUMP"
+    # keep zcompdump younger than cache time even if it isn't regenerated
+    touch "$ZSH_COMPDUMP"
+  fi
+
+  # compile zcompdump, if modified, in background to increase startup speed
+  {
+    if [[ -s "$ZSH_COMPDUMP" && (! -s "${ZSH_COMPDUMP}.zwc" || "$ZSH_COMPDUMP" -nt "${ZSH_COMPDUMP}.zwc") ]]; then
+      zcompile "$ZSH_COMPDUMP"
+    fi
+  } &!
+}
+
+# endregion
+
+# region: External
+
+if [[ ! -d "${0:A:h}/external/zsh-completions" ]]; then
+  command git clone --quiet --depth 1 \
+    https://github.com/zsh-users/zsh-completions \
+    "${0:A:h}/external/zsh-completions"
+fi
+fpath=("${0:A:h}/external/zsh-completions/src" $fpath)
+
+# endregion
+
+# region: Custom locations
+
+# you can use your own completions dir if you choose
+fpath=(${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN) $fpath)
+
+# if homebrew completions exist, use those
+if (( $+commands[brew] )); then
+  zstyle -s ':zephyr:brew:prefix' 'path' brew_prefix
+  if [[ -z "$brew_prefix" ]]; then
+    # 'brew --prefix' is slow; cache its output
+    brew_prefix_file="${0:A:h}/.cache/brew_prefix.zsh"
+    if [[ ! -e "$brew_prefix_file" ]]; then
+      mkdir -p "$brew_prefix_file:h"
+      echo "zstyle ':zephyr:brew:prefix' 'path' $(brew --prefix 2>/dev/null)" >! "$brew_prefix_file"
+    fi
+    source "$brew_prefix_file"
+    unset brew_prefix_file
+  fi
+
+  zstyle -s ':zephyr:brew:prefix' 'path' brew_prefix \
+    || brew_prefix="$(command brew --prefix 2>/dev/null)"
+  fpath=("$brew_prefix"/share/zsh/site-functions(-/FN) $fpath)
+  fpath=("$brew_prefix"/opt/curl/share/zsh/site-functions(-/FN) $fpath)
+  unset brew_prefix
+fi
+
+# endregion
+
+# region: Styles
 
 # https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh
 # Defaults.
@@ -164,24 +232,12 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' l
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 
-#
-# Init
-#
+# endregion
 
-# Load and initialize the completion system ignoring insecure directories with a
-# cache time of 20 hours, so it should almost always regenerate the first time a
-# shell is opened each day.
-autoload -Uz compinit
-if [[ -z "$ZSH_COMPDUMP" ]]; then
-  ZSH_COMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump
+# region: CompInit
+
+if ! zstyle -t ':zephyr:plugin:completions' run-compinit; then
+  run-compinit
 fi
-[[ -d "${ZSH_COMPDUMP:h}" ]] || mkdir -p "${ZSH_COMPDUMP:h}"
-_comp_files=($ZSH_COMPDUMP(Nmh-20))
-if (( $#_comp_files )); then
-  compinit -i -C -d "$ZSH_COMPDUMP"
-else
-  compinit -i -d "$ZSH_COMPDUMP"
-  # keep zcompdump younger than cache time even if it isn't regenerated
-  touch "$ZSH_COMPDUMP"
-fi
-unset _comp_files
+
+# endregion

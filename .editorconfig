@@ -17,6 +17,10 @@ trim_trailing_whitespace = false
 indent_style = space
 indent_size = 2
 
+[**/functions/*]
+indent_style = space
+indent_size = 2
+
 [.{zsh*,zlogin}]
 indent_style = space
 indent_size = 2
