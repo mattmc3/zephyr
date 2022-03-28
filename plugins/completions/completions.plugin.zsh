@@ -1,18 +1,18 @@
-# region: Requirements
+#region: Requirements
 
 [[ "$TERM" != 'dumb' ]] || return 1
 0=${(%):-%x}
 
-# endregion
+#endregion
 
-# region: Variables
+#region: Variables
 
 # Standard style used by default for 'list-colors'
 LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 
-# endregion
+#endregion
 
-# region: Options
+#region: Options
 
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
 setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
@@ -23,9 +23,9 @@ setopt EXTENDED_GLOB       # Needed for file modification glob modifiers with co
 unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
 unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
 
-# endregion
+#endregion
 
-# region: Functions
+#region: Functions
 
 function run-compinit {
   # Load and initialize the completion system ignoring insecure directories with a
@@ -70,9 +70,9 @@ function run-compinit {
   } &!
 }
 
-# endregion
+#endregion
 
-# region: External
+#region: External
 
 if [[ ! -d "${0:A:h}/external/zsh-completions" ]]; then
   command git clone --quiet --depth 1 \
@@ -81,9 +81,9 @@ if [[ ! -d "${0:A:h}/external/zsh-completions" ]]; then
 fi
 fpath=("${0:A:h}/external/zsh-completions/src" $fpath)
 
-# endregion
+#endregion
 
-# region: Custom locations
+#region: Custom locations
 
 # you can use your own completions dir if you choose
 fpath=(${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN) $fpath)
@@ -109,9 +109,9 @@ if (( $+commands[brew] )); then
   unset brew_prefix
 fi
 
-# endregion
+#endregion
 
-# region: Styles
+#region: Styles
 
 # https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh
 # Defaults.
@@ -232,12 +232,12 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' l
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 
-# endregion
+#endregion
 
-# region: CompInit
+#region: CompInit
 
 if ! zstyle -t ':zephyr:plugin:completions' run-compinit; then
   run-compinit
 fi
 
-# endregion
+#endregion

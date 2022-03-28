@@ -5,15 +5,15 @@
 0=${(%):-%x}
 fpath+="${0:A:h}/functions"
 
-# region: Options
+#region: Options
 
 # http://zsh.sourceforge.net/Doc/Release/Options.html#Prompting
 setopt PROMPT_SUBST  # expand parameters in prompt variables
 
-# endregion
+#endregion
 
-# region: Init
+#region: Init
 
 autoload -Uz promptinit && promptinit
 
-# endregion
+#endregion

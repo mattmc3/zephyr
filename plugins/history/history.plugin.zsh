@@ -1,6 +1,4 @@
-#
-# Options
-#
+#region: Options
 
 # http://zsh.sourceforge.net/Doc/Release/Options.html#History
 setopt APPEND_HISTORY          # append to history file
@@ -19,9 +17,9 @@ setopt HIST_SAVE_NO_DUPS       # do not write a duplicate event to the history f
 setopt HIST_VERIFY             # do not execute immediately upon history expansion
 setopt NO_HIST_BEEP            # don't beep when attempting to access a missing history entry
 
-#
-# Variables
-#
+#endregion
+
+#region: Variables
 
 # $HISTFILE belongs in the data home, not with the configs
 HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history"
@@ -34,12 +32,14 @@ fi
 [[ $SAVEHIST -gt 1000 ]] || SAVEHIST=10000
 [[ $HISTSIZE -gt 2000 ]] || HISTSIZE=20000
 
-#
-# Aliases
-#
+#endregion
+
+#region: Aliases
 
 # lists the ten most used commands
 alias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
 
 # make the history command more useful
 alias history="fc -li"
+
+#endregion
