@@ -1,11 +1,8 @@
 # autoload functions dir like fish
 
 0=${(%):-%x}
-fpath+="${0:A:h}/functions"
-local _fn; for _fn in "${0:A:h}/functions"/*(.N); do
-  autoload -Uz $_fn
-done
-unset _fn
+(( $+functions[autoload-dir] )) || autoload ${0:A:h:h}/functions/autoload-dir
+autoload-dir "${0:A:h}/functions"
 
 if [[ -z "$ZFUNCDIR" ]]; then
   ZFUNCDIR=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config/zsh}}/functions

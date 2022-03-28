@@ -1,6 +1,16 @@
 # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/macos
 # https://github.com/sorin-ionescu/prezto/tree/master/modules/osx
 
+#region: Functions
+
+0=${(%):-%x}
+(( $+functions[autoload-dir] )) || autoload ${0:A:h:h}/functions/autoload-dir
+autoload-dir "${0:A:h}/functions"
+
+#endregion
+
+#region: Aliases
+
 alias lmk="say 'Process complete.'"
 alias showfiles="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
 alias hidefiles="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
@@ -26,8 +36,4 @@ command -v md5sum > /dev/null || alias md5sum="md5"
 # macOS has no 'sha1sum', so use 'shasum' as a fallback
 command -v sha1sum > /dev/null || alias sha1sum="shasum"
 
-fpath+=${0:A:h}/functions
-for _fn in ${0:A:h}/functions/*(.N); do
-  autoload -Uz $_fn
-done
-unset _fn
+#endregion

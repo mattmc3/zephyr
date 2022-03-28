@@ -1,21 +1,16 @@
 #
-# Set general shell options and defines environment variables
+# Set shell options and setup environment
 #
 
-#
-# Functions
-#
+#region: Functions
 
 0=${(%):-%x}
-fpath+="${0:A:h}/functions"
-local _fn; for _fn in "${0:A:h}/functions"/*(.N); do
-  autoload -Uz $_fn
-done
-unset _fn
+(( $+functions[autoload-dir] )) || autoload ${0:A:h:h}/functions/autoload-dir
+autoload-dir "${0:A:h}/functions"
 
-#
-# Smart URLs
-#
+#endregion
+
+#region: Smart URLs
 
 # This logic comes from an old version of zim. Essentially, bracketed-paste was
 # added as a requirement of url-quote-magic in 5.1, but in 5.1.1 bracketed
@@ -34,26 +29,30 @@ if [[ ${ZSH_VERSION} != 5.1.1 && ${TERM} != "dumb" ]]; then
   zle -N self-insert url-quote-magic
 fi
 
-#
-# General
-#
+#endregion
 
+#region: Options
+
+# general options
 setopt COMBINING_CHARS       # combine zero-length punctuation characters (accents)
                              #   with the base character
 setopt INTERACTIVE_COMMENTS  # enable comments in interactive shell
 setopt RC_QUOTES             # allow 'Henry''s Garage' instead of 'Henry'\''s Garage'
 unsetopt MAIL_WARNING        # don't print a warning message if a mail file has been accessed
 
+# job options
+setopt LONG_LIST_JOBS        # list jobs in the long format by default
+setopt AUTO_RESUME           # attempt to resume existing job before creating a new process
+setopt NOTIFY                # report status of background jobs immediately
+unsetopt BG_NICE             # don't run all background jobs at a lower priority
+unsetopt HUP                 # don't kill jobs on shell exit
+unsetopt CHECK_JOBS          # don't report on jobs when shell exit
+
+#endregion
+
+#region: Shortcuts
+
 # Allow mapping Ctrl+S and Ctrl+Q shortcuts
 [[ -r ${TTY:-} && -w ${TTY:-} && $+commands[stty] == 1 ]] && stty -ixon <$TTY >$TTY
 
-#
-# Jobs
-#
-
-setopt LONG_LIST_JOBS  # List jobs in the long format by default
-setopt AUTO_RESUME     # Attempt to resume existing job before creating a new process
-setopt NOTIFY          # Report status of background jobs immediately
-unsetopt BG_NICE       # Don't run all background jobs at a lower priority
-unsetopt HUP           # Don't kill jobs on shell exit
-unsetopt CHECK_JOBS    # Don't report on jobs when shell exit
+#endregion
