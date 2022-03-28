@@ -1,7 +1,8 @@
 # autoload functions dir like fish
 
 0=${(%):-%x}
-(( $+functions[autoload-dir] )) || autoload ${0:A:h:h}/functions/autoload-dir
+ZEPHYR_HOME=${ZEPHYR_HOME:-${0:A:h:h:h}}
+(( $+functions[autoload-dir] )) || autoload -Uz $ZEPHYR_HOME/functions/autoload-dir
 autoload-dir "${0:A:h}/functions"
 
 if [[ -z "$ZFUNCDIR" ]]; then
