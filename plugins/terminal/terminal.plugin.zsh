@@ -1,5 +1,5 @@
 #
-# set terminal window and tab titles
+# Set terminal window and tab titles
 #
 
 # return if requirements are not found
