@@ -31,12 +31,12 @@ function magic-enter {
 case "$widgets[accept-line]" in
   # Override the current accept-line widget, calling the old one
   user:*) zle -N _magic-enter_orig_accept-line "${widgets[accept-line]#user:}"
-    function _magic-enter_accept-line() {
+    function _magic-enter_accept-line {
       magic-enter
       zle _magic-enter_orig_accept-line -- "$@"
     } ;;
   # If no user widget defined, call the original accept-line widget
-  builtin) function _magic-enter_accept-line() {
+  builtin) function _magic-enter_accept-line {
       magic-enter
       zle .accept-line
     } ;;
