@@ -38,11 +38,35 @@ unset _external_prompts _repo _prompt_name
 
 #endregion
 
-#region: Init
+#region: Set prompt
 
 autoload -Uz promptinit && promptinit
 zstyle -s ':zephyr:plugin:prompt' theme 'theme' || theme=pure
 prompt $theme
+
+#endregion
+
+#region: Customizations
+
+if [[ "$theme" = "pure" ]]; then
+  if zstyle -t ':zephyr:plugin:prompt:pure' show-exit-code; then
+    # show exit code on right
+    function precmd_pipestatus {
+      local exitcodes="${(j.|.)pipestatus}"
+      if [[ "$exitcodes" != "0" ]]; then
+        RPROMPT="%F{$prompt_pure_colors[prompt:error]}[$exitcodes]%f"
+      else
+        RPROMPT=
+      fi
+    }
+    add-zsh-hook precmd precmd_pipestatus
+  fi
+fi
+
+#endregion
+
+#region: Cleanup
+
 unset theme
 
 #endregion
