@@ -229,7 +229,7 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 
 #region: CompInit
 
-if ! zstyle -t ':zephyr:plugin:completions' run-compinit; then
+if ! zstyle -t ':zephyr:plugin:completions' skip-compinit; then
   run-compinit
 fi
 
