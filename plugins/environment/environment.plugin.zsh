@@ -41,6 +41,10 @@ setopt INTERACTIVE_COMMENTS  # enable comments in interactive shell
 setopt RC_QUOTES             # allow 'Henry''s Garage' instead of 'Henry'\''s Garage'
 unsetopt MAIL_WARNING        # don't print a warning message if a mail file has been accessed
 
+# glob options (https://zsh.sourceforge.io/Doc/Release/Options.html#Expansion-and-Globbing)
+setopt EXTENDED_GLOB         # Treat the '#', '~' and '^' characters as part of patterns for filename generation
+setopt GLOB_DOTS             # Do not require a leading '.' in a filename to be matched explicitly
+
 # job options
 setopt LONG_LIST_JOBS        # list jobs in the long format by default
 setopt AUTO_RESUME           # attempt to resume existing job before creating a new process
