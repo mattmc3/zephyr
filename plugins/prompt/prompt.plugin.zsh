@@ -41,5 +41,8 @@ unset _external_prompts _repo _prompt_name
 #region: Init
 
 autoload -Uz promptinit && promptinit
+zstyle -s ':zephyr:plugin:prompt' theme 'theme' || theme=pure
+prompt $theme
+unset theme
 
 #endregion
