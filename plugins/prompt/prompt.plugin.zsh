@@ -18,37 +18,30 @@ typeset -A _external_prompts=(
   sindresorhus/pure      pure
   romkatv/powerlevel10k  powerlevel10k
   dracula/zsh            dracula
+  ohmyzsh/ohmyzsh        ohmyzsh
 )
 for _repo _prompt_name in ${(kv)_external_prompts}; do
   if [[ ! -d "${0:A:h}/external/$_prompt_name" ]]; then
-    _prompt_dir="${0:A:h}/external/$_prompt_name"
     command git clone --quiet --depth 1 \
       https://github.com/$_repo \
-      "$_prompt_dir"
-    _prompt_init="${_prompt_dir}/prompt_${_prompt_name}_setup"
-    if [[ ! -e "$_prompt_init" ]]; then
-      _prompt_files=("$_prompt_dir"/prompt_*_setup(.N) "$_prompt_dir"/*.zsh-theme(.N))
-      [[ ${#_prompt_files[@]} -gt 0 ]] && ln -sf "${_prompt_files[1]}" "$_prompt_init"
-    fi
-    unset _prompt_{dir,init,files}
+      "${0:A:h}/external/$_prompt_name"
   fi
   fpath+=("${0:A:h}/external/$_prompt_name")
 done
-unset _external_prompts _repo _prompt_name
 
 #endregion
 
 #region: Set prompt
 
 autoload -Uz promptinit && promptinit
-zstyle -s ':zephyr:plugin:prompt' theme 'theme' || theme=pure
-prompt $theme
+zstyle -s ':zephyr:plugin:prompt' theme _theme || _theme=pure
+prompt $_theme
 
 #endregion
 
 #region: Customizations
 
-if [[ "$theme" = "pure" ]]; then
+if [[ "$_theme" = "pure" ]]; then
   if zstyle -t ':zephyr:plugin:prompt:pure' show-exit-code; then
     # show exit code on right
     function precmd_pipestatus {
@@ -67,6 +60,6 @@ fi
 
 #region: Cleanup
 
-unset theme
+unset _theme _external_prompts _repo _prompt_name
 
 #endregion

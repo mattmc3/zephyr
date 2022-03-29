@@ -1,0 +1,54 @@
+#!/usr/bin/env zsh
+
+### make sure we have OMZ set up properly
+0=${${(%):-%x}}
+local ZSH="${ZSH:-${0:A:h:h}/external/ohmyzsh}"
+local ZSH_CUSTOM="${ZSH_CUSTOM:-$ZSH/custom}"
+local ZSH_THEME=${ZSH_THEME:-robbyrussell}
+
+### omz theme lib dependencies
+typeset -f bzr_prompt_info > /dev/null || source "$ZSH"/lib/bzr.zsh
+typeset -f git_prompt_info > /dev/null || source "$ZSH"/lib/git.zsh
+typeset -f nvm_prompt_info > /dev/null || source "$ZSH"/lib/nvm.zsh
+typeset -f ruby_prompt_info > /dev/null || source "$ZSH"/lib/prompt_info_functions.zsh
+source "$ZSH"/lib/theme-and-appearance.zsh
+
+### omz theme plugin dependencies
+# lots of themes use the battery plugin
+typeset -f battery_pct_prompt > /dev/null || source "$ZSH"/plugins/battery/battery.plugin.zsh
+
+# some themes require this function from the git plugin
+function work_in_progress() {
+  if $(git log -n 1 2>/dev/null | grep -q -c "\-\-wip\-\-"); then
+    echo "WIP!!"
+  fi
+}
+
+function {
+  local zsh_theme
+  if [[ -f $ZSH/themes/${ZSH_THEME}.zsh-theme ]]; then
+    zsh_theme=$ZSH/themes/${ZSH_THEME}.zsh-theme
+  elif [[ -f $ZSH_CUSTOM/themes/${ZSH_THEME}.zsh-theme ]]; then
+    zsh_theme=$ZSH_CUSTOM/themes/${ZSH_THEME}.zsh-theme
+  else
+    echo >&2 "Unable to find zsh-theme '$ZSH_THEME'"
+    return 1
+  fi
+
+  # themes are bad at reseting themselves, so let's help out by resetting to
+  # defaults before applying a new theme
+  PROMPT='%n@%m %1~ %# '
+  PROMPT2='%_> '
+  PROMPT3='?# '
+  PROMPT4='+%N:%i> '
+  PS1=$PROMPT
+  PS2=$PROMPT2
+  PS3=$PROMPT3
+  PS4=$PROMPT4
+  SPROMPT='zsh: correct ''%R'' to ''%r'' [nyae]? '
+  RPROMPT=''
+  RPS1=''
+
+  # set the theme
+  source $zsh_theme
+}
