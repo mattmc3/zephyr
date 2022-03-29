@@ -1,3 +1,15 @@
+#region: External
+
+0=${(%):-%x}
+if [[ ! -d "${0:A:h}/external/zsh-bench" ]]; then
+  command git clone --quiet --depth 1 \
+    https://github.com/romkatv/zsh-bench \
+    "${0:A:h}/external/zsh-bench"
+fi
+export PATH="${0:A:h}/external/zsh-bench:$PATH"
+
+# endregion
+
 #region: Aliases
 
 alias type="type -a"
