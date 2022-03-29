@@ -1,8 +1,5 @@
-#
-# Aliases
-#
+#region: Aliases
 
-# General aliases
 alias type="type -a"
 alias mkdir="mkdir -p"
 
@@ -11,6 +8,7 @@ function -coreutils-alias-setup {
   # installed alongside BSD Coreutils
   local prefix=$1
 
+  # set LS_COLORS
   eval "$(${prefix}dircolors --sh)"
 
   alias ${prefix}ls="${aliases[${prefix}ls]:-${prefix}ls} --group-directories-first --color=auto"
@@ -28,10 +26,12 @@ else
 fi
 
 alias grep="${aliases[grep]:-grep} --color=auto"
+GREP_EXCLUDEDIRS=${GREP_EXCLUDEDIRS:-'{.bzr,CVS,.git,.hg,.svn,.idea,.tox}'}
 
 # macOS utils everywhere
 if [[ "$OSTYPE" == darwin* ]]; then
   alias o='open'
+  alias grep='grep --color=auto --exclude-dir=$GREP_EXCLUDEDIRS'
 elif [[ "$OSTYPE" == cygwin* ]]; then
   alias o='cygstart'
   alias pbcopy='tee > /dev/clipboard'
@@ -62,15 +62,17 @@ fi
 alias pbc='pbcopy'
 alias pbp='pbpaste'
 
-#
-# Help
-#
+#endregion
+
+#region: Help
 
 # Load more specific 'run-help' function from $fpath.
 (( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
 
-#
-# Cleanup
-#
+#endregion
+
+#region: Cleanup
 
 unfunction -- -coreutils-alias-setup
+
+#endregion
