@@ -14,7 +14,6 @@ _zephyr_plugins_default=(
   history
   directory
   utility
-  magic-enter
   zfunctions
   confd
   completions
