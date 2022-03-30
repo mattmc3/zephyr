@@ -34,16 +34,21 @@ prompt starship
 
 ## Plugins
 
+Below is the recommended plugin load order, and links to documentation for each plugin included in Zephyr.
+
+- [environment](plugins/environment/readme.md)
+- [terminal](plugins/terminal/readme.md)
+- [editor](plugins/editor/readme.md)
+- [history](plugins/history/readme.md)
+- [directory](plugins/directory/readme.md)
+- [utility](plugins/utility/readme.md)
+- [zfunctions](plugins/zfunctions/readme.md)
+- [confd](plugins/confd/readme.md)
 - [completions](plugins/completions/readme.md)
-- confd
-- directory
-- editor
-- environment
-- history
-- prompt
-- terminal
-- utility
-- zfunctions
+- [autosuggestions](plugins/autosuggestions/readme.md)
+- [prompt](plugins/prompt/readme.md)
+- [syntax-highlighting](plugins/syntax-highlighting/readme.md)
+- [history-substring-search](plugins/history-substring-search/readme.md)
 
 ## Customizing
 
