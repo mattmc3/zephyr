@@ -27,9 +27,6 @@ Add the following snippet to your `.zshrc`:
 
 # source zephyr
 source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
-
-# choose your prompt
-prompt starship
 ```
 
 ## Plugins
@@ -55,6 +52,7 @@ Below is the recommended plugin load order, and links to documentation for each 
 You can customize which plugins are loaded by adding the following to your `.zshrc`:
 
 ```zsh
+# choose which plugins to load (order matters)
 zephyr_plugins=(
   environment
   terminal
@@ -62,25 +60,18 @@ zephyr_plugins=(
   history
   directory
   utility
-  prompt
   zfunctions
   confd
+  prompt
   completions
+  autosuggestions
+  syntax-highlighting
+  history-substring-search
 )
 zstyle ':zephyr:load' plugins $zephyr_plugins
-```
 
-### Prompts
-
-Zephyr supports the Zsh built-in prompt command, and including the prompt plugin will run [promptinit]. Zephyr comes with the [starship] prompt, but you can use whatever prompt you want.
-
-To change your prompt, you simply call `prompt $theme` after sourcing Zephyr in your `.zshrc`.
-
-For example:
-
-```zsh
-# .zshrc
-prompt starship
+# source zephyr
+source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 ```
 
 ## Credits
