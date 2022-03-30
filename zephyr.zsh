@@ -16,9 +16,9 @@ _zephyr_plugins_default=(
   utility
   zfunctions
   confd
+  prompt
   completions
   autosuggestions
-  prompt
   syntax-highlighting
   history-substring-search
 )

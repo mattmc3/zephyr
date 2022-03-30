@@ -44,9 +44,9 @@ Below is the recommended plugin load order, and links to documentation for each 
 - [utility](plugins/utility/readme.md)
 - [zfunctions](plugins/zfunctions/readme.md)
 - [confd](plugins/confd/readme.md)
+- [prompt](plugins/prompt/readme.md)
 - [completions](plugins/completions/readme.md)
 - [autosuggestions](plugins/autosuggestions/readme.md)
-- [prompt](plugins/prompt/readme.md)
 - [syntax-highlighting](plugins/syntax-highlighting/readme.md)
 - [history-substring-search](plugins/history-substring-search/readme.md)
 
