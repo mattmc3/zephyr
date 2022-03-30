@@ -14,10 +14,14 @@ _zephyr_plugins_default=(
   history
   directory
   utility
-  prompt
+  magic-enter
   zfunctions
   confd
   completions
+  autosuggestions
+  prompt
+  syntax-highlighting
+  history-substring-search
 )
 zstyle -a ':zephyr:load' plugins \
   '_zephyr_plugins' || _zephyr_plugins=($_zephyr_plugins_default)
