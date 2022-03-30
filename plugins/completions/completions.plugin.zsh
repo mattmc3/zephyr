@@ -83,20 +83,7 @@ fpath=(${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN) $fpat
 
 # if homebrew completions exist, use those
 if (( $+commands[brew] )); then
-  zstyle -s ':zephyr:brew:prefix' 'path' brew_prefix
-  if [[ -z "$brew_prefix" ]]; then
-    # 'brew --prefix' is slow, so cache its output
-    brew_prefix_file="${ZEPHYR_HOME:-${0:A:h:h}}/.cache/brew_prefix.zsh"
-    if [[ ! -e "$brew_prefix_file" ]]; then
-      mkdir -p "$brew_prefix_file:h"
-      echo "zstyle ':zephyr:brew:prefix' 'path' $(brew --prefix 2>/dev/null)" >! "$brew_prefix_file"
-    fi
-    source "$brew_prefix_file"
-    unset brew_prefix_file
-  fi
-
-  zstyle -s ':zephyr:brew:prefix' 'path' brew_prefix \
-    || brew_prefix="$(command brew --prefix 2>/dev/null)"
+  brew_prefix=${commands[brew]:h:h}
   fpath=("$brew_prefix"/share/zsh/site-functions(-/FN) $fpath)
   fpath=("$brew_prefix"/opt/curl/share/zsh/site-functions(-/FN) $fpath)
   unset brew_prefix
