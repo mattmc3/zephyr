@@ -1,6 +1,14 @@
-#region: External
+#region: Functions
 
 0=${(%):-%x}
+ZEPHYR_HOME=${ZEPHYR_HOME:-${0:A:h:h:h}}
+(( $+functions[autoload-dir] )) || autoload -Uz $ZEPHYR_HOME/functions/autoload-dir
+autoload-dir "${0:A:h}/functions"
+
+#endregion
+
+#region: External
+
 if [[ ! -d "${0:A:h}/external/zsh-bench" ]]; then
   command git clone --quiet --depth 1 \
     https://github.com/romkatv/zsh-bench \
