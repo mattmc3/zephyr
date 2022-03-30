@@ -1,0 +1,5 @@
+#compdef mand
+#autoload
+
+# completions for mand match man
+_man
