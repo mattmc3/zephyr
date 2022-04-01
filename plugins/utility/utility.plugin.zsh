@@ -1,27 +1,14 @@
-#region: Functions
+#
+# Defines general aliases and functions.
+#
 
+#region: Init
 0=${(%):-%x}
-ZEPHYR_HOME=${ZEPHYR_HOME:-${0:A:h:h:h}}
-(( $+functions[autoload-dir] )) || autoload -Uz $ZEPHYR_HOME/functions/autoload-dir
-autoload-dir "${0:A:h}/functions"
-
+zstyle -t ':zephyr:core' initialized || source ${0:A:h:h:h}/lib/init.zsh
 #endregion
 
-#region: External
-
-if [[ ! -d "${0:A:h}/external/zsh-bench" ]]; then
-  command git clone --quiet --depth 1 \
-    https://github.com/romkatv/zsh-bench \
-    "${0:A:h}/external/zsh-bench"
-fi
-export PATH="${0:A:h}/external/zsh-bench:$PATH"
-
-# endregion
-
-#region: Aliases
-
-alias type="type -a"
-alias mkdir="mkdir -p"
+#region: Functions
+autoload-dir "${0:A:h}/functions"
 
 function -coreutils-alias-setup {
   # Prefix will either be g or empty. This is to account for GNU Coreutils being
@@ -33,6 +20,15 @@ function -coreutils-alias-setup {
 
   alias ${prefix}ls="${aliases[${prefix}ls]:-${prefix}ls} --group-directories-first --color=auto"
 }
+#endregion
+
+#region: External
+export PATH="$ZEPHYR_HOME/.external/romkatv/zsh-bench:$PATH"
+#endregion
+
+#region: Aliases
+alias type="type -a"
+alias mkdir="mkdir -p"
 
 # dircolors is a surprisingly good way to detect GNU vs BSD coreutils
 if (( $+commands[gdircolors] )); then
@@ -46,12 +42,12 @@ else
 fi
 
 alias grep="${aliases[grep]:-grep} --color=auto"
-GREP_EXCLUDEDIRS=${GREP_EXCLUDEDIRS:-'{.bzr,CVS,.git,.hg,.svn,.idea,.tox}'}
+GREP_EXCL=(.bzr CVS .git .hg .svn .idea .tox)
 
 # macOS utils everywhere
 if [[ "$OSTYPE" == darwin* ]]; then
   alias o='open'
-  alias grep='grep --color=auto --exclude-dir=$GREP_EXCLUDEDIRS'
+  alias grep="${aliases[grep]:-grep} --exclude-dir={\${(j.,.)GREP_EXCL}}"
 elif [[ "$OSTYPE" == cygwin* ]]; then
   alias o='cygstart'
   alias pbcopy='tee > /dev/clipboard'
@@ -81,7 +77,6 @@ fi
 
 alias pbc='pbcopy'
 alias pbp='pbpaste'
-
 #endregion
 
 #region: Help
@@ -92,7 +87,6 @@ alias pbp='pbpaste'
 #endregion
 
 #region: Extended tools
-
 # OS-specific tools
 if [[ "$OSTYPE" == darwin* ]]; then
   # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/macos
@@ -132,11 +126,8 @@ if [[ "$OSTYPE" == darwin* ]]; then
   # MacOS has no 'sha1sum', so use 'shasum' as a fallback
   command -v sha1sum > /dev/null || alias sha1sum="shasum"
 fi
-
 #endregion
 
 #region: Cleanup
-
 unfunction -- -coreutils-alias-setup
-
 #endregion

@@ -3,42 +3,13 @@
 ZEPHYR_HOME=${ZEPHYR_HOME:-${0:A:h:h}}
 cmd="$1"
 
-function zephyr-help {
-  usage=(
-    'zephyr'
-    ''
-    'Commands:'
-    '  help'
-    '    Print this message.'
-    ''
-    '  update'
-    '    Update Zephyr and its external dependencies'
-  )
-  printf '%s\n' "${usage[@]}"
-}
-
-function zephyr-update {
-  setopt local_options extended_glob
-  local normal="\e[00m"
-  local blue="\e[34m"
-  echo "${blue}Updating zephyr...${normal}"
-  git -C "$ZEPHYR_HOME" pull --ff --rebase --autostash
-
-  echo "${blue}Updating external plugins...${normal}"
-  local d
-  for d in $ZEPHYR_HOME/**/external/**/.git/..; do
-    echo "${blue}Updating ${d:A:t}...${normal}"
-    git -C "${d:A}" pull --ff --rebase --autostash
-  done
-}
-
 if (( $+functions[zephyr-${cmd}] )); then
   zephyr-${cmd} "$@"
   return $?
 elif [[ -z "$cmd" ]] || [[ $cmd = (--help|-h) ]]; then
   zephyr-help "$@"
 elif [[ $cmd = (--version|-v) ]]; then
-  local ver="2.0.0"
+  local ver="0.0.2"
   local gitsha=$(git -C "${0:h:h}" rev-parse --short HEAD 2>/dev/null)
   [[ -z "$gitsha" ]] || ver="$ver ($gitsha)"
   echo "zephyr version $ver"

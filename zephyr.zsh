@@ -1,11 +1,6 @@
 0=${(%):-%x}
 ZEPHYR_HOME=${ZEPHYR_HOME:-${0:A:h}}
-
-# this file should contain the bare minimum to bootstrap Zephyr so that plugins can
-# remain independant
-
-autoload -Uz $ZEPHYR_HOME/functions/autoload-dir
-autoload-dir "$ZEPHYR_HOME/functions"
+source $ZEPHYR_HOME/lib/init.zsh
 
 _zephyr_plugins_default=(
   environment

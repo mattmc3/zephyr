@@ -2,7 +2,7 @@
 
 ### make sure we have OMZ set up properly
 0=${${(%):-%x}}
-local ZSH="${ZSH:-${0:A:h:h}/external/ohmyzsh}"
+local ZSH="${ZSH:-${0:A:h:h}/.external/ohmyzsh/ohmyzsh}"
 local ZSH_CUSTOM="${ZSH_CUSTOM:-$ZSH/custom}"
 local ZSH_THEME=${ZSH_THEME:-robbyrussell}
 

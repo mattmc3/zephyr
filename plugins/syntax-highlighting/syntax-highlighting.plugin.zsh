@@ -1,21 +1,20 @@
+#
+# Integrates Zsh syntax highlighting into Zephyr.
+#
+
+#region: Requirements
+[[ "$TERM" != 'dumb' ]] || return 1
+#endregion
+
+#region: Init
+0=${(%):-%x}
+zstyle -t ':zephyr:core' initialized || source ${0:A:h:h:h}/lib/init.zsh
+#endregion
+
 #region: External
-
-if [[ ! -d "${0:A:h}/external/fast-syntax-highlighting" ]]; then
-  command git clone --quiet --depth 1 \
-    https://github.com/zdharma-continuum/fast-syntax-highlighting \
-    "${0:A:h}/external/fast-syntax-highlighting"
-fi
-
-if [[ ! -d "${0:A:h}/external/zsh-syntax-highlighting" ]]; then
-  command git clone --quiet --depth 1 \
-    https://github.com/zsh-users/zsh-syntax-highlighting \
-    "${0:A:h}/external/zsh-syntax-highlighting"
-fi
-
 if zstyle -t ':zephyr:plugins:syntax-highlighting' use-fast-syntax-highlighting; then
-  source "${0:A:h}/external/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+  source "$ZEPHYR_HOME/.external/zdharma-continuum/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 else
-  source "${0:A:h}/external/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh"
+  source "$ZEPHYR_HOME/.external/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
-
 # endregion

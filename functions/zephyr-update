@@ -1,0 +1,13 @@
+#!/usr/bin/env zsh
+setopt local_options extended_glob
+local normal="\e[00m"
+local blue="\e[34m"
+echo "${blue}Updating Zephyr...${normal}"
+git -C "$ZEPHYR_HOME" pull --ff --rebase --autostash
+
+echo "${blue}Updating external plugins...${normal}"
+local d
+for d in $ZEPHYR_HOME/.external/**/.git/..; do
+  echo "${blue}Updating ${${d:A}#$ZEPHYR_HOME/.external/}...${normal}"
+  git -C "${d:A}" pull --ff --rebase --autostash
+done

@@ -1,0 +1,131 @@
+#!/usr/bin/env zsh
+#
+# Originally based on the sorin theme from prezto and the gentoo prompt
+# with as much unicode removed as possible.
+#
+# Authors:
+#   Kaleb Elwert <belak@coded.io>
+#
+
+(( $+functions[gitstatus_query] )) \
+  || source "$ZEPHYR_HOME"/.external/romkatv/gitstatus/gitstatus.plugin.zsh
+
+# This is the last remaining portion from prezto. It's adapted from what became
+# the prompt-pwd function.
+function belak_prompt_pwd {
+  setopt local_options extended_glob
+
+  local current_pwd="${PWD/#$HOME/~}"
+  local ret_directory
+
+  if [[ "$current_pwd" == (#m)[/~] ]]; then
+    ret_directory="$MATCH"
+    unset MATCH
+  else
+    ret_directory="${${${${(@j:/:M)${(@s:/:)current_pwd}##.#?}:h}%/}//\%/%%}/${${current_pwd:t}//\%/%%}"
+  fi
+
+  print "$ret_directory"
+}
+
+function prompt_belak_venv {
+  _prompt_belak_venv=""
+  if [[ -n $VIRTUAL_ENV ]]; then
+    _prompt_belak_venv=" [${VIRTUAL_ENV##*/}]"
+  fi
+}
+
+function prompt_belak_gitstatus {
+  typeset -g  GITSTATUS_PROMPT=''
+  typeset -gi GITSTATUS_PROMPT_LEN=0
+
+  (( ! $+functions[gitstatus_query] )) && return 1
+
+  # Pull the updated state from gitstatus
+  gitstatus_query 'belak_prompt'        || return 1  # error
+  [[ $VCS_STATUS_RESULT == 'ok-sync' ]] || return 0  # not a git repo
+
+  local p
+
+  # Actions are super important and usually mean something needs to be fixed.
+  if (( ${#VCS_STATUS_ACTION} )); then
+    p+="%F{red}$VCS_STATUS_ACTION%f "
+  fi
+
+  # Simple indicators - the general idea is that if these aren't empty,
+  # something should be done with the repo. They're in order from most
+  # important to least important.
+  local indicators
+  (( $VCS_STATUS_HAS_CONFLICTED )) && indicators+="%B%F{magenta}*%f%b"
+  (( $VCS_STATUS_HAS_UNTRACKED )) && indicators+="%B%F{red}*%f%b"
+  (( $VCS_STATUS_HAS_UNSTAGED )) && indicators+="%B%F{yellow}*%f%b"
+  (( $VCS_STATUS_HAS_STAGED )) && indicators+="%B%F{green}*%f%b"
+  p+="$indicators "
+
+  # Display how many commits ahead/behind we are from the current branch
+  if (( $VCS_STATUS_COMMITS_BEHIND || $VCS_STATUS_COMMITS_AHEAD )); then
+    (( $VCS_STATUS_COMMITS_AHEAD )) && p+="%F{green}+$VCS_STATUS_COMMITS_AHEAD%f"
+    (( $VCS_STATUS_COMMITS_BEHIND )) && p+="%F{red}-$VCS_STATUS_COMMITS_BEHIND%f"
+    p+=" "
+  fi
+
+  local where  # branch name, tag or commit
+  if (( ${#VCS_STATUS_LOCAL_BRANCH} )); then
+    where=$VCS_STATUS_LOCAL_BRANCH
+  elif (( ${#VCS_STATUS_TAG} )); then
+    where='#'$VCS_STATUS_TAG
+  else
+    where='@'${VCS_STATUS_COMMIT[1,8]}
+  fi
+  p+=$where
+
+  GITSTATUS_PROMPT="${p}%f"
+
+  # The length of GITSTATUS_PROMPT after removing %f and %F.
+  GITSTATUS_PROMPT_LEN="${(m)#${${GITSTATUS_PROMPT//\%\%/x}//\%(f|<->F)}}"
+}
+
+function prompt_belak_precmd {
+  _prompt_belak_pwd=$(belak_prompt_pwd)
+  prompt_belak_venv
+  prompt_belak_gitstatus
+}
+
+function prompt_belak_setup {
+  # When loaded through the prompt command, these prompt_* options will be
+  # enabled simply by exporting this array.
+  prompt_opts=(cr percent sp subst)
+
+  # Load required functions
+  autoload -Uz add-zsh-hook
+
+  # If gitstatus exists, we want to have a job running to track git in the background
+  if (( $+functions[gitstatus_start] )); then
+    gitstatus_stop 'belak_prompt' && gitstatus_start -s -1 -u -1 -c -1 -d -1 'belak_prompt'
+  fi
+
+  # Add hook for updating info when we need it
+  add-zsh-hook precmd prompt_belak_precmd
+
+  # Set editor-info parameters.
+  zstyle ':prezto:module:editor:info:completing' format '%B%F{7}...%f%b'
+
+  _prompt_belak_pwd=''
+  _prompt_belak_venv=''
+
+  # Define prompts.
+  PROMPT='${SSH_TTY:+"%F{10}%n@%m%f "}%F{10}${_prompt_belak_pwd}%f${_prompt_belak_venv}%(!. %B%F{1}#%f%b.) %(?:%F{12}:%F{9})%#%f '
+  RPROMPT='${editor_info[overwrite]}${VIM:+" %B%F{6}V%f%b"}${GITSTATUS_PROMPT}'
+  SPROMPT='zsh: correct %F{1}%R%f to %F{2}%r%f [nyae]? '
+}
+
+function prompt_belak_preview {
+  local +h PROMPT=''
+  local +h RPROMPT=''
+  local +h SPROMPT=''
+
+  editor-info 2>/dev/null
+  prompt_preview_theme 'belak'
+}
+
+prompt_belak_setup "$@"

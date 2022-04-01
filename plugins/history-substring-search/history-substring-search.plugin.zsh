@@ -1,16 +1,21 @@
+#
+# Integrates history-substring-search into Zephyr.
+#
+
+#region: Requirements
+[[ "$TERM" != 'dumb' ]] || return 1
+#endregion
+
+#region: Init
+0=${(%):-%x}
+zstyle -t ':zephyr:core' initialized || source ${0:A:h:h:h}/lib/init.zsh
+#endregion
+
 #region: External
-
-if [[ ! -d "${0:A:h}/external/zsh-history-substring-search" ]]; then
-  command git clone --quiet --depth 1 \
-    https://github.com/zsh-users/zsh-history-substring-search \
-    "${0:A:h}/external/zsh-history-substring-search"
-fi
-source "${0:A:h}/external/zsh-history-substring-search/zsh-history-substring-search.zsh"
-
+source "$ZEPHYR_HOME/.external/zsh-users/zsh-history-substring-search/zsh-history-substring-search.zsh"
 # endregion
 
 #region: Variables
-
 zstyle -s ':zephyr:plugin:history-substring-search:color' found \
   'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND' \
     || HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bg=magenta,fg=white,bold'
@@ -30,11 +35,9 @@ fi
 if ! zstyle -t ':zephyr:plugin:history-substring-search' color; then
   unset HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_{FOUND,NOT_FOUND}
 fi
-
 #endregion
 
 #region: Key Bindings
-
 if [[ -n "$key_info" ]]; then
   # Emacs
   bindkey -M emacs "$key_info[Control]P" history-substring-search-up
@@ -52,5 +55,4 @@ if [[ -n "$key_info" ]]; then
 
   unset keymap
 fi
-
 #endregion

@@ -1,0 +1,12 @@
+#!/usr/bin/env zsh
+usage=(
+  'zephyr'
+  ''
+  'Commands:'
+  '  help'
+  '    Print this message.'
+  ''
+  '  update'
+  '    Update Zephyr and its external dependencies'
+)
+printf '%s\n' "${usage[@]}"

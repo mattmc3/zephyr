@@ -1,12 +1,14 @@
 #
-# Set terminal window and tab titles
+# Set terminal window and tab titles.
 #
 
-# return if requirements are not found
+#region: Requirements
 if [[ "$TERM" == (dumb|linux|*bsd*|eterm*) ]]; then
   return 1
 fi
+#endregion
 
+#region: Functions
 # sets the terminal window title
 function set-window-title {
   local title_format{,ted}
@@ -80,10 +82,14 @@ function _terminal-set-titles-with-path {
   set-tab-title "$truncated_path"
   set-window-title "$abbreviated_path"
 }
+#endregion
 
+#region: Hooks
 # do not override precmd/preexec; append to the hook array
 autoload -Uz add-zsh-hook
+#endregion
 
+#region: Terminals
 # set up the Apple Terminal
 if [[ "$TERM_PROGRAM" == 'Apple_Terminal' ]] \
   && ( ! [[ -n "$STY" || -n "$TMUX" || -n "$DVTM" ]] )
@@ -121,3 +127,4 @@ then
   # sets titles before command execution
   add-zsh-hook preexec _terminal-set-titles-with-command
 fi
+#endregion

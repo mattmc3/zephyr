@@ -1,23 +1,17 @@
 #
-# Requirements
+# Set keybindings.
 #
 
-# Return if requirements are not found
-if [[ "$TERM" == 'dumb' ]]; then
-  return 1
-fi
+#region: Requirements
+[[ "$TERM" != 'dumb' ]] || return 1
+#endregion
 
-#
-# Options
-#
-
+#region: Options
 setopt NO_BEEP                  # no beep on error in line editor
 unsetopt FLOW_CONTROL           # allow the usage of ^Q/^S in the context of zsh
+#endregion
 
-#
-# Variables
-#
-
+#region: Variables
 # Treat these characters as part of a word
 WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
@@ -69,16 +63,13 @@ key_info+=(
   'ControlPageUp'   '\e[5;5~'
   'ControlPageDown' '\e[6;5~'
 )
+#endregion
 
-#
-# Functions
-#
-
+#region: Functions
 function is-term-family {
   if [[ $TERM = $1 || $TERM = $1-* ]]; then
     return 0
   fi
-
   return 1
 }
 
@@ -86,11 +77,9 @@ function is-tmux {
   if is-term-family tmux; then
     return 0
   fi
-
   if [[ -n "$TMUX" ]]; then
     return 0
   fi
-
   return 1
 }
 
@@ -148,17 +137,11 @@ function zle-keymap-select {
   zle -R
 }
 zle -N zle-keymap-select
+#endregion
 
-#
-# Init
-#
-
+#region: Keybinds
 # Reset to default key bindings
 bindkey -d
-
-#
-# Keybinds
-#
 
 # Global keybinds
 local -A global_keybinds
@@ -208,3 +191,4 @@ done
 for key bind in ${(kv)global_keybinds} ${(kv)vicmd_keybinds}; do
   bindkey -M vicmd "$key" "$bind"
 done
+#endregion

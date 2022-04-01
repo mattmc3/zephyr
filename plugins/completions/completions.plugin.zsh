@@ -1,12 +1,21 @@
+#
+# Tab completions for commands, arguments, etc.
+#
+
 #region: Requirements
-
 [[ "$TERM" != 'dumb' ]] || return 1
-0=${(%):-%x}
-
 #endregion
 
-#region: Options
+#region: Init
+0=${(%):-%x}
+zstyle -t ':zephyr:core' initialized || source ${0:A:h:h:h}/lib/init.zsh
+#endregion
 
+#region: External
+fpath=("$ZEPHYR_HOME/.external/zsh-users/zsh-completions/src" $fpath)
+# endregion
+
+#region: Options
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
 setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
 setopt AUTO_MENU           # Show completion menu on a successive tab press.
@@ -15,11 +24,9 @@ setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a traili
 setopt EXTENDED_GLOB       # Needed for file modification glob modifiers with compinit
 unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
 unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
-
 #endregion
 
 #region: Functions
-
 function run-compinit {
   # Load and initialize the completion system ignoring insecure directories with a
   # cache time of 20 hours, so it should almost always regenerate the first time a
@@ -62,37 +69,22 @@ function run-compinit {
     fi
   } &!
 }
-
-#endregion
-
-#region: External
-
-if [[ ! -d "${0:A:h}/external/zsh-completions" ]]; then
-  command git clone --quiet --depth 1 \
-    https://github.com/zsh-users/zsh-completions \
-    "${0:A:h}/external/zsh-completions"
-fi
-fpath=("${0:A:h}/external/zsh-completions/src" $fpath)
-
 #endregion
 
 #region: Custom locations
-
 # you can use your own completions dir if you choose
 fpath=(${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN) $fpath)
 
 # if homebrew completions exist, use those
 if (( $+commands[brew] )); then
-  brew_prefix=${commands[brew]:h:h}
+  brew_prefix=${commands[brew]:A:h:h}
   fpath=("$brew_prefix"/share/zsh/site-functions(-/FN) $fpath)
   fpath=("$brew_prefix"/opt/curl/share/zsh/site-functions(-/FN) $fpath)
   unset brew_prefix
 fi
-
 #endregion
 
 #region: Styles
-
 # https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh
 # Defaults.
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
@@ -211,13 +203,10 @@ zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hos
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
-
 #endregion
 
 #region: CompInit
-
 if ! zstyle -t ':zephyr:plugin:completions' skip-compinit; then
   run-compinit
 fi
-
 #endregion

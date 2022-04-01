@@ -1,18 +1,17 @@
 #
-# Set shell options and setup environment
+# Set shell options and setup environment.
 #
 
-#region: Functions
-
+#region: Init
 0=${(%):-%x}
-ZEPHYR_HOME=${ZEPHYR_HOME:-${0:A:h:h:h}}
-(( $+functions[autoload-dir] )) || autoload -Uz $ZEPHYR_HOME/functions/autoload-dir
-autoload-dir "${0:A:h}/functions"
+zstyle -t ':zephyr:core' initialized || source ${0:A:h:h:h}/lib/init.zsh
+#endregion
 
+#region: Functions
+autoload-dir "${0:A:h}/functions"
 #endregion
 
 #region: Smart URLs
-
 # This logic comes from an old version of zim. Essentially, bracketed-paste was
 # added as a requirement of url-quote-magic in 5.1, but in 5.1.1 bracketed
 # paste had a regression. Additionally, 5.2 added bracketed-paste-url-magic
@@ -29,11 +28,9 @@ if [[ ${ZSH_VERSION} != 5.1.1 && ${TERM} != "dumb" ]]; then
   autoload -Uz url-quote-magic
   zle -N self-insert url-quote-magic
 fi
-
 #endregion
 
 #region: Options
-
 # general options
 setopt COMBINING_CHARS       # combine zero-length punctuation characters (accents)
                              #   with the base character
@@ -52,12 +49,9 @@ setopt NOTIFY                # report status of background jobs immediately
 unsetopt BG_NICE             # don't run all background jobs at a lower priority
 unsetopt HUP                 # don't kill jobs on shell exit
 unsetopt CHECK_JOBS          # don't report on jobs when shell exit
-
 #endregion
 
 #region: Shortcuts
-
 # Allow mapping Ctrl+S and Ctrl+Q shortcuts
 [[ -r ${TTY:-} && -w ${TTY:-} && $+commands[stty] == 1 ]] && stty -ixon <$TTY >$TTY
-
 #endregion
