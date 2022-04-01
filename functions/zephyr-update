@@ -8,6 +8,6 @@ git -C "$ZEPHYR_HOME" pull --ff --rebase --autostash
 echo "${blue}Updating external plugins...${normal}"
 local d
 for d in $ZEPHYR_HOME/.external/**/.git/..; do
-  echo "${blue}Updating ${${d:A}#$ZEPHYR_HOME/.external/}...${normal}"
+  echo "${blue}Updating ${${d:A}#${ZEPHYR_HOME:A}/.external/}...${normal}"
   git -C "${d:A}" pull --ff --rebase --autostash
 done
