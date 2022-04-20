@@ -16,7 +16,12 @@ function -coreutils-alias-setup {
   local prefix=$1
 
   # set LS_COLORS
-  eval "$(${prefix}dircolors --sh)"
+  local cache_files=("$ZEPHYR_HOME/.cache/init_${prefix}dircolors.zsh"(Nm-1))
+  if [[ $#cache_files -eq 0 ]]; then
+    mkdir -p $ZEPHYR_HOME/.cache
+    ${prefix}dircolors --sh >| $ZEPHYR_HOME/.cache/init_${prefix}dircolors.zsh
+  fi
+  source $ZEPHYR_HOME/.cache/init_${prefix}dircolors.zsh
 
   alias ${prefix}ls="${aliases[${prefix}ls]:-${prefix}ls} --group-directories-first --color=auto"
 }
