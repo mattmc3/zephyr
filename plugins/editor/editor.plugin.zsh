@@ -12,8 +12,28 @@ unsetopt FLOW_CONTROL           # allow the usage of ^Q/^S in the context of zsh
 #endregion
 
 #region: Variables
-# Treat these characters as part of a word
-WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
+export EDITOR="${EDITOR:-vim}"
+export VISUAL="${VISUAL:-vim}"
+export PAGER="${PAGER:-less}"
+if [[ "$OSTYPE" == darwin* ]]; then
+  export BROWSER="${BROWSER:-open}"
+fi
+
+# Less
+# mouse-wheel scrolling can be disabled with -X (disable screen clearing)
+[[ -z "$LESS" ]] && export LESS='-g -i -M -R -S -w -z-4'
+
+# set the Less input preprocessor
+# try both `lesspipe` and `lesspipe.sh` as either might exist on a system
+if (( $#commands[(i)lesspipe(|.sh)] )) && [[ -z "$LESSOPEN" ]]; then
+  export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
+fi
+
+# use `< file` to quickly view the contents of any file.
+[[ -z "$READNULLCMD" ]] || READNULLCMD=$PAGER
+
+# treat these characters as part of a word
+[[ -z "$WORDCHARS" ]] || WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
 # Use human-friendly identifiers
 zmodload zsh/terminfo
