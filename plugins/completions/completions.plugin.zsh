@@ -6,15 +6,6 @@
 [[ "$TERM" != 'dumb' ]] || return 1
 #endregion
 
-#region: Init
-0=${(%):-%x}
-zstyle -t ':zephyr:core' initialized || source ${0:A:h:h:h}/lib/init.zsh
-#endregion
-
-#region: External
-fpath=("$ZEPHYR_HOME/.external/zsh-users/zsh-completions/src" $fpath)
-# endregion
-
 #region: Options
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
 setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.

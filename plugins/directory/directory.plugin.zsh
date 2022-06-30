@@ -2,11 +2,6 @@
 # Set directory options and define directory aliases.
 #
 
-#region: Init
-0=${(%):-%x}
-zstyle -t ':zephyr:core' initialized || source ${0:A:h:h:h}/lib/init.zsh
-#endregion
-
 #region: Options
 setopt AUTO_CD              # auto changes to a directory without typing cd
 setopt AUTO_PUSHD           # push the old directory onto the stack on cd

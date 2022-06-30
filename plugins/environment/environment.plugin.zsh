@@ -2,15 +2,6 @@
 # Set shell options and setup environment.
 #
 
-#region: Init
-0=${(%):-%x}
-zstyle -t ':zephyr:core' initialized || source ${0:A:h:h:h}/lib/init.zsh
-#endregion
-
-#region: Functions
-autoload-dir "${0:A:h}/functions"
-#endregion
-
 #region: Smart URLs
 # This logic comes from an old version of zim. Essentially, bracketed-paste was
 # added as a requirement of url-quote-magic in 5.1, but in 5.1.1 bracketed
