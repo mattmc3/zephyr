@@ -46,3 +46,44 @@ unsetopt CHECK_JOBS          # don't report on jobs when shell exit
 # Allow mapping Ctrl+S and Ctrl+Q shortcuts
 [[ -r ${TTY:-} && -w ${TTY:-} && $+commands[stty] == 1 ]] && stty -ixon <$TTY >$TTY
 #endregion
+
+#region: Aliases
+alias type="type -a"
+alias mkdir="mkdir -p"
+GREP_EXCL=(.bzr CVS .git .hg .svn .idea .tox)
+alias grep="${aliases[grep]:-grep} --exclude-dir={\${(j.,.)GREP_EXCL}}"
+
+# macOS utils everywhere
+if [[ "$OSTYPE" == darwin* ]]; then
+  alias o='open'
+elif [[ "$OSTYPE" == cygwin* ]]; then
+  alias o='cygstart'
+  alias pbcopy='tee > /dev/clipboard'
+  alias pbpaste='cat /dev/clipboard'
+elif [[ "$OSTYPE" == linux-android ]]; then
+  alias o='termux-open'
+  alias pbcopy='termux-clipboard-set'
+  alias pbpaste='termux-clipboard-get'
+else
+  alias o='xdg-open'
+  if [[ -n $DISPLAY ]]; then
+    if (( $+commands[xclip] )); then
+      alias pbcopy='xclip -selection clipboard -in'
+      alias pbpaste='xclip -selection clipboard -out'
+    elif (( $+commands[xsel] )); then
+      alias pbcopy='xsel --clipboard --input'
+      alias pbpaste='xsel --clipboard --output'
+    fi
+  else
+    if (( $+commands[wl-copy] && $+commands[wl-paste] )); then
+      alias pbcopy='wl-copy'
+      alias pbpaste='wl-paste'
+    fi
+  fi
+fi
+#endregion
+
+#region: Help
+# Load more specific 'run-help' function from $fpath.
+(( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
+#endregion
