@@ -10,10 +10,20 @@ Zephyr can be thought of as a fast, lightweight alternative to big bloated Zsh f
 
 ### Using a Plugin manager
 
-Using [antidote]:
+Use [antidote] to load Zephyr:
 
 ```shell
 antidote install mattmc3/zephyr
+```
+
+Or, use [antidote] to only load the parts of Zephyr you need:
+
+```shell
+# .zsh_plugins.txt
+mattmc3/zephyr path:plugins/completions
+mattmc3/zephyr path:plugins/directory
+mattmc3/zephyr path:plugins/environment
+mattmc3/zephyr path:plugins/history
 ```
 
 ### Manually
@@ -33,46 +43,12 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 Below is the recommended plugin load order, and links to documentation for each plugin included in Zephyr.
 
-- [environment](plugins/environment/readme.md)
-- [terminal](plugins/terminal/readme.md)
-- [editor](plugins/editor/readme.md)
-- [history](plugins/history/readme.md)
-- [directory](plugins/directory/readme.md)
-- [utility](plugins/utility/readme.md)
-- [zfunctions](plugins/zfunctions/readme.md)
-- [confd](plugins/confd/readme.md)
-- [prompt](plugins/prompt/readme.md)
+- [colors](plugins/colors/readme.md)
 - [completions](plugins/completions/readme.md)
-- [autosuggestions](plugins/autosuggestions/readme.md)
-- [syntax-highlighting](plugins/syntax-highlighting/readme.md)
-- [history-substring-search](plugins/history-substring-search/readme.md)
-
-## Customizing
-
-You can customize which plugins are loaded by adding the following to your `.zshrc`:
-
-```zsh
-# choose which plugins to load (order matters)
-zephyr_plugins=(
-  environment
-  terminal
-  editor
-  history
-  directory
-  utility
-  zfunctions
-  confd
-  prompt
-  completions
-  autosuggestions
-  syntax-highlighting
-  history-substring-search
-)
-zstyle ':zephyr:load' plugins $zephyr_plugins
-
-# source zephyr
-source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
-```
+- [directory](plugins/directory/readme.md)
+- [editor](plugins/editor/readme.md)
+- [environment](plugins/environment/readme.md)
+- [history](plugins/history/readme.md)
 
 ## Credits
 
