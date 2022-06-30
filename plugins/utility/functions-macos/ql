@@ -1,4 +1,0 @@
-#!/usr/bin/env zsh
-if (( $# > 0 )); then
-  qlmanage -p "$@" &> /dev/null
-fi

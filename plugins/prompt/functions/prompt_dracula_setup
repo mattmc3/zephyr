@@ -1,3 +1,0 @@
-#!/usr/bin/env zsh
-0=${(%):-%x}
-source $ZEPHYR_HOME/.external/dracula/zsh/dracula.zsh-theme
