@@ -4,7 +4,7 @@
 
 Zsh is a wonderful shell, but out-of-the-box it needs a bit of a boost. That's where Zephyr comes in. Zephyr uses built-in Zsh features to set up better default options, completions, keybindings, history, and much more.
 
-Zephyr can be thought of as a fast, lightweight alternative to big bloated Zsh frameworks like Oh-My-Zsh and Prezto. Combine Zephyr with a [plugin manager][antidote] and you'll have a powerful Zsh setup that rivals anything out there.
+Zephyr can be thought of as a fast, lightweight set of core Zsh plugins. It contains a lot of the core niceties from frameworks like Oh-My-Zsh and Prezto without all the bloat. Combine Zephyr with a [plugin manager][antidote] and some [awesome plugins](https://github.com/zsh-users) and you'll have a powerful Zsh setup that rivals anything out there.
 
 ## Install
 
