@@ -41,8 +41,6 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 ## Plugins
 
-Below is the recommended plugin load order, and links to documentation for each plugin included in Zephyr.
-
 - [colors](plugins/colors/readme.md)
 - [completions](plugins/completions/readme.md)
 - [directory](plugins/directory/readme.md)
