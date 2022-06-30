@@ -3,7 +3,7 @@
 #
 
 0=${(%):-%x}
-_ZEPHYR_HOME=${0:A:h:h:h}
+_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
 
 #region: Functions
 function showcolors {
@@ -89,12 +89,12 @@ function -dircolors-setup {
   local prefix=$1
 
   # set LS_COLORS
-  local cache_files=("$_ZEPHYR_HOME/.cache/init_${prefix}dircolors.zsh"(Nm-1))
+  local cache_files=("$_CACHE_HOME/init_${prefix}dircolors.zsh"(Nm-1))
   if [[ $#cache_files -eq 0 ]]; then
-    mkdir -p $_ZEPHYR_HOME/.cache
-    ${prefix}dircolors --sh >| $_ZEPHYR_HOME/.cache/init_${prefix}dircolors.zsh
+    mkdir -p $_CACHE_HOME
+    ${prefix}dircolors --sh >| $_CACHE_HOME/init_${prefix}dircolors.zsh
   fi
-  source $_ZEPHYR_HOME/.cache/init_${prefix}dircolors.zsh
+  source $_CACHE_HOME/init_${prefix}dircolors.zsh
 }
 
 if (( $+commands[gdircolors] )); then
@@ -107,4 +107,5 @@ fi
 
 #region: Cleanup
 unfunction -- -dircolors-setup
+unset _CACHE_HOME
 #endregion
