@@ -86,6 +86,16 @@ key_info+=(
 #endregion
 
 #region: Functions
+# Runs bindkey but for all of the keymaps. Running it with no arguments will
+# print out the mappings for all of the keymaps.
+function bindkey-all {
+  local keymap=''
+  for keymap in $(bindkey -l); do
+    [[ "$#" -eq 0 ]] && printf "#### %s\n" "${keymap}" 1>&2
+    bindkey -M "${keymap}" "$@"
+  done
+}
+
 function is-term-family {
   if [[ $TERM = $1 || $TERM = $1-* ]]; then
     return 0
