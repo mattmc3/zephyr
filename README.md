@@ -55,13 +55,9 @@ Zephyr is a derivative work of the following great projects:
 - [Oh-My-Zsh][ohmyzsh]
 - [Prezto][prezto]
 - [zsh-utils][zsh-utils]
-- [fish][fish]
 
 
 [antidote]:    https://getantidote.github.io
-[fish]:        https://fishshell.com
 [ohmyzsh]:     https://github.com/ohmyzsh/ohmyzsh
 [prezto]:      https://github.com/sorin-ionescu/prezto
-[promptinit]:  https://github.com/zsh-users/zsh/blob/master/Functions/Prompts/promptinit
-[starship]:    https://starship.rs
 [zsh-utils]:   https://github.com/belak/zsh-utils
