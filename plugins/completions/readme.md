@@ -31,4 +31,4 @@ zstyle ':zephyr:plugin:completions:*:hosts' etc-host-ignores \
     '0.0.0.0' '127.0.0.1'
 ```
 
-[1]: https://zsh.sourceforge.net/Doc/Release/Completion-System.html#Standard-Styles
+[1]: https://zsh.sourceforge.io/Doc/Release/Completion-System.html#Standard-Styles
