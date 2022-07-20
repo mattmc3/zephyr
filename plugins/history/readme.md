@@ -47,7 +47,7 @@ Can be configured by setting `HISTFILE` manually before loading this plugin
 HISTFILE=~/.zhistory
 ```
 
-defaults to "~/.local/share/zsh/history".
+`HISTFILE` defaults to `$XDG_DATA_HOME/zsh/history`. If `XDG_DATA_HOME` is not set, then the default is `~/.local/share/zsh/history`.
 
 ### histsize
 
