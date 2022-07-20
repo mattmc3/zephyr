@@ -28,11 +28,3 @@ will still see the headings and can tell which keymap each binding goes to.
 It will also pass through arguments so you can use bindkey-all to set bindings
 for all keymaps at once. If provided arguments it will _not_ print out the
 names of each of the keymaps, and just run the command for each keymap.
-
-## Authors
-
-_The authors of this module should be contacted via the [issue tracker][1]._
-
-- [Sorin Ionescu](https://github.com/sorin-ionescu)
-
-[1]: https://github.com/sorin-ionescu/prezto/issues
