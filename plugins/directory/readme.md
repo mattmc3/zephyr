@@ -1,6 +1,6 @@
 # Directory
 
-Sets directory options and defines directory aliases.
+Sets directory [options][1] and defines directory aliases.
 
 ## Options
 
@@ -20,3 +20,6 @@ Sets directory options and defines directory aliases.
 
 - `d` prints the contents of the directory stack.
 - `1 ... 9` changes the directory to the **n** previous one.
+
+
+[1]:  https://zsh.sourceforge.io/Doc/Release/Options.html#Changing-Directories
