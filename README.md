@@ -48,6 +48,23 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 - [environment](plugins/environment/readme.md)
 - [history](plugins/history/readme.md)
 
+## Configuration
+
+XDG base directory locations can be used for `$HISTFILE` in the history plugin, and `$ZSH_COMPDUMP` in the completions plugin. This is helpful if you want to move these files out of your `$ZDOTDIR`.
+
+To use XDG base directory locations, set the following zstyle:
+
+```zsh
+zstyle ':zephyr:*:*' use-xdg-basedirs 'yes'
+```
+
+Or, you can set it for each individual plugin:
+
+```zsh
+zstyle ':zephyr:plugins:history' use-xdg-basedirs 'no'
+zstyle ':zephyr:plugins:completions' use-xdg-basedirs 'yes'
+```
+
 ## Credits
 
 Zephyr is a derivative work of the following great projects:

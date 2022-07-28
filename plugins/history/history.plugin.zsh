@@ -22,10 +22,11 @@ setopt NO_HIST_BEEP            # don't beep when attempting to access a missing 
 #endregion
 
 #region: Variables
-# $HISTFILE belongs in the data home, not with the configs
-HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history"
-if [[ ! -f "$HISTFILE" ]]; then
-  mkdir -p "$HISTFILE:h" && touch "$HISTFILE"
+if zstyle -t ':zephyr:plugins:history' use-xdg-basedirs; then
+  HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history"
+  if [[ ! -f "$HISTFILE" ]]; then
+    mkdir -p "$HISTFILE:h" && touch "$HISTFILE"
+  fi
 fi
 
 # you can set $SAVEHIST and $HISTSIZE to anything greater than the ZSH defaults

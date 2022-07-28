@@ -35,9 +35,13 @@ function run-compinit {
 
   autoload -Uz compinit
   if [[ -z "$ZSH_COMPDUMP" ]]; then
-    ZSH_COMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump
+    if zstyle -t ':zephyr:plugins:completions' use-xdg-basedirs; then
+      ZSH_COMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump
+      [[ -d "${ZSH_COMPDUMP:h}" ]] || mkdir -p "${ZSH_COMPDUMP:h}"
+    else
+      ZSH_COMPDUMP=${ZDOTDIR:-$HOME}/.zcompdump
+    fi
   fi
-  [[ -d "${ZSH_COMPDUMP:h}" ]] || mkdir -p "${ZSH_COMPDUMP:h}"
 
   # if compdump is less than 20 hours old, shortcut with `compinit -C`
   # glob magic explained:
