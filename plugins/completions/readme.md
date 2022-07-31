@@ -31,4 +31,12 @@ zstyle ':zephyr:plugin:completions:*:hosts' etc-host-ignores \
     '0.0.0.0' '127.0.0.1'
 ```
 
+## References
+  - [Prezto completions](https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh#L31-L44)
+  - [Prezto .zlogin](https://github.com/sorin-ionescu/prezto/blob/master/runcoms/zlogin#L9-L15)
+  - [Completion docs](http://zsh.sourceforge.net/Doc/Release/Completion-System.html#Use-of-compinit)
+  - [grml zsh completions](https://github.com/grml/grml-etc-core/blob/71bdc48d190a5369fff28a97c828db7b1edf10a9/etc/zsh/zshrc#L750)
+  - https://gist.github.com/ctechols/ca1035271ad134841284#gistcomment-2894219
+  - https://htr3n.github.io/2018/07/faster-zsh/
+
 [1]: https://zsh.sourceforge.io/Doc/Release/Completion-System.html#Standard-Styles
