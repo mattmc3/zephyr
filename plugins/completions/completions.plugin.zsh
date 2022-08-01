@@ -6,6 +6,16 @@
 [[ "$TERM" != 'dumb' ]] || return 1
 #endregion
 
+#region: Config
+# Check whether to use XDG basedir locations or $ZDOTDIR.
+if zstyle -t ':zsh-utils:plugins:completion' use-xdg-basedirs; then
+  [[ -d ${XDG_CACHE_HOME:-$HOME/.cache}/zsh ]] || mkdir -p ${XDG_CACHE_HOME:-$HOME/.cache}/zsh
+  _zcompcache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
+else
+  _zcompcache="${ZDOTDIR:-$HOME}/.zcompcache"
+fi
+#endregion
+
 #region: Options
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
 setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
@@ -15,55 +25,6 @@ setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a traili
 setopt EXTENDED_GLOB       # Needed for file modification glob modifiers with compinit
 unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
 unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
-#endregion
-
-#region: Functions
-function run-compinit {
-  # Load and initialize the completion system ignoring insecure directories with a
-  # cache time of 20 hours, so it should almost always regenerate the first time a
-  # shell is opened each day.
-
-  # References
-  # https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh#L31-L44
-  # https://github.com/sorin-ionescu/prezto/blob/master/runcoms/zlogin#L9-L15
-  # http://zsh.sourceforge.net/Doc/Release/Completion-System.html#Use-of-compinit
-  # https://gist.github.com/ctechols/ca1035271ad134841284#gistcomment-2894219
-  # https://htr3n.github.io/2018/07/faster-zsh/
-
-  emulate -L zsh
-  setopt local_options extended_glob
-
-  autoload -Uz compinit
-  if [[ -z "$ZSH_COMPDUMP" ]]; then
-    if zstyle -t ':zephyr:plugins:completions' use-xdg-basedirs; then
-      ZSH_COMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump
-      [[ -d "${ZSH_COMPDUMP:h}" ]] || mkdir -p "${ZSH_COMPDUMP:h}"
-    else
-      ZSH_COMPDUMP=${ZDOTDIR:-$HOME}/.zcompdump
-    fi
-  fi
-
-  # if compdump is less than 20 hours old, shortcut with `compinit -C`
-  # glob magic explained:
-  #   #q expands globs in conditional expressions
-  #   N - sets null_glob option (no error on 0 results)
-  #   mh-20 - modified less than 20 hours ago
-  local comp_files=($ZSH_COMPDUMP(Nmh-20))
-  if (( $#comp_files )); then
-    compinit -i -C -d "$ZSH_COMPDUMP"
-  else
-    compinit -i -d "$ZSH_COMPDUMP"
-    # keep zcompdump younger than cache time even if it isn't regenerated
-    touch "$ZSH_COMPDUMP"
-  fi
-
-  # compile zcompdump, if modified, in background to increase startup speed
-  {
-    if [[ -s "$ZSH_COMPDUMP" && (! -s "${ZSH_COMPDUMP}.zwc" || "$ZSH_COMPDUMP" -nt "${ZSH_COMPDUMP}.zwc") ]]; then
-      zcompile "$ZSH_COMPDUMP"
-    fi
-  } &!
-}
 #endregion
 
 #region: Custom locations
@@ -87,7 +48,7 @@ zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 
 # Use caching to make completion for commands such as dpkg and apt usable.
 zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
+zstyle ':completion::complete:*' cache-path "$_zcompcache"
 
 # Case-insensitive (all), partial-word, and then substring completion.
 if zstyle -t ':zephyr:plugin:completions:*' case-sensitive; then
@@ -200,8 +161,44 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 #endregion
 
-#region: CompInit
-if ! zstyle -t ':zephyr:plugin:completions' skip-compinit; then
+#region: Init
+function run-compinit {
+  autoload -Uz compinit
+  if [[ -z "$ZSH_COMPDUMP" ]]; then
+    if zstyle -t ':zephyr:plugins:completions' use-xdg-basedirs; then
+      ZSH_COMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump
+      [[ -d "${ZSH_COMPDUMP:h}" ]] || mkdir -p "${ZSH_COMPDUMP:h}"
+    else
+      ZSH_COMPDUMP=${ZDOTDIR:-$HOME}/.zcompdump
+    fi
+  fi
+
+  # if compdump is less than 20 hours old, shortcut with `compinit -C`
+  # glob magic explained:
+  #   #q expands globs in conditional expressions
+  #   N - sets null_glob option (no error on 0 results)
+  #   mh-20 - modified less than 20 hours ago
+  local comp_files=($ZSH_COMPDUMP(Nmh-20))
+  if (( $#comp_files )); then
+    compinit -i -C -d "$ZSH_COMPDUMP"
+  else
+    compinit -i -d "$ZSH_COMPDUMP"
+    # keep zcompdump younger than cache time even if it isn't regenerated
+    touch "$ZSH_COMPDUMP"
+  fi
+
+  # compile zcompdump, if modified, in background to increase startup speed
+  {
+    if [[ -s "$ZSH_COMPDUMP" && (! -s "${ZSH_COMPDUMP}.zwc" || "$ZSH_COMPDUMP" -nt "${ZSH_COMPDUMP}.zwc") ]]; then
+      zcompile "$ZSH_COMPDUMP"
+    fi
+  } &!
+}
+
+zstyle -t ':zephyr:plugin:completions' skip-compinit || \
   run-compinit
-fi
+#endregion
+
+#region Cleanup
+unset _zcompcache
 #endregion
