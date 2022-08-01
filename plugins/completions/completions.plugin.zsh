@@ -163,28 +163,36 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 
 #region: Init
 function run-compinit {
-  autoload -Uz compinit
-  if [[ -z "$ZSH_COMPDUMP" ]]; then
-    if zstyle -t ':zephyr:plugins:completions' use-xdg-basedirs; then
-      ZSH_COMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump
-      [[ -d "${ZSH_COMPDUMP:h}" ]] || mkdir -p "${ZSH_COMPDUMP:h}"
-    else
-      ZSH_COMPDUMP=${ZDOTDIR:-$HOME}/.zcompdump
-    fi
+  local _zcompdump
+  if [[ -n "$ZSH_COMPDUMP" ]]; then
+    _zcompdump="$ZSH_COMPDUMP"
+  elif zstyle -t ':zephyr:plugins:completions' use-xdg-basedirs; then
+    _zcompdump=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump
+  else
+    _zcompdump=${ZDOTDIR:-$HOME}/.zcompdump
+  fi
+  [[ -d "${_zcompdump:h}" ]] || mkdir -p "${_zcompdump:h}"
+
+  # allow forcing
+  if [[ "$1" == '-f' ]] || [[ "$1" == "--force" ]]; then
+    shift
+    [[ -f "$_zcompdump" ]] && command rm "$_zcompdump"
   fi
 
-  # if compdump is less than 20 hours old, shortcut with `compinit -C`
+  # load and initialize the completion system ignoring insecure directories with a
+  # cache time of 20 hours, so it should almost always regenerate the first time a
+  # shell is opened each day.
   # glob magic explained:
-  #   #q expands globs in conditional expressions
   #   N - sets null_glob option (no error on 0 results)
   #   mh-20 - modified less than 20 hours ago
-  local comp_files=($ZSH_COMPDUMP(Nmh-20))
+  autoload -Uz compinit
+  local comp_files=($_zcompdump(Nmh-20))
   if (( $#comp_files )); then
-    compinit -i -C -d "$ZSH_COMPDUMP"
+    compinit -i -C -d "$_zcompdump"
   else
-    compinit -i -d "$ZSH_COMPDUMP"
+    compinit -i -d "$_zcompdump"
     # keep zcompdump younger than cache time even if it isn't regenerated
-    touch "$ZSH_COMPDUMP"
+    touch "$_zcompdump"
   fi
 
   # compile zcompdump, if modified, in background to increase startup speed
