@@ -1,22 +1,27 @@
 #
-# Tab completions for commands, arguments, etc.
+# Requirements
 #
 
-#region: Requirements
-[[ "$TERM" != 'dumb' ]] || return 1
-#endregion
+if [[ "$TERM" == 'dumb' ]]; then
+  return 1
+fi
 
-#region: Config
-# Check whether to use XDG basedir locations or $ZDOTDIR.
-if zstyle -t ':zsh-utils:plugins:completion' use-xdg-basedirs; then
-  [[ -d ${XDG_CACHE_HOME:-$HOME/.cache}/zsh ]] || mkdir -p ${XDG_CACHE_HOME:-$HOME/.cache}/zsh
-  _zcompcache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
+if zstyle -T ':zsh-utils:plugins:completion' use-xdg-basedirs; then
+  # Ensure the cache directory exists.
+  _cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
+  [[ -d "$_cache_dir" ]] || mkdir -p "$_cache_dir"
+
+  _zcompdump="$_cache_dir/zsh/compdump"
+  _zcompcache="$_cache_dir/zsh/compcache"
 else
+  _zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
   _zcompcache="${ZDOTDIR:-$HOME}/.zcompcache"
 fi
-#endregion
 
-#region: Options
+#
+# Options
+#
+
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
 setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
 setopt AUTO_MENU           # Show completion menu on a successive tab press.
@@ -25,11 +30,18 @@ setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a traili
 setopt EXTENDED_GLOB       # Needed for file modification glob modifiers with compinit
 unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
 unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
-#endregion
 
-#region: Custom locations
-# you can use your own completions dir if you choose
-fpath=(${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN) $fpath)
+#
+# Styles
+#
+
+# Use caching to make completion for commands such as dpkg and apt usable.
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path "$_zcompcache"
+
+#
+# Init
+#
 
 # if homebrew completions exist, use those
 if (( $+commands[brew] )); then
@@ -38,175 +50,36 @@ if (( $+commands[brew] )); then
   fpath=("$brew_prefix"/opt/curl/share/zsh/site-functions(-/FN) $fpath)
   unset brew_prefix
 fi
-#endregion
 
-#region: Styles
-# https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh
-# Defaults.
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+# You can use your own completions dir if you choose.
+fpath=(${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN) $fpath)
 
-# Use caching to make completion for commands such as dpkg and apt usable.
-zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path "$_zcompcache"
+# Initialize completion styles. Users can set their preferred completion style by
+# calling `compstyle <compstyle>` in their .zshrc, or by defining their own
+# `compstyle_<name>_setup` functions similar to the zsh prompt system.
+fpath+="${0:A:h}/functions"
+autoload -Uz compstyleinit && compstyleinit
 
-# Case-insensitive (all), partial-word, and then substring completion.
-if zstyle -t ':zephyr:plugin:completions:*' case-sensitive; then
-  zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-  setopt CASE_GLOB
+# Load and initialize the completion system ignoring insecure directories with a
+# cache time of 20 hours, so it should almost always regenerate the first time a
+# shell is opened each day.
+autoload -Uz compinit
+_comp_files=($_zcompdump(Nmh-20))
+if (( $#_comp_files )); then
+  compinit -i -C -d "$_zcompdump"
 else
-  zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-  unsetopt CASE_GLOB
+  compinit -i -d "$_zcompdump"
 fi
 
-# Group matches and describe.
-zstyle ':completion:*:*:*:*:*' menu select
-zstyle ':completion:*:matches' group 'yes'
-zstyle ':completion:*:options' description 'yes'
-zstyle ':completion:*:options' auto-description '%d'
-zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
-zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
-zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
-zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
-zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*' verbose yes
-
-# Fuzzy match mistyped completions.
-zstyle ':completion:*' completer _complete _match _approximate
-zstyle ':completion:*:match:*' original only
-zstyle ':completion:*:approximate:*' max-errors 1 numeric
-
-# Increase the number of errors based on the length of the typed word. But make
-# sure to cap (at 7) the max-errors to avoid hanging.
-zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)'
-
-# Don't complete unavailable commands.
-zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
-
-# Array completion element sorting.
-zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
-
-# Directories
-zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
-zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
-zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
-zstyle ':completion:*' squeeze-slashes true
-
-# History
-zstyle ':completion:*:history-words' stop yes
-zstyle ':completion:*:history-words' remove-all-dups yes
-zstyle ':completion:*:history-words' list false
-zstyle ':completion:*:history-words' menu yes
-
-# Environment Variables
-zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
-
-# Populate hostname completion. But allow ignoring custom entries from static
-# */etc/hosts* which might be uninteresting.
-zstyle -a ':zephyr:plugin:completions:*:hosts' etc-host-ignores '_etc_host_ignores'
-
-zstyle -e ':completion:*:hosts' hosts 'reply=(
-  ${=${=${=${${(f)"$(cat {/etc/ssh/ssh_,~/.ssh/}known_hosts(|2)(N) 2> /dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
-  ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2> /dev/null))"}%%(\#${_etc_host_ignores:+|${(j:|:)~_etc_host_ignores}})*}
-  ${=${${${${(@M)${(f)"$(cat ~/.ssh/config 2> /dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
-)'
-
-# Don't complete uninteresting users...
-zstyle ':completion:*:*:*:users' ignored-patterns \
-  adm amanda apache avahi beaglidx bin cacti canna clamav daemon \
-  dbus distcache dovecot fax ftp games gdm gkrellmd gopher \
-  hacluster haldaemon halt hsqldb ident junkbust ldap lp mail \
-  mailman mailnull mldonkey mysql nagios \
-  named netdump news nfsnobody nobody nscd ntp nut nx openvpn \
-  operator pcap postfix postgres privoxy pulse pvm quagga radvd \
-  rpc rpcuser rpm shutdown squid sshd sync uucp vcsa xfs '_*'
-
-# ... unless we really want to.
-zstyle '*' single-ignored show
-
-# Ignore multiple entries.
-zstyle ':completion:*:(rm|kill|diff):*' ignore-line other
-zstyle ':completion:*:rm:*' file-patterns '*:all-files'
-
-# Kill
-zstyle ':completion:*:*:*:*:processes' command 'ps -u $LOGNAME -o pid,user,command -w'
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;36=0=01'
-zstyle ':completion:*:*:kill:*' menu yes select
-zstyle ':completion:*:*:kill:*' force-list always
-zstyle ':completion:*:*:kill:*' insert-ids single
-
-# Man
-zstyle ':completion:*:manuals' separate-sections true
-zstyle ':completion:*:manuals.(^1*)' insert-sections true
-
-# Media Players
-zstyle ':completion:*:*:mpg123:*' file-patterns '*.(mp3|MP3):mp3\ files *(-/):directories'
-zstyle ':completion:*:*:mpg321:*' file-patterns '*.(mp3|MP3):mp3\ files *(-/):directories'
-zstyle ':completion:*:*:ogg123:*' file-patterns '*.(ogg|OGG|flac):ogg\ files *(-/):directories'
-zstyle ':completion:*:*:mocp:*' file-patterns '*.(wav|WAV|mp3|MP3|ogg|OGG|flac):ogg\ files *(-/):directories'
-
-# Mutt
-if [[ -s "$HOME/.mutt/aliases" ]]; then
-  zstyle ':completion:*:*:mutt:*' menu yes select
-  zstyle ':completion:*:mutt:*' users ${${${(f)"$(<"$HOME/.mutt/aliases")"}#alias[[:space:]]}%%[[:space:]]*}
-fi
-
-# SSH/SCP/RSYNC
-zstyle ':completion:*:(ssh|scp|rsync):*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
-zstyle ':completion:*:(scp|rsync):*' group-order users files all-files hosts-domain hosts-host hosts-ipaddr
-zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hosts-ipaddr
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
-#endregion
-
-#region: Init
-function run-compinit {
-  local _zcompdump
-  if [[ -n "$ZSH_COMPDUMP" ]]; then
-    _zcompdump="$ZSH_COMPDUMP"
-  elif zstyle -t ':zephyr:plugins:completions' use-xdg-basedirs; then
-    _zcompdump=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump
-  else
-    _zcompdump=${ZDOTDIR:-$HOME}/.zcompdump
+# Compile zcompdump, if modified, in background to increase startup speed.
+{
+  if [[ -s "$_zcompdump" && (! -s "${_zcompdump}.zwc" || "$_zcompdump" -nt "${_zcompdump}.zwc") ]]; then
+    zcompile "$_zcompdump"
   fi
-  [[ -d "${_zcompdump:h}" ]] || mkdir -p "${_zcompdump:h}"
+} &!
 
-  # allow forcing
-  if [[ "$1" == '-f' ]] || [[ "$1" == "--force" ]]; then
-    shift
-    [[ -f "$_zcompdump" ]] && command rm "$_zcompdump"
-  fi
+#
+# Cleanup
+#
 
-  # load and initialize the completion system ignoring insecure directories with a
-  # cache time of 20 hours, so it should almost always regenerate the first time a
-  # shell is opened each day.
-  # glob magic explained:
-  #   N - sets null_glob option (no error on 0 results)
-  #   mh-20 - modified less than 20 hours ago
-  autoload -Uz compinit
-  local comp_files=($_zcompdump(Nmh-20))
-  if (( $#comp_files )); then
-    compinit -i -C -d "$_zcompdump"
-  else
-    compinit -i -d "$_zcompdump"
-    # keep zcompdump younger than cache time even if it isn't regenerated
-    touch "$_zcompdump"
-  fi
-
-  # compile zcompdump, if modified, in background to increase startup speed
-  {
-    if [[ -s "$ZSH_COMPDUMP" && (! -s "${ZSH_COMPDUMP}.zwc" || "$ZSH_COMPDUMP" -nt "${ZSH_COMPDUMP}.zwc") ]]; then
-      zcompile "$ZSH_COMPDUMP"
-    fi
-  } &!
-}
-
-zstyle -t ':zephyr:plugin:completions' skip-compinit || \
-  run-compinit
-#endregion
-
-#region Cleanup
-unset _zcompcache
-#endregion
+unset _cache_dir _comp_files _zcompdump _zcompcache
