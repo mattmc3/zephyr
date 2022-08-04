@@ -61,6 +61,7 @@ fpath+="${0:A:h}/functions"
 autoload -Uz compstyleinit && compstyleinit
 
 # Run compinit.
+autoload -Uz run-compinit
 zstyle -t ':zephyr:plugin:completions' skip-compinit || \
   run-compinit
 
