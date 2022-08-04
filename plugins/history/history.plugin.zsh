@@ -2,7 +2,7 @@
 # Requirements
 #
 
-if zstyle -T ':zsh-utils:plugins:history' use-xdg-basedirs; then
+if zstyle -T ':zephyr:plugins:history' use-xdg-basedirs; then
   # Ensure the data directory exists
   _data_dir=${XDG_DATA_HOME:-$HOME/.local/share}/zsh
   [[ -d "$_data_dir"  ]] || mkdir -p "$_data_dir"

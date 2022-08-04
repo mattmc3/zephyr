@@ -17,7 +17,7 @@ function compstyle_zephyr_setup {
   zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 
   # Case-insensitive (all), partial-word, and then substring completion.
-  if zstyle -t ':zsh-utils:plugin:completion:*' case-sensitive; then
+  if zstyle -t ':zephyr:plugin:completion:*' case-sensitive; then
     zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
     setopt CASE_GLOB
   else
