@@ -1,11 +1,7 @@
 #
-# Paint your shell with rainbows.
+# Functions
 #
 
-0=${(%):-%x}
-_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
-
-#region: Functions
 function showcolors {
   local normal=$(tput sgr0)
   typeset -A colors=(
@@ -53,59 +49,16 @@ function showcolors {
   done
   printf "%1s %-25s %-25s\n" "" "normal" "tput sgr0"
 }
-#endregion
 
-#region: Colorize man pages
-# mb:=start blink-mode (bold,blue)
-# md:=start bold-mode (bold,blue)
-# so:=start standout-mode (white bg, black fg)
-# us:=start underline-mode (underline magenta)
-# se:=end standout-mode
-# ue:=end underline-mode
-# me:=end modes
-PAGER="${PAGER:-less}"
-export LESS_TERMCAP_mb=$'\E[01;34m'
-export LESS_TERMCAP_md=$'\E[01;34m'
-export LESS_TERMCAP_so=$'\E[00;47;30m'
-export LESS_TERMCAP_us=$'\E[04;35m'
-export LESS_TERMCAP_me=$'\E[0m'
-export LESS_TERMCAP_se=$'\E[0m'
-export LESS_TERMCAP_ue=$'\E[0m'
-#endregion
+#
+# Variables
+#
 
-#region: Aliases
-if [[ "$OSTYPE" == darwin* ]]; then
-  alias ls="${aliases[ls]:-ls} -G"
-else
-  alias ls="${aliases[ls]:-ls} --color=auto"
-fi
-alias grep="${aliases[grep]:-grep} --color=auto"
-#endregion
-
-#region: dircolors
-function -dircolors-setup {
-  # Prefix will either be g or empty. This is to account for GNU Coreutils being
-  # installed alongside BSD Coreutils
-  local prefix=$1
-
-  # set LS_COLORS
-  local cache_files=("$_CACHE_HOME/init_${prefix}dircolors.zsh"(Nm-1))
-  if [[ $#cache_files -eq 0 ]]; then
-    mkdir -p $_CACHE_HOME
-    ${prefix}dircolors --sh >| $_CACHE_HOME/init_${prefix}dircolors.zsh
-  fi
-  source $_CACHE_HOME/init_${prefix}dircolors.zsh
-}
-
-if (( $+commands[gdircolors] )); then
-  -dircolors-setup g
-fi
-if (( $+commands[dircolors] )); then
-  -dircolors-setup
-fi
-#endregion
-
-#region: Cleanup
-unfunction -- -dircolors-setup
-unset _CACHE_HOME
-#endregion
+# Colorize man pages.
+export LESS_TERMCAP_mb=$'\E[01;34m'     # start blink-mode (bold,blue)
+export LESS_TERMCAP_md=$'\E[01;34m'     # start bold-mode (bold,blue)
+export LESS_TERMCAP_so=$'\E[00;47;30m'  # start standout-mode (white bg, black fg)
+export LESS_TERMCAP_se=$'\E[0m'         # end standout-mode
+export LESS_TERMCAP_us=$'\E[04;35m'     # start underline-mode (underline magenta)
+export LESS_TERMCAP_ue=$'\E[0m'         # end underline-mode
+export LESS_TERMCAP_me=$'\E[0m'         # end modes
