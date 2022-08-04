@@ -1,41 +1,27 @@
 #
-# Set keybindings.
+# Requirements
 #
 
-#region: Requirements
-[[ "$TERM" != 'dumb' ]] || return 1
-#endregion
-
-#region: Options
-setopt NO_BEEP                  # no beep on error in line editor
-unsetopt FLOW_CONTROL           # allow the usage of ^Q/^S in the context of zsh
-#endregion
-
-#region: Variables
-export EDITOR="${EDITOR:-vim}"
-export VISUAL="${VISUAL:-vim}"
-export PAGER="${PAGER:-less}"
-if [[ "$OSTYPE" == darwin* ]]; then
-  export BROWSER="${BROWSER:-open}"
+# Return if requirements are not found.
+if [[ "$TERM" == 'dumb' ]]; then
+  return 1
 fi
 
-# Less
-# mouse-wheel scrolling can be disabled with -X (disable screen clearing)
-[[ -z "$LESS" ]] && export LESS='-g -i -M -R -S -w -z-4'
+#
+# Options
+#
 
-# set the Less input preprocessor
-# try both `lesspipe` and `lesspipe.sh` as either might exist on a system
-if (( $#commands[(i)lesspipe(|.sh)] )) && [[ -z "$LESSOPEN" ]]; then
-  export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
-fi
+unsetopt BEEP                   # NO beep on error in line editor.
+unsetopt FLOW_CONTROL           # Allow the usage of ^Q/^S in the context of zsh.
 
-# use `< file` to quickly view the contents of any file.
-[[ -z "$READNULLCMD" ]] || READNULLCMD=$PAGER
+#
+# Variables
+#
 
-# treat these characters as part of a word
-[[ -z "$WORDCHARS" ]] || WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
+# Treat these characters as part of a word.
+WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
-# Use human-friendly identifiers
+# Use human-friendly identifiers.
 zmodload zsh/terminfo
 typeset -gA key_info
 
@@ -83,9 +69,11 @@ key_info+=(
   'ControlPageUp'   '\e[5;5~'
   'ControlPageDown' '\e[6;5~'
 )
-#endregion
 
-#region: Functions
+#
+# Functions
+#
+
 # Runs bindkey but for all of the keymaps. Running it with no arguments will
 # print out the mappings for all of the keymaps.
 function bindkey-all {
@@ -100,6 +88,7 @@ function is-term-family {
   if [[ $TERM = $1 || $TERM = $1-* ]]; then
     return 0
   fi
+
   return 1
 }
 
@@ -107,9 +96,11 @@ function is-tmux {
   if is-term-family tmux; then
     return 0
   fi
+
   if [[ -n "$TMUX" ]]; then
     return 0
   fi
+
   return 1
 }
 
@@ -126,24 +117,24 @@ function update-cursor-style {
       viins|main) printf '\e[6 q';;
     esac
   else
-    # if we're in emacs mode, we always want the block cursor
+    # If we're in emacs mode, we always want the block cursor
     printf '\e[2 q'
   fi
 }
 zle -N update-cursor-style
 
-# enables terminal application mode
+# Enables terminal application mode
 function zle-line-init {
-  # the terminal must be in application mode when ZLE is active for $terminfo
-  # values to be valid
+  # The terminal must be in application mode when ZLE is active for $terminfo
+  # values to be valid.
   if (( $+terminfo[smkx] )); then
-    # Enable terminal application mode
+    # Enable terminal application mode.
     echoti smkx
   fi
 
   # Ensure we have the correct cursor. We could probably do this less
   # frequently, but this does what we need and shouldn't incur that much
-  # overhead
+  # overhead.
   zle update-cursor-style
 }
 zle -N zle-line-init
@@ -151,9 +142,9 @@ zle -N zle-line-init
 # Disables terminal application mode
 function zle-line-finish {
   # The terminal must be in application mode when ZLE is active for $terminfo
-  # values to be valid
+  # values to be valid.
   if (( $+terminfo[rmkx] )); then
-    # Disable terminal application mode
+    # Disable terminal application mode.
     echoti rmkx
   fi
 }
@@ -167,11 +158,17 @@ function zle-keymap-select {
   zle -R
 }
 zle -N zle-keymap-select
-#endregion
 
-#region: Keybinds
+#
+# Init
+#
+
 # Reset to default key bindings
 bindkey -d
+
+#
+# Keybinds
+#
 
 # Global keybinds
 local -A global_keybinds
@@ -195,7 +192,7 @@ vicmd_keybinds=(
 )
 
 # Special case for ControlLeft and ControlRight because they have multiple
-# possible binds
+# possible binds.
 for key in "${(s: :)key_info[ControlLeft]}" "${(s: :)key_info[AltLeft]}"; do
   bindkey -M emacs "$key" emacs-backward-word
   bindkey -M viins "$key" vi-backward-word
@@ -221,4 +218,3 @@ done
 for key bind in ${(kv)global_keybinds} ${(kv)vicmd_keybinds}; do
   bindkey -M vicmd "$key" "$bind"
 done
-#endregion

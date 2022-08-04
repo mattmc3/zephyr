@@ -1,44 +1,53 @@
 #
-# Sets history options and defines history aliases.
+# Requirements
 #
 
-#region: Options
-# http://zsh.sourceforge.net/Doc/Release/Options.html#History
-setopt APPEND_HISTORY          # append to history file
-setopt HIST_NO_STORE           # don't store history commands
-setopt HIST_REDUCE_BLANKS      # remove superfluous blanks from each command line being added to the history list
-setopt NO_SHARE_HISTORY        # don't share history between all sessions
-setopt BANG_HIST               # treat the '!' character specially during expansion
-setopt EXTENDED_HISTORY        # write the history file in the ':start:elapsed;command' format
-setopt INC_APPEND_HISTORY      # write to the history file immediately, not when the shell exits
-setopt HIST_EXPIRE_DUPS_FIRST  # expire a duplicate event first when trimming history
-setopt HIST_IGNORE_DUPS        # do not record an event that was just recorded again
-setopt HIST_IGNORE_ALL_DUPS    # delete an old recorded event if a new event is a duplicate
-setopt HIST_FIND_NO_DUPS       # do not display a previously found event
-setopt HIST_IGNORE_SPACE       # do not record an event starting with a space
-setopt HIST_SAVE_NO_DUPS       # do not write a duplicate event to the history file
-setopt HIST_VERIFY             # do not execute immediately upon history expansion
-setopt NO_HIST_BEEP            # don't beep when attempting to access a missing history entry
-#endregion
+if zstyle -T ':zsh-utils:plugins:history' use-xdg-basedirs; then
+  # Ensure the data directory exists
+  _data_dir=${XDG_DATA_HOME:-$HOME/.local/share}/zsh
+  [[ -d "$_data_dir"  ]] || mkdir -p "$_data_dir"
 
-#region: Variables
-if zstyle -t ':zephyr:plugins:history' use-xdg-basedirs; then
-  HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history"
-  if [[ ! -f "$HISTFILE" ]]; then
-    mkdir -p "$HISTFILE:h" && touch "$HISTFILE"
-  fi
+  _zhistfile=$_data_dir/${ZHISTFILE:-history}
+else
+  _zhistfile=${ZDOTDIR:-$HOME}/${ZHISTFILE:-.zsh_history}
 fi
 
-# you can set $SAVEHIST and $HISTSIZE to anything greater than the ZSH defaults
-# (1000 and 2000 respectively), but if not we make them way bigger.
-[[ $SAVEHIST -gt 1000 ]] || SAVEHIST=10000
-[[ $HISTSIZE -gt 2000 ]] || HISTSIZE=20000
-#endregion
+#
+# Options
+#
 
-#region: Aliases
-# lists the ten most used commands
+setopt BANG_HIST              # Treat the '!' character specially during expansion.
+setopt EXTENDED_HISTORY       # Write the history file in the ':start:elapsed;command' format.
+setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when the shell exits.
+setopt HIST_EXPIRE_DUPS_FIRST # Expire a duplicate event first when trimming history.
+setopt HIST_IGNORE_DUPS       # Do not record an event that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS   # Delete an old recorded event if a new event is a duplicate.
+setopt HIST_FIND_NO_DUPS      # Do not display a previously found event.
+setopt HIST_IGNORE_SPACE      # Do not record an event starting with a space.
+setopt HIST_SAVE_NO_DUPS      # Do not write a duplicate event to the history file.
+setopt HIST_VERIFY            # Do not execute immediately upon history expansion.
+unsetopt HIST_BEEP            # NO Beep when accessing non-existent history.
+
+#
+# Variables
+#
+
+HISTFILE="$_zhistfile"
+HISTSIZE=10000  # The maximum number of events to save in the internal history.
+SAVEHIST=10000  # The maximum number of events to save in the history file.
+
+#
+# Aliases
+#
+
+# Lists the ten most used commands.
 alias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
 
-# make the history command more useful
+# Make the history command more useful.
 alias history="fc -li"
-#endregion
+
+#
+# Cleanup
+#
+
+unset _data_dir _zhistfile
