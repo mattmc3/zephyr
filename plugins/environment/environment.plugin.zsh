@@ -32,11 +32,6 @@ unsetopt HUP                 # don't kill jobs on shell exit
 unsetopt CHECK_JOBS          # don't report on jobs when shell exit
 #endregion
 
-#region: Shortcuts
-# Allow mapping Ctrl+S and Ctrl+Q shortcuts
-[[ -r ${TTY:-} && -w ${TTY:-} && $+commands[stty] == 1 ]] && stty -ixon <$TTY >$TTY
-#endregion
-
 #region: Aliases
 alias type="type -a"
 alias mkdir="mkdir -p"
