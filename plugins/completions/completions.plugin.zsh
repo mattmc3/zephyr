@@ -60,23 +60,9 @@ fpath=(${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN) $fpat
 fpath+="${0:A:h}/functions"
 autoload -Uz compstyleinit && compstyleinit
 
-# Load and initialize the completion system ignoring insecure directories with a
-# cache time of 20 hours, so it should almost always regenerate the first time a
-# shell is opened each day.
-autoload -Uz compinit
-_comp_files=($_zcompdump(Nmh-20))
-if (( $#_comp_files )); then
-  compinit -i -C -d "$_zcompdump"
-else
-  compinit -i -d "$_zcompdump"
-fi
-
-# Compile zcompdump, if modified, in background to increase startup speed.
-{
-  if [[ -s "$_zcompdump" && (! -s "${_zcompdump}.zwc" || "$_zcompdump" -nt "${_zcompdump}.zwc") ]]; then
-    zcompile "$_zcompdump"
-  fi
-} &!
+# Run compinit.
+zstyle -t ':zephyr:plugin:completions' skip-compinit || \
+  run-compinit
 
 #
 # Cleanup
