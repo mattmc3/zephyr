@@ -47,6 +47,8 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 - [editor](plugins/editor/readme.md)
 - [environment](plugins/environment/readme.md)
 - [history](plugins/history/readme.md)
+- [prompt](plugins/prompt/readme.md)
+- [utility](plugins/utility/readme.md)
 
 ## Configuration
 
