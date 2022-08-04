@@ -8,10 +8,6 @@ setopt INTERACTIVE_COMMENTS  # enable comments in interactive shell
 setopt RC_QUOTES             # allow 'Henry''s Garage' instead of 'Henry'\''s Garage'
 unsetopt MAIL_WARNING        # don't print a warning message if a mail file has been accessed
 
-# glob options
-setopt EXTENDED_GLOB         # Treat the '#', '~' and '^' characters as part of patterns for filename generation
-setopt GLOB_DOTS             # Do not require a leading '.' in a filename to be matched explicitly
-
 # job options
 setopt LONG_LIST_JOBS        # list jobs in the long format by default
 setopt AUTO_RESUME           # attempt to resume existing job before creating a new process
@@ -45,14 +41,3 @@ fi
 
 GREP_EXCL=(.bzr CVS .git .hg .svn .idea .tox)
 alias grep="${aliases[grep]:-grep} --exclude-dir={\${(j.,.)GREP_EXCL}}"
-
-#
-# Init
-#
-
-if ${TERM} != "dumb" ]]; then
-  autoload -Uz bracketed-paste-url-magic
-  zle -N bracketed-paste bracketed-paste-url-magic
-  autoload -Uz url-quote-magic
-  zle -N self-insert url-quote-magic
-fi
