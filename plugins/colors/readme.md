@@ -1,10 +1,12 @@
 # Colors
 
-Sets aliases and variables to add color to shell commands.
+Sets variables and add functions related to shell colors.
 
 ## Variables
 
 ### Termcap
+
+These variable affect `man` page colors.
 
 - `LESS_TERMCAP_mb` begins blinking.
 - `LESS_TERMCAP_md` begins bold.
