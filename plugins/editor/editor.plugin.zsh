@@ -11,7 +11,7 @@ fi
 # Options
 #
 
-unsetopt BEEP                   # NO beep on error in line editor.
+setopt NO_BEEP                  # Beep on error in line editor.
 unsetopt FLOW_CONTROL           # Allow the usage of ^Q/^S in the context of zsh.
 
 #
