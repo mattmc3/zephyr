@@ -18,5 +18,17 @@ unsetopt CLOBBER            # do not overwrite existing files with > and >>
 # Aliases
 #
 
-alias d='dirs -v'
-for index ({1..9}) alias "$index"="cd +${index}"; unset index
+alias dirh='dirs -v'
+() {
+  # setup `cd ..2` aliases
+  local idx
+  local -a dotdot=('..')
+  for idx ({2..9}); do
+    dotdot+=('..')
+    alias -g ..${idx}="${(j./.)dotdot}"
+  done
+}
+
+# set initial working directory
+IWD=${IWD:-PWD}
+alias iwd='cd $IWD'
