@@ -2,7 +2,7 @@
 
 > A Zsh framework as nice as a cool summer breeze
 
-Zsh is a wonderful shell, but out-of-the-box it needs a bit of a boost. That's where Zephyr comes in. Zephyr uses built-in Zsh features to set up better default options, completions, keybindings, history, and much more.
+Zsh is a wonderful shell, but out-of-the-box it needs a bit of a boost. That's where Zephyr comes in. Zephyr is a lightweight framework designed to enhance Zsh by setting better options, completions, keybindings, history, and much more.
 
 Zephyr can be thought of as a fast, lightweight set of core Zsh plugins. It contains a lot of the base functionality from frameworks like Oh-My-Zsh and Prezto without all the bloat. Combine Zephyr with a [plugin manager][antidote] and some [awesome plugins](https://github.com/unixorn/awesome-zsh-plugins) and you'll have a powerful Zsh setup that rivals anything out there.
 
@@ -41,16 +41,32 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 ## Plugins
 
-- colors - sets variables and add functions related to shell colors
+- autosuggestions - Fish-like autosuggestions for zsh
+- \*colors - sets variables and add functions related to shell colors
 - confd - source conf.d like Fish
-- completions - load and initialize the built-in zsh completion system
-- directory - sets options and aliases related to the dirstack and directories
-- editor - override and fill in the gaps of the default keybinds
-- environment - sets general shell options and defines environment variables.
-- history - load and initilize the built-in zsh history system
-- prompt - load and initialize the build-in zsh prompt system
-- utility - common shell utilities, aimed at making cross platform work less painful
+- \*completions - load and initialize the built-in zsh completion system
+- \*directory - sets options and aliases related to the dirstack and directories
+- \*editor - override and fill in the gaps of the default keybinds
+- \*environment - sets general shell options and defines environment variables
+- \*history - load and initilize the built-in zsh history system
+- \*history-substring-search - port of Fish history search (up arrow)
+- \*prompt - load and initialize the build-in zsh prompt system
+- \*utility - common shell utilities, aimed at making cross platform work less painful
+- syntax-highlighting - Fish shell like syntax highlighting for Zsh
 - zfunctions - lazy load functions dir like Fish
+
+\* loaded by default
+
+## External plugins
+
+Zephyr accomplishes a lot of its magic by pulling together core plugins from:
+
+- belak/zsh-utils
+- romkatv/zsh-bench
+- zsh-users/zsh-autosuggestions
+- zsh-users/zsh-completions
+- zsh-users/zsh-history-subsring-search
+- zsh-users/zsh-syntax-highlighting
 
 ## Configuration
 
