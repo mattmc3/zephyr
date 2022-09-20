@@ -40,9 +40,6 @@ SAVEHIST=10000  # The maximum number of events to save in the history file.
 # Aliases
 #
 
-# Lists the ten most used commands.
-alias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
-
 # Make the history command more useful.
 alias history="fc -li"
 
