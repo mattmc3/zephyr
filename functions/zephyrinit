@@ -16,6 +16,8 @@ autoload -Uz ${0:A:h}/autoload-dir
     git clone --depth 1 --quiet https://github.com/zsh-users/zsh-history-substring-search $ZEPHYR_HOME/.external/zsh-history-substring-search &
   [[ -e $ZEPHYR_HOME/.external/zsh-completions ]] ||
     git clone --depth 1 --quiet https://github.com/zsh-users/zsh-completions $ZEPHYR_HOME/.external/zsh-completions &
+  [[ -e $ZEPHYR_HOME/.external/zsh-bench ]] ||
+    git clone --depth 1 --quiet https://github.com/romkatv/zsh-bench $ZEPHYR_HOME/.external/zsh-bench &
   wait
 }
 

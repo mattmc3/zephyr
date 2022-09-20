@@ -12,3 +12,4 @@ fi
 #
 
 source $ZEPHYR_HOME/.external/zsh-utils/utility/utility.plugin.zsh
+export PATH="$ZEPHYR_HOME/.external/zsh-bench:$PATH"
