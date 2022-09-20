@@ -1,6 +1,0 @@
-#compdef compstyle
-
-_arguments -s \
-  '-l[list completion styles]:*:' \
-  "-h[help]::completion style:($completion_styles):*:" \
-  ":completion style:($completion_styles)"

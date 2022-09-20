@@ -1,6 +1,14 @@
 #
+# Requirements
+#
+
+0=${(%):-%x}
+if ! (( $+functions[zephyrinit] )); then
+  autoload -Uz ${0:A:h:h:h}/functions/zephyrinit && zephyrinit
+fi
+
+#
 # Init
 #
 
-fpath+="${0:A:h}/functions"
-autoload -Uz promptinit && promptinit
+source $ZEPHYR_HOME/.external/zsh-utils/prompt/prompt.plugin.zsh
