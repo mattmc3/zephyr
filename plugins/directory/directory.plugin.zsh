@@ -2,17 +2,13 @@
 # Options
 #
 
-setopt AUTO_CD              # auto changes to a directory without typing cd
-setopt AUTO_PUSHD           # push the old directory onto the stack on cd
-setopt PUSHD_IGNORE_DUPS    # do not store duplicates in the stack
-setopt PUSHD_SILENT         # do not print the directory stack after pushd or popd
-setopt PUSHD_TO_HOME        # push to home directory when no argument is given
-setopt CDABLE_VARS          # change directory to a path stored in a variable
-setopt MULTIOS              # write to multiple descriptors
-setopt EXTENDED_GLOB        # use extended globbing syntax
-setopt GLOB_DOTS            # include dotfiles when globbing
-unsetopt CLOBBER            # do not overwrite existing files with > and >>
-                            # use >! and >>! to bypass
+# Directory options
+setopt AUTO_PUSHD            # cd automatically uses the dirstack.
+setopt PUSHD_IGNORE_DUPS     # No duplicates in the dirstack.
+setopt PUSHD_MINUS           # Swap meanings of +/- to be more natural.
+setopt PUSHD_SILENT          # Do not print the dirstack after pushd/popd.
+setopt PUSHD_TO_HOME         # pushd with no args goes to home.
+setopt CDABLE_VARS           # Change directory to a path stored in a variable.
 
 #
 # Aliases

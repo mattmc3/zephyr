@@ -42,6 +42,7 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 ## Plugins
 
 - colors - sets variables and add functions related to shell colors
+- confd - source conf.d like Fish
 - completions - load and initialize the built-in zsh completion system
 - directory - sets options and aliases related to the dirstack and directories
 - editor - override and fill in the gaps of the default keybinds
@@ -49,6 +50,7 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 - history - load and initilize the built-in zsh history system
 - prompt - load and initialize the build-in zsh prompt system
 - utility - common shell utilities, aimed at making cross platform work less painful
+- zfunctions - lazy load functions dir like Fish
 
 ## Configuration
 
