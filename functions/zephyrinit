@@ -1,0 +1,37 @@
+0=${(%):-%x}
+ZEPHYR_HOME=${ZEPHYR_HOME:-$0:A:h:h}
+
+autoload -Uz ${0:A:h}/autoload-dir
+
+() {
+  emulate -L zsh; setopt local_options extended_glob no_monitor
+  # clone all-the-things
+  [[ -e $ZEPHYR_HOME/.external/zsh-utils ]] ||
+    git clone --depth 1 --quiet https://github.com/belak/zsh-utils $ZEPHYR_HOME/.external/zsh-utils &
+  [[ -e $ZEPHYR_HOME/.external/zsh-autosuggestions ]] ||
+    git clone --depth 1 --quiet https://github.com/zsh-users/zsh-autosuggestions $ZEPHYR_HOME/.external/zsh-autosuggestions &
+  [[ -e $ZEPHYR_HOME/.external/zsh-syntax-highlighting ]] ||
+    git clone --depth 1 --quiet https://github.com/zsh-users/zsh-syntax-highlighting $ZEPHYR_HOME/.external/zsh-syntax-highlighting &
+  [[ -e $ZEPHYR_HOME/.external/zsh-history-substring-search ]] ||
+    git clone --depth 1 --quiet https://github.com/zsh-users/zsh-history-substring-search $ZEPHYR_HOME/.external/zsh-history-substring-search &
+  [[ -e $ZEPHYR_HOME/.external/zsh-completions ]] ||
+    git clone --depth 1 --quiet https://github.com/zsh-users/zsh-completions $ZEPHYR_HOME/.external/zsh-completions &
+  wait
+}
+
+() {
+  # update plugins weekly
+  emulate -L zsh; setopt local_options extended_glob no_monitor
+  local lastupdated="$ZEPHYR_HOME/.external/.lastupdated"
+  [[ -f "$lastupdated" ]] || date '+%Y-%m-%d %H:%M:%S' >"$lastupdated"
+  local -a lufiles=($lastupdated(Nmw-1))
+  if ! (( $#lufiles )); then
+    local d; for d in $ZEPHYR_HOME/.external/*/.git(N/); do
+      command git -C "${d:A:h}" pull --quiet --ff --depth 1 --rebase --autostash &
+    done
+    wait
+    date '+%Y-%m-%d %H:%M:%S' >"$lastupdated"
+  fi
+}
+
+# vi: ft=zsh
