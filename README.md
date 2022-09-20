@@ -61,12 +61,12 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 Zephyr accomplishes a lot of its magic by pulling together core plugins from:
 
-- belak/zsh-utils
-- romkatv/zsh-bench
-- zsh-users/zsh-autosuggestions
-- zsh-users/zsh-completions
-- zsh-users/zsh-history-subsring-search
-- zsh-users/zsh-syntax-highlighting
+- [belak/zsh-utils][zsh-utils]
+- [romkatv/zsh-bench][zsh-bench]
+- [zsh-users/zsh-autosuggestions][zsh-autosuggestions]
+- [zsh-users/zsh-completions][zsh-completions]
+- [zsh-users/zsh-history-subsring-search][zsh-history-subsring-search]
+- [zsh-users/zsh-syntax-highlighting][zsh-syntax-highlighting]
 
 ## Configuration
 
@@ -94,7 +94,12 @@ Zephyr is a derivative work of the following great projects:
 - [zsh-utils][zsh-utils]
 
 
-[antidote]:    https://getantidote.github.io
-[ohmyzsh]:     https://github.com/ohmyzsh/ohmyzsh
-[prezto]:      https://github.com/sorin-ionescu/prezto
-[zsh-utils]:   https://github.com/belak/zsh-utils
+[antidote]: https://getantidote.github.io
+[ohmyzsh]: https://github.com/ohmyzsh/ohmyzsh
+[prezto]: https://github.com/sorin-ionescu/prezto
+[zsh-utils]: https://github.com/belak/zsh-utils
+[zsh-bench]: https://github.com/romkatv/zsh-bench
+[zsh-autosuggestions]: https://github.com/zsh-users/zsh-autosuggestions
+[zsh-completions]: https://github.com/zsh-users/zsh-completions
+[zsh-history-subsring-search]: https://github.com/zsh-users/zsh-history-subsring-search
+[zsh-syntax-highlighting]: https://github.com/zsh-users/zsh-syntax-highlighting
