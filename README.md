@@ -41,23 +41,23 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 ## Plugins
 
-- [colors](plugins/colors/readme.md)
-- [completions](plugins/completions/readme.md)
-- [directory](plugins/directory/readme.md)
-- [editor](plugins/editor/readme.md)
-- [environment](plugins/environment/readme.md)
-- [history](plugins/history/readme.md)
-- [prompt](plugins/prompt/readme.md)
-- [utility](plugins/utility/readme.md)
+- colors - sets variables and add functions related to shell colors
+- completions - load and initialize the built-in zsh completion system
+- directory - sets options and aliases related to the dirstack and directories
+- editor - override and fill in the gaps of the default keybinds
+- environment - sets general shell options and defines environment variables.
+- history - load and initilize the built-in zsh history system
+- prompt - load and initialize the build-in zsh prompt system
+- utility - common shell utilities, aimed at making cross platform work less painful
 
 ## Configuration
 
-XDG base directory locations can be used for `$HISTFILE` in the history plugin, and `$ZSH_COMPDUMP` in the completions plugin. This is helpful if you want to move these files out of your `$ZDOTDIR`.
+XDG base directory locations are used for `$HISTFILE` in the history plugin, and `$ZSH_COMPDUMP` in the completions plugin.
 
-To use XDG base directory locations, set the following zstyle:
+To NOT use XDG base directory locations, set the following zstyle:
 
 ```zsh
-zstyle ':zephyr:*:*' use-xdg-basedirs 'yes'
+zstyle ':zephyr:*:*' use-xdg-basedirs 'no'
 ```
 
 Or, you can set it for each individual plugin:
