@@ -17,6 +17,16 @@ unsetopt HUP                 # don't kill jobs on shell exit
 unsetopt CHECK_JOBS          # don't report on jobs when shell exit
 
 #
+# Init
+#
+
+# built-in magic
+autoload -Uz bracketed-paste-url-magic
+zle -N bracketed-paste bracketed-paste-url-magic
+autoload -Uz url-quote-magic
+zle -N self-insert url-quote-magic
+
+#
 # Variables
 #
 
