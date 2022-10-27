@@ -101,5 +101,5 @@ Zephyr is a derivative work of the following great projects:
 [zsh-bench]: https://github.com/romkatv/zsh-bench
 [zsh-autosuggestions]: https://github.com/zsh-users/zsh-autosuggestions
 [zsh-completions]: https://github.com/zsh-users/zsh-completions
-[zsh-history-subsring-search]: https://github.com/zsh-users/zsh-history-subsring-search
+[zsh-history-substring-search]: https://github.com/zsh-users/zsh-history-subsring-search
 [zsh-syntax-highlighting]: https://github.com/zsh-users/zsh-syntax-highlighting
