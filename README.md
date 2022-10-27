@@ -65,7 +65,7 @@ Zephyr accomplishes a lot of its magic by pulling together core plugins from:
 - [romkatv/zsh-bench][zsh-bench]
 - [zsh-users/zsh-autosuggestions][zsh-autosuggestions]
 - [zsh-users/zsh-completions][zsh-completions]
-- [zsh-users/zsh-history-subsring-search][zsh-history-subsring-search]
+- [zsh-users/zsh-history-substring-search][zsh-history-substring-search]
 - [zsh-users/zsh-syntax-highlighting][zsh-syntax-highlighting]
 
 ## Configuration
