@@ -2,7 +2,7 @@
 ZEPHYR_HOME=${ZEPHYR_HOME:-${0:A:h}}
 
 # this file should contain the bare minimum to bootstrap Zephyr so that plugins can
-# remain independant
+# remain independent
 
 fpath+=($ZEPHYR_HOME/functions)
 autoload -Uz zephyrinit && zephyrinit
