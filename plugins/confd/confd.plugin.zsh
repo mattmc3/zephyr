@@ -1,4 +1,12 @@
-_zcfghome=${ZDOTDIR:-${XDG_CONFIG_HOME:-HOME/.config}/zsh}
+###
+# conf.d - Use a Fish-like conf.d directory for sourcing configs.
+###
+
+#
+# Init
+#
+
+_zcfghome=${ZDOTDIR:-${XDG_CONFIG_HOME:=HOME/.config}/zsh}
 _confd=(
   $_zcfghome/zshrc.d(N/)
   $_zcfghome/conf.d(N/)
@@ -6,9 +14,9 @@ _confd=(
   ${ZDOTDIR:-$HOME}/.zshrc.d(N/)
 )
 (( $#_confd )) || return
-for _f in $_confd[1]/*.zsh(N); do
+for _rcfile in $_confd[1]/*.{z,}sh(N); do
   # ignore files that begin with ~
-  case ${_f:t} in '~'*) continue;; esac
-  source "$_f"
+  case ${_rcfile:t} in '~'*) continue;; esac
+  source "$_rcfile"
 done
-unset _f _confd _zcfghome
+unset _rcfile _confd _zcfghome

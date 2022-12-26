@@ -1,0 +1,14 @@
+#function zephyr-clone {
+emulate -L zsh; setopt local_options extended_glob no_monitor
+local repo plugdir
+for repo in $@; do
+  destdir=$ZEPHYR_HOME/.external/${repo:t}
+  initfile=$destdir/${repo:t}.plugin.zsh
+  if [[ ! -d $destdir ]]; then
+    echo "Zephyr cloning $repo..."
+    git clone -q --depth 1 --recursive --shallow-submodules https://github.com/$repo $destdir &
+  fi
+done
+wait
+#}
+# vi: ft=zsh

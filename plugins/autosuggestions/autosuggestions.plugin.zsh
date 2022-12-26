@@ -1,11 +1,15 @@
+####
+# autosuggestions - Fish-like autosuggestions for zsh.
+###
+
 #
 # Requirements
 #
 
+[[ "$TERM" != 'dumb' ]] || return 1
 0=${(%):-%x}
-if ! (( $+functions[zephyrinit] )); then
-  autoload -Uz ${0:A:h:h:h}/functions/zephyrinit && zephyrinit
-fi
+: ${ZEPHYR_HOME:=${0:A:h:h:h}}
+zstyle -t ':zephyr:core' initialized || . $ZEPHYR_HOME/lib/init.zsh
 
 #
 # Init

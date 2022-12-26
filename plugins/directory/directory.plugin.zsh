@@ -1,3 +1,13 @@
+###
+# directory - Set directory options and define directory aliases.
+###
+
+#
+# Requirements
+#
+
+[[ "$TERM" != 'dumb' ]] || return 1
+
 #
 # Options
 #
@@ -15,13 +25,14 @@ setopt PUSHD_TO_HOME         # pushd with no args goes to home.
 # Aliases
 #
 
+alias -- -='cd -'
 alias dirh='dirs -v'
-() {
-  # setup `cd ..2` aliases
-  local idx
-  local -a dotdot=('..')
-  for idx ({2..9}); do
-    dotdot+=('..')
-    alias -g ..${idx}="${(j./.)dotdot}"
-  done
-}
+for _idx ({1..9}) alias "$_idx"="cd -${_idx}"
+
+# setup 'cd ..2' aliases
+_dotdot=('..')
+for _idx ({1..9}); do
+  _dotdot+=('..')
+  alias -g ..${_idx}="${(j:/:)_dotdot}"
+done
+unset _idx _dotdot

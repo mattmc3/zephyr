@@ -1,0 +1,17 @@
+0=${(%):-%N}
+
+# show exit code on right
+function precmd_pipestatus {
+  local exitcodes="${(j.|.)pipestatus}"
+  if [[ "$exitcodes" != "0" ]]; then
+    RPROMPT="%F{$prompt_pure_colors[prompt:error]}[$exitcodes]%f"
+  else
+    RPROMPT=
+  fi
+}
+add-zsh-hook precmd precmd_pipestatus
+
+fpath+=$ZEPHYR_HOME/.external/pure
+source $ZEPHYR_HOME/.external/pure/pure.zsh
+
+# vim: ft=zsh

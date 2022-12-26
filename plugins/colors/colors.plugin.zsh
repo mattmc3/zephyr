@@ -1,3 +1,13 @@
+####
+# colors - Make terminal things more colorful.
+###
+
+#
+# Requirements
+#
+
+[[ "$TERM" != 'dumb' ]] || return 1
+
 #
 # Init
 #

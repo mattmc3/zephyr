@@ -1,14 +1,34 @@
+####
+# prompt - Set zsh prompt.
+###
+
 #
 # Requirements
 #
 
+[[ "$TERM" != 'dumb' ]] || return 1
 0=${(%):-%x}
-if ! (( $+functions[zephyrinit] )); then
-  autoload -Uz ${0:A:h:h:h}/functions/zephyrinit && zephyrinit
-fi
+: ${ZEPHYR_HOME:=${0:A:h:h:h}}
+zstyle -t ':zephyr:core' initialized || . $ZEPHYR_HOME/lib/init.zsh
+
+#
+# Options
+#
+
+setopt PROMPT_SUBST  # Expand parameters in prompt.
+
+#
+# Variables
+#
+
+# use 2 space indent for each new level
+PS2='${${${(%):-%_}//[^ ]}// /  }    '
 
 #
 # Init
 #
 
-source $ZEPHYR_HOME/.external/zsh-utils/prompt/prompt.plugin.zsh
+# set prompt
+fpath+="${0:A:h}/functions"
+autoload -Uz promptinit && promptinit
+[[ -z "$ZSH_THEME" ]] || prompt $ZSH_THEME

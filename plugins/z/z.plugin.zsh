@@ -14,7 +14,7 @@ zstyle -t ':zephyr:core' initialized || . $ZEPHYR_HOME/lib/init.zsh
 # Init
 #
 
-source $ZEPHYR_HOME/plugins/.external/z/z.sh
+source $ZEPHYR_HOME/.external/z/z.sh
 if [[ -z "$_Z_DATA" ]]; then
   _Z_DATA=${XDG_DATA_HOME:=$HOME/.local/share}/z/data
 fi

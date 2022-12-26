@@ -20,7 +20,7 @@ Or, use [antidote] to only load the parts of Zephyr you need:
 
 ```shell
 # .zsh_plugins.txt
-mattmc3/zephyr path:plugins/completions
+mattmc3/zephyr path:plugins/$ZEPHYR_HOME/.external
 mattmc3/zephyr path:plugins/directory
 mattmc3/zephyr path:plugins/environment
 mattmc3/zephyr path:plugins/history
@@ -44,7 +44,7 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 - autosuggestions - Fish-like autosuggestions for zsh
 - \*colors - sets variables and add functions related to shell colors
 - confd - source conf.d like Fish
-- \*completions - load and initialize the built-in zsh completion system
+- \*completion - load and initialize the built-in zsh completion system
 - \*directory - sets options and aliases related to the dirstack and directories
 - \*editor - override and fill in the gaps of the default keybinds
 - \*environment - sets general shell options and defines environment variables
@@ -70,7 +70,7 @@ Zephyr accomplishes a lot of its magic by pulling together core plugins from:
 
 ## Configuration
 
-XDG base directory locations are used for `$HISTFILE` in the history plugin, and `$ZSH_COMPDUMP` in the completions plugin.
+XDG base directory locations are used for `$HISTFILE` in the history plugin, and `$ZSH_COMPDUMP` in the $ZEPHYR_HOME/.external plugin.
 
 To NOT use XDG base directory locations, set the following zstyle:
 
@@ -82,7 +82,7 @@ Or, you can set it for each individual plugin:
 
 ```zsh
 zstyle ':zephyr:plugins:history' use-xdg-basedirs 'no'
-zstyle ':zephyr:plugins:completions' use-xdg-basedirs 'yes'
+zstyle ':zephyr:plugins:$ZEPHYR_HOME/.external' use-xdg-basedirs 'yes'
 ```
 
 ## Credits

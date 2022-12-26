@@ -1,12 +1,11 @@
-0=${(%):-%x}
-ZEPHYR_HOME=${ZEPHYR_HOME:-${0:A:h}}
-
 # this file should contain the bare minimum to bootstrap Zephyr so that plugins can
 # remain independent
 
-fpath+=($ZEPHYR_HOME/functions)
-autoload -Uz zephyrinit && zephyrinit
+0=${(%):-%x}
+ZEPHYR_HOME=${ZEPHYR_HOME:-${0:A:h}}
+source $ZEPHYR_HOME/lib/init.zsh
 
+# load plugins
 _zephyr_plugins_default=(
   colors
   environment
@@ -15,7 +14,7 @@ _zephyr_plugins_default=(
   directory
   utility
   prompt
-  completions
+  $ZEPHYR_HOME/.external
 )
 zstyle -a ':zephyr:load' plugins \
   '_zephyr_plugins' || _zephyr_plugins=($_zephyr_plugins_default)

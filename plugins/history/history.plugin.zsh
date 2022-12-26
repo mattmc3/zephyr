@@ -1,6 +1,6 @@
-#
-# Set Zsh history options.
-#
+###
+# history - Set Zsh history options.
+###
 
 #
 # Options
@@ -27,3 +27,11 @@ HISTFILE=${XDG_DATA_HOME:=~/.local/share}/zsh/history
 [[ -f $HISTFILE ]] || { mkdir -p ${HISTFILE:h} && touch $HISTFILE }
 HISTSIZE=5000   # max history in session
 SAVEHIST=10000  # max entries in HISTFILE
+
+#
+# Aliases
+#
+
+# Lists the ten most used commands.
+alias history-stat="command history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
+alias hist='fc -l -i'

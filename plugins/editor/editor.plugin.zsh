@@ -1,11 +1,15 @@
+###
+# editor - Set editor specific key bindings, options, and variables.
+###
+
 #
 # Requirements
 #
 
+[[ "$TERM" != 'dumb' ]] || return 1
 0=${(%):-%x}
-if ! (( $+functions[zephyrinit] )); then
-  autoload -Uz ${0:A:h:h:h}/functions/zephyrinit && zephyrinit
-fi
+: ${ZEPHYR_HOME:=${0:A:h:h:h}}
+zstyle -t ':zephyr:core' initialized || . $ZEPHYR_HOME/lib/init.zsh
 
 #
 # Init
@@ -19,4 +23,5 @@ source $ZEPHYR_HOME/.external/zsh-utils/editor/editor.plugin.zsh
 # Options
 #
 
-setopt NO_BEEP   # Do not beep on error in line editor.
+# Unset bad options from zsh-utils
+unsetopt BEEP   # Do not beep on error in line editor.
