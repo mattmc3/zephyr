@@ -36,6 +36,14 @@ fpath=(
 # Use zsh-utils completion.
 source $ZEPHYR_HOME/.external/zsh-utils/completion/completion.plugin.zsh
 
+# Compile compdump, if modified, in background to increase startup speed.
+: ${ZSH_COMPDUMP:=${XDG_CACHE_HOME:=$HOME/.cache}/zsh/compdump}
+{
+  if [[ -s "$ZSH_COMPDUMP" && (! -s "${ZSH_COMPDUMP}.zwc" || "$ZSH_COMPDUMP" -nt "${ZSH_COMPDUMP}.zwc") ]]; then
+    zcompile "$ZSH_COMPDUMP"
+  fi
+} &!
+
 # Set compstyles
 autoload -Uz compstyle_zephyr_setup && compstyle_zephyr_setup
 zstyle ':completion:*:*:git:*' script $ZPLUGINDIR/.external/git/git-completion.bash
