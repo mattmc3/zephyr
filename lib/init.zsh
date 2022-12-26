@@ -24,6 +24,7 @@ zephyr-clone \
   zsh-users/zsh-syntax-highlighting \
   zdharma-continuum/fast-syntax-highlighting \
   rupa/z
+
 () {
   # https://www.oliverspryn.com/blog/adding-git-completion-to-zsh
   local gitdir=$ZEPHYR_HOME/.external/git
@@ -36,6 +37,10 @@ zephyr-clone \
   fi
 }
 
+# Load pre-reqs.
+source $ZEPHYR_HOME/.external/zsh-defer/zsh-defer.plugin.zsh
+
+# Update weekly.
 zephyr-updatecheck
 
 # tell plugins that Zephyr has been initialized
