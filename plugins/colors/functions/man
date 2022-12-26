@@ -9,3 +9,5 @@ LESS_TERMCAP_so=$(tput smso) \
 LESS_TERMCAP_se=$(tput rmso) \
 PAGER="${commands[less]:-$PAGER}" \
 command man -- "$@"
+
+# vim: ft=zsh

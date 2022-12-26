@@ -50,3 +50,5 @@ for name in ${(kno)effects}; do
   printf "%-3s${effect}%-25s${normal}%-25s%-10s\n" "fx" "${name}" "tput $code" "${$(tput $code):q}"
 done
 printf "%-28s%-25s%-10s\n" "normal" "tput sgr0" "${$(tput sgr0):q}"
+
+# vim: ft=zsh
