@@ -1,0 +1,13 @@
+function _zephyr {
+  if (( ! $+functions[zephyr-${1}] )); then
+    echo >&2 "zephyr: Subcommand '${1}' is not valid."
+    return 2
+  fi
+
+  local cmd=$1; shift
+  zephyr-${cmd} "$@"
+  return $?
+}
+_zephyr "$@"
+
+# vi: ft=zsh
