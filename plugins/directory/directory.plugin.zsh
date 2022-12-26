@@ -30,9 +30,9 @@ alias dirh='dirs -v'
 for _idx ({1..9}) alias "$_idx"="cd -${_idx}"
 
 # setup 'cd ..2' aliases
-_dotdot=('..')
+typeset -a _dotdot=('..')
 for _idx ({1..9}); do
-  _dotdot+=('..')
   alias -g ..${_idx}="${(j:/:)_dotdot}"
+  _dotdot+=('..')
 done
 unset _idx _dotdot
