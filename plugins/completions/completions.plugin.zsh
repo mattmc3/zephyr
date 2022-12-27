@@ -36,6 +36,8 @@ fpath=(
   $fpath
 )
 
+function compstyleinit() {}
+
 # Use zsh-utils completion.
 source $ZEPHYR_HOME/.external/zsh-utils/completion/completion.plugin.zsh
 
