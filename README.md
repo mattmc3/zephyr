@@ -75,7 +75,7 @@ Zephyr accomplishes a lot of its magic by pulling together core plugins from:
 
 ## Configuration
 
-XDG base directory locations are used for `$HISTFILE` in the history plugin, and `$ZSH_COMPDUMP` in the $ZEPHYR_HOME/.external plugin.
+XDG base directory locations are used for `$HISTFILE` in the history plugin, and `$ZSH_COMPDUMP` in the completion plugin.
 
 To NOT use XDG base directory locations, set the following zstyle:
 
@@ -87,7 +87,7 @@ Or, you can set it for each individual plugin:
 
 ```zsh
 zstyle ':zephyr:plugins:history' use-xdg-basedirs 'no'
-zstyle ':zephyr:plugins:$ZEPHYR_HOME/.external' use-xdg-basedirs 'yes'
+zstyle ':zephyr:plugins:completion' use-xdg-basedirs 'yes'
 ```
 
 ## Credits
