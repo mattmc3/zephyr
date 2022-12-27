@@ -34,6 +34,9 @@ zle -N self-insert url-quote-magic
 # Variables
 #
 
+# Ensure path arrays do not contain duplicates
+typeset -gU cdpath fpath mailpath path
+
 # Set XDG base dirs.
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
 export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
