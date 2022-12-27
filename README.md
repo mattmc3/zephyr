@@ -41,19 +41,21 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 ## Plugins
 
-- autosuggestions - Fish-like autosuggestions for zsh
-- \*colors - sets variables and add functions related to shell colors
-- confd - source conf.d like Fish
-- \*completions - load and initialize the built-in zsh completion system
-- \*directory - sets options and aliases related to the dirstack and directories
-- \*editor - override and fill in the gaps of the default keybinds
-- \*environment - sets general shell options and defines environment variables
-- \*history - load and initilize the built-in zsh history system
-- \*history-substring-search - port of Fish history search (up arrow)
-- \*prompt - load and initialize the build-in zsh prompt system
-- \*utility - common shell utilities, aimed at making cross platform work less painful
-- syntax-highlighting - Fish shell like syntax highlighting for Zsh
-- zfunctions - lazy load functions dir like Fish
+- [autosuggestions] - Fish-like autosuggestions for zsh
+- clipboard - Handy cross-platform clipboard functions
+- colors\* - Make terminal things more colorful
+- completions\* - Load and initialize the built-in zsh completion system
+- confd - Source conf.d like Fish
+- directory\* - Sets options and aliases related to the dirstack and directories
+- editor\* - Override and fill in the gaps of the default keybinds
+- environment\* - Sets general shell options and defines environment variables
+- history\* - Load and initilize the built-in zsh history system
+- [history-substring-search]\* - Port of Fish history search (up arrow)
+- prompt\* - Load and initialize the build-in zsh prompt system
+- [syntax-highlighting][fast-syntax-highlighting] - Fish shell like syntax highlighting for Zsh
+- utility\* - Common shell utilities, aimed at making cross platform work less painful
+- zfunctions\* - Lazy load functions dir like Fish
+- [z] - Jump around.
 
 \* loaded by default
 
@@ -94,12 +96,16 @@ Zephyr is a derivative work of the following great projects:
 - [zsh-utils][zsh-utils]
 
 
+[autosuggestions]: https://github.com/zsh-users/zsh-autosuggestions
 [antidote]: https://getantidote.github.io
+[history-substring-search]: https://github.com/zsh-users/zsh-history-substring-search
 [ohmyzsh]: https://github.com/ohmyzsh/ohmyzsh
 [prezto]: https://github.com/sorin-ionescu/prezto
+[fast-syntax-highlighting]: https://github.com/zdharma-continuum/fast-syntax-highlighting
 [zsh-utils]: https://github.com/belak/zsh-utils
 [zsh-bench]: https://github.com/romkatv/zsh-bench
 [zsh-autosuggestions]: https://github.com/zsh-users/zsh-autosuggestions
 [zsh-completions]: https://github.com/zsh-users/zsh-completions
 [zsh-history-substring-search]: https://github.com/zsh-users/zsh-history-subsring-search
 [zsh-syntax-highlighting]: https://github.com/zsh-users/zsh-syntax-highlighting
+[z]: https://github.com/rupa/z
