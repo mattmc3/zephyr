@@ -34,7 +34,7 @@ for _zephyr_plugin in $_zephyr_plugins; do
     $ZSH/plugins/$_zephyr_plugin/$_zephyr_plugin.plugin.zsh(N)
   )
   if (( $#_initfiles )); then
-    echo "Loading plugin $_zephyr_plugin from $_initfiles[1]"
+    # echo "Loading plugin $_zephyr_plugin from $_initfiles[1]"
     source "$_initfiles[1]"
   else
     echo >&2 "zephyr: Plugin not found '$_zephyr_plugin'."
