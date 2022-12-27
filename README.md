@@ -2,9 +2,11 @@
 
 > A Zsh framework as nice as a cool summer breeze
 
-Zsh is a wonderful shell, but out-of-the-box it needs a bit of a boost. That's where Zephyr comes in. Zephyr is a lightweight framework designed to enhance Zsh by setting better options, completions, keybindings, history, and much more.
+Zsh is a wonderful shell, but out-of-the-box it needs a bit of a boost. That's where Zephyr comes in.
 
-Zephyr can be thought of as a fast, lightweight set of core Zsh plugins. It contains a lot of the base functionality from frameworks like Oh-My-Zsh and Prezto without all the bloat. Combine Zephyr with a [plugin manager][antidote] and some [awesome plugins](https://github.com/unixorn/awesome-zsh-plugins) and you'll have a powerful Zsh setup that rivals anything out there.
+Zephyr can be thought of as a fast, lightweight set of core Zsh plugins. It pulls together core functionality from frameworks like [zsh-utils], [Oh-My-Zsh][ohmyzsh], and [Prezto][prezto], but removes any bloat and prioritizes speed and simplicity.
+
+Combine Zephyr with a [plugin manager][antidote] and some [awesome plugins](https://github.com/unixorn/awesome-zsh-plugins) and you'll have a powerful Zsh setup that rivals anything out there.
 
 ## Install
 
@@ -20,10 +22,10 @@ Or, use [antidote] to only load the parts of Zephyr you need:
 
 ```shell
 # .zsh_plugins.txt
-mattmc3/zephyr path:plugins/$ZEPHYR_HOME/.external
 mattmc3/zephyr path:plugins/directory
-mattmc3/zephyr path:plugins/environment
+mattmc3/zephyr path:plugins/editor
 mattmc3/zephyr path:plugins/history
+mattmc3/zephyr path:plugins/completions
 ```
 
 ### Manually
@@ -41,7 +43,7 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 ## Plugins
 
-- [autosuggestions] - Fish-like autosuggestions for zsh
+- [autosuggestions][zsh-autosuggestions] - Fish-like autosuggestions for zsh
 - clipboard - Handy cross-platform clipboard functions
 - colors\* - Make terminal things more colorful
 - completions\* - Load and initialize the built-in zsh completion system
@@ -50,9 +52,9 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 - editor\* - Override and fill in the gaps of the default keybinds
 - environment\* - Sets general shell options and defines environment variables
 - history\* - Load and initilize the built-in zsh history system
-- [history-substring-search]\* - Port of Fish history search (up arrow)
+- [history-substring-search][zsh-history-substring-search]\* - Port of Fish history search (up arrow)
 - prompt\* - Load and initialize the build-in zsh prompt system
-- [syntax-highlighting][fast-syntax-highlighting] - Fish shell like syntax highlighting for Zsh
+- [syntax-highlighting][fast-syntax-highlighting] - Feature-rich syntax highlighting for Zsh
 - utility\* - Common shell utilities, aimed at making cross platform work less painful
 - zfunctions\* - Lazy load functions dir like Fish
 - [z] - Jump around.
@@ -69,6 +71,7 @@ Zephyr accomplishes a lot of its magic by pulling together core plugins from:
 - [zsh-users/zsh-completions][zsh-completions]
 - [zsh-users/zsh-history-substring-search][zsh-history-substring-search]
 - [zsh-users/zsh-syntax-highlighting][zsh-syntax-highlighting]
+- [zdharma-continuum/fast-syntax-highlighting][fast-syntax-highlighting]
 
 ## Configuration
 
@@ -96,9 +99,7 @@ Zephyr is a derivative work of the following great projects:
 - [zsh-utils][zsh-utils]
 
 
-[autosuggestions]: https://github.com/zsh-users/zsh-autosuggestions
 [antidote]: https://getantidote.github.io
-[history-substring-search]: https://github.com/zsh-users/zsh-history-substring-search
 [ohmyzsh]: https://github.com/ohmyzsh/ohmyzsh
 [prezto]: https://github.com/sorin-ionescu/prezto
 [fast-syntax-highlighting]: https://github.com/zdharma-continuum/fast-syntax-highlighting
