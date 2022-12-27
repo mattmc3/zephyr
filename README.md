@@ -44,7 +44,7 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 - autosuggestions - Fish-like autosuggestions for zsh
 - \*colors - sets variables and add functions related to shell colors
 - confd - source conf.d like Fish
-- \*completion - load and initialize the built-in zsh completion system
+- \*completions - load and initialize the built-in zsh completion system
 - \*directory - sets options and aliases related to the dirstack and directories
 - \*editor - override and fill in the gaps of the default keybinds
 - \*environment - sets general shell options and defines environment variables
