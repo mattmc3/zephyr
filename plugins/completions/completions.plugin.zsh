@@ -26,7 +26,10 @@ fpath=(
   /{usr,opt}/{local,homebrew}/share/zsh/site-functions(-/FN)
 
   # add zsh-users completions if they exist
-  $ZEPHYR_HOME/.external/zsh-completion/src(/N)
+  $ZEPHYR_HOME/.external/zsh-completion/src(-/FN)
+
+  # Allow user completions.
+  ${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN)
 
   # this plugin and rest of fpath
   ${0:A:h}/functions
