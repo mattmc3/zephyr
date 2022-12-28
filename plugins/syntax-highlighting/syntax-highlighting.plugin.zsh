@@ -13,7 +13,7 @@
 #
 
 # TODO: allow user to select zsh-syntax-highlighting or fast-syntax-highlighting
-#_initfile=$ZEPHYR_HOME/.external/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
+#_initfile=${0:a:h}/external/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
 _initfile=${0:a:h}/external/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 
 (( $+functions[zsh-defer] )) && zsh-defer . $_initfile || . $_initfile
