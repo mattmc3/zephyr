@@ -12,11 +12,11 @@ zstyle -t ':zephyr:core' initialized || return 1
 # Init
 #
 
-_zcfghome=${ZDOTDIR:-${XDG_CONFIG_HOME:=HOME/.config}/zsh}
+_zhome=${ZDOTDIR:-${XDG_CONFIG_HOME:=HOME/.config}/zsh}
 _confd=(
-  $_zcfghome/zshrc.d(N/)
-  $_zcfghome/conf.d(N/)
-  $_zcfghome/rc.d(N/)
+  $_zhome/zshrc.d(N/)
+  $_zhome/conf.d(N/)
+  $_zhome/rc.d(N/)
   ${ZDOTDIR:-$HOME}/.zshrc.d(N/)
 )
 (( $#_confd )) || return
@@ -25,4 +25,9 @@ for _rcfile in $_confd[1]/*.{z,}sh(N); do
   case ${_rcfile:t} in '~'*) continue;; esac
   source "$_rcfile"
 done
-unset _rcfile _confd _zcfghome
+
+#
+# Cleanup
+#
+
+unset _rcfile _confd _zhome
