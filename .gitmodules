@@ -1,0 +1,33 @@
+[submodule "plugins/autosuggestions/external/zsh-autosuggestions"]
+	path = plugins/autosuggestions/external/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions
+[submodule "plugins/history-substring-search/external/zsh-history-substring-search"]
+	path = plugins/history-substring-search/external/zsh-history-substring-search
+	url = https://github.com/zsh-users/zsh-history-substring-search
+[submodule "plugins/prompt/external/agkozak"]
+	path = plugins/prompt/external/agkozak
+	url = https://github.com/agkozak/agkozak-zsh-prompt
+[submodule "plugins/prompt/external/powerlevel10k"]
+	path = plugins/prompt/external/powerlevel10k
+	url = https://github.com/romkatv/powerlevel10k
+[submodule "plugins/prompt/external/pure"]
+	path = plugins/prompt/external/pure
+	url = https://github.com/sindresorhus/pure
+[submodule "plugins/syntax-highlighting/external/fast-syntax-highlighting"]
+	path = plugins/syntax-highlighting/external/fast-syntax-highlighting
+	url = https://github.com/zdharma-continuum/fast-syntax-highlighting
+[submodule "plugins/syntax-highlighting/external/zsh-syntax-highlighting"]
+	path = plugins/syntax-highlighting/external/zsh-syntax-highlighting
+	url = https://github.com/zsh-users/zsh-syntax-highlighting
+[submodule "plugins/utility/external/zsh-bench"]
+	path = plugins/utility/external/zsh-bench
+	url = https://github.com/romkatv/zsh-bench
+[submodule "plugins/utility/external/zsh-defer"]
+	path = plugins/utility/external/zsh-defer
+	url = https://github.com/romkatv/zsh-defer
+[submodule "plugins/z/external/z"]
+	path = plugins/z/external/z
+	url = https://github.com/rupa/z
+[submodule "plugins/z/external/zsh-z"]
+	path = plugins/z/external/zsh-z
+	url = https://github.com/agkozak/zsh-z
