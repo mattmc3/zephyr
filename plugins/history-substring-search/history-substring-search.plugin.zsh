@@ -6,14 +6,13 @@
 # Requirements
 #
 
-zstyle -t ':zephyr:core' initialized || return 1
 [[ "$TERM" != 'dumb' ]] || return 1
 
 #
 # Init
 #
 
-source $ZEPHYR_HOME/.external/zsh-history-substring-search/zsh-history-substring-search.zsh
+source ${0:a:h}/external/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 #
 # Keybinds

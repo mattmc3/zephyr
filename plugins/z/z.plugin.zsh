@@ -1,20 +1,22 @@
 ###
-# z - Jump around with rupa/z.
+# z - Jump quickly to directories that you have visited "frecently."
 ###
 
 #
 # Requirements
 #
 
-zstyle -t ':zephyr:core' initialized || return 1
 [[ "$TERM" != 'dumb' ]] || return 1
 
 #
 # Init
 #
 
-source $ZEPHYR_HOME/.external/z/z.sh
-if [[ -z "$_Z_DATA" ]]; then
-  _Z_DATA=${XDG_DATA_HOME:=$HOME/.local/share}/z/data
-fi
-[[ -f $_Z_DATA ]] || { mkdir -p ${_Z_DATA:h} && touch $_Z_DATA }
+source ${0:a:h}/external/zsh-z/zsh-z.plugin.zsh
+ZSHZ_DATA=${XDG_DATA_HOME:=$HOME/.local/share}/zsh-z/data
+[[ -f $ZSHZ_DATA ]] || { mkdir -p ${ZSHZ_DATA:h} && touch $ZSHZ_DATA }
+
+# if [[ -z "$_Z_DATA" ]]; then
+#   _Z_DATA=${XDG_DATA_HOME:=$HOME/.local/share}/z/data
+# fi
+# [[ -f $_Z_DATA ]] || { mkdir -p ${_Z_DATA:h} && touch $_Z_DATA }

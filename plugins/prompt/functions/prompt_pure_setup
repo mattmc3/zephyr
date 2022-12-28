@@ -1,5 +1,5 @@
 #!/bin/zsh
-0=${(%):-%N}
+0=${(%):-%x}
 
 # show exit code on right
 function precmd_pipestatus {
@@ -12,5 +12,5 @@ function precmd_pipestatus {
 }
 add-zsh-hook precmd precmd_pipestatus
 
-fpath+=$ZEPHYR_HOME/.external/pure
-source $ZEPHYR_HOME/.external/pure/pure.zsh
+fpath+=${0:h:h}/external/pure
+source ${0:h:h}/external/pure/pure.zsh
