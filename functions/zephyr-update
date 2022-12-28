@@ -1,12 +1,14 @@
+#!/bin/zsh
 #function zephyr-update {
 emulate -L zsh; setopt local_options extended_glob glob_dots no_monitor
+0=${(%):-%x}
+local lastupdated="${0:a:h:h}/.cache/lastupdated"
 local d
 for d in $ZEPHYR_HOME/**/.git(N/); do
   echo "Zephyr updating ${d:A:h:t}..."
   command git -C "${d:A:h}" pull --quiet --ff --depth 1 --rebase --autostash &
 done
 wait
-date '+%Y-%m-%d %H:%M:%S' >"$ZEPHYR_HOME/.external/.lastupdated"
+date '+%Y-%m-%d %H:%M:%S' >"$lastupdated"
 echo "Zephyr update complete."
 #}
-# vi: ft=zsh

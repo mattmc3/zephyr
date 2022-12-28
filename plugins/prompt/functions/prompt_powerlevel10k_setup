@@ -1,2 +1,1 @@
-#!/bin/zsh
-source $ZEPHYR_HOME/.external/powerlevel10k/powerlevel10k.zsh-theme
+../external/powerlevel10k/powerlevel10k.zsh-theme

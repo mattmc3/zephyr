@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 function _zephyr {
   if (( ! $+functions[zephyr-${1}] )); then
     echo >&2 "zephyr: Subcommand '${1}' is not valid."
@@ -9,5 +11,3 @@ function _zephyr {
   return $?
 }
 _zephyr "$@"
-
-# vi: ft=zsh

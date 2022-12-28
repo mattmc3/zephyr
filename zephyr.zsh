@@ -3,11 +3,13 @@
 
 0=${(%):-%x}
 ZEPHYR_HOME=${ZEPHYR_HOME:-${0:A:h}}
-source $ZEPHYR_HOME/lib/init.zsh
 
-# allow OMZ plugins
-ZSH=$ZEPHYR_HOME/.external/ohmyzsh
-ZSH_CUSTOM="${ZSH_CUSTOM:-${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}}"
+fpath=($ZEPHYR_HOME/functions $fpath)
+autoload -U $fpath[1]/*(.:t)
+
+# allow overriding plugins
+_zhome=${ZDOTDIR:-${XDG_CONFIG_HOME:=$HOME/.config}/zsh}
+ZSH_CUSTOM="${ZSH_CUSTOM:-$_zhome}"
 
 # get list of plugins from zstyle or plugins variable
 zstyle -a ':zephyr:load' plugins \
@@ -31,7 +33,6 @@ for _zephyr_plugin in $_zephyr_plugins; do
   _initfiles=(
     $ZSH_CUSTOM/plugins/$_zephyr_plugin/$_zephyr_plugin.plugin.zsh(N)
     $ZEPHYR_HOME/plugins/$_zephyr_plugin/$_zephyr_plugin.plugin.zsh(N)
-    $ZSH/plugins/$_zephyr_plugin/$_zephyr_plugin.plugin.zsh(N)
   )
   if (( $#_initfiles )); then
     # echo "Loading plugin $_zephyr_plugin from $_initfiles[1]"
@@ -40,10 +41,12 @@ for _zephyr_plugin in $_zephyr_plugins; do
     echo >&2 "zephyr: Plugin not found '$_zephyr_plugin'."
   fi
 done
-unset _zephyr_plugin{s,} _initfiles
 
 # Update weekly.
 zephyr-updatecheck
 
 # tell plugins that Zephyr has been initialized
 zstyle ':zephyr:core' initialized 'yes'
+
+# cleanup
+unset _zhome _zephyr_plugin{s,} _initfiles

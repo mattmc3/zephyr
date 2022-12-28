@@ -1,14 +1,15 @@
+#!/bin/zsh
 #function zephyr-updatecheck {
 emulate -L zsh; setopt local_options extended_glob
-local lastupdated="$ZEPHYR_HOME/.external/.lastupdated"
+0=${(%):-%x}
+local lastupdated="${0:a:h:h}/.cache/lastupdated"
 if [[ ! -f "$lastupdated" ]]; then
   mkdir -p "${lastupdated:h}"
   date '+%Y-%m-%d %H:%M:%S' >"$lastupdated"
 fi
 
 # Test by changing date on .lastupdated file.
-# touch -a -m -t 200101010909.09 "$ZEPHYR_HOME/.external/.lastupdated"
+# touch -a -m -t 200101010909.09 "$ZEPHYR_HOME/.cache/lastupdated"
 local -a oldfiles=($lastupdated(Nmw+1))
 (( $#oldfiles )) && zephyr-update &>/dev/null
 #}
-# vi: ft=zsh
