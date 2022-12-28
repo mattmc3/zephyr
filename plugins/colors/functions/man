@@ -1,3 +1,7 @@
+#!/bin/zsh
+
+##? man - Wrapper to colozize man pages.
+
 # start/end - md/me:bold; us/ue:underline; so/se:standout;
 # colors    - 0:black; 1:red; 2:green; 3:yellow; 4:blue; 5:magenta; 6:cyan; 7:white;
 # tput cmds - setaf:fgcolor; smul:underline; smso:standout; sgr0:clear;
@@ -9,5 +13,3 @@ LESS_TERMCAP_so=$(tput smso) \
 LESS_TERMCAP_se=$(tput rmso) \
 PAGER="${commands[less]:-$PAGER}" \
 command man -- "$@"
-
-# vim: ft=zsh

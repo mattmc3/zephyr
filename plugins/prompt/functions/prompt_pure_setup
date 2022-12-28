@@ -1,3 +1,4 @@
+#!/bin/zsh
 0=${(%):-%N}
 
 # show exit code on right
@@ -13,5 +14,3 @@ add-zsh-hook precmd precmd_pipestatus
 
 fpath+=$ZEPHYR_HOME/.external/pure
 source $ZEPHYR_HOME/.external/pure/pure.zsh
-
-# vim: ft=zsh

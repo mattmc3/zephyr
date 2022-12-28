@@ -1,6 +1,8 @@
-###
-# funcsave - save a function to $ZFUNCDIR for lazy loading
-###
+#!/bin/zsh
+
+##? funcsave - save a function to $ZFUNCDIR for lazy loading
+
+#function funcsave {
 
 # check args
 if [[ -z "$1" ]]; then
@@ -20,4 +22,4 @@ autoload +X "$1" > /dev/null
 # remove first/last lines (ie: 'function foo {' and '}') and de-indent one level
 type -f "$1" | awk 'NR>2 {print prev} {gsub(/^\t/, "", $0); prev=$0}' >| "$ZFUNCDIR/$1"
 
-# vim: ft=zsh
+#}

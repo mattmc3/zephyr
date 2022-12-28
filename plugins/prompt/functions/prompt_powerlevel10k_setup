@@ -1,4 +1,2 @@
-fpath+=$ZEPHYR_HOME/.external/powerlevel10k
+#!/bin/zsh
 source $ZEPHYR_HOME/.external/powerlevel10k/powerlevel10k.zsh-theme
-
-# vim: ft=zsh

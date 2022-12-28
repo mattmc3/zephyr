@@ -1,6 +1,8 @@
-###
-# funced - edit the function specified
-###
+#!/bin/zsh
+
+##? funced - edit the function specified
+
+#function funced {
 
 # check args
 if [[ -z "$1" ]]; then
@@ -16,17 +18,18 @@ if [[ ! -f "$ZFUNCDIR/$1" ]]; then
   cat <<eos > "$ZFUNCDIR/$1"
 ##############################################################################
 # TODO: Remove this header block
-# Do NOT include function definition (ie: omit 'function $1() {').
+# Do NOT include function definition block (ie: omit 'function $1() { }').
 # See: https://zsh.sourceforge.io/Doc/Release/Functions.html#Autoloading-Functions
 #
 # Use ##? comments for help/usage docs.
 ##############################################################################
 
-# function $1 {
-
-# TODO: add additional usage
+##? $1 - TODO: add description here
+##?
 ##? usage: $1 [-h|--help]
 ##?        $1 [<options>] <arguments>
+
+#function $1 {
 
 local -a o_help
 zmodload zsh/zutil
@@ -39,9 +42,9 @@ if (( \$#o_help )); then
   return
 fi
 
-# TODO: write your function
+# TODO: write your function here
 
-# }
+#}
 
 eos
   autoload -Uz "$ZFUNCDIR/$1"
@@ -54,4 +57,4 @@ else
   ${EDITOR:-vim} "$ZFUNCDIR/$1"
 fi
 
-# vim: ft=zsh
+#}

@@ -1,3 +1,7 @@
+#!/bin/zsh
+
+##? bindkey-all - Show bindkey mappings.
+
 # Runs bindkey but for all of the keymaps. Running it with no arguments will
 # print out the mappings for all of the keymaps.
 local keymap=''
@@ -5,5 +9,3 @@ for keymap in $(bindkey -l); do
   [[ "$#" -eq 0 ]] && printf "#### %s\n" "${keymap}" 1>&2
   bindkey -M "${keymap}" "$@"
 done
-
-# vim: ft=zsh
