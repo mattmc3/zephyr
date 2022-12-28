@@ -6,7 +6,6 @@
 # Requirements
 #
 
-zstyle -t ':zephyr:core' initialized || return 1
 [[ "$TERM" != 'dumb' ]] || return 1
 
 #

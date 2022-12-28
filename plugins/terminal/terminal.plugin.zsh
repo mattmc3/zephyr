@@ -6,7 +6,6 @@
 # Requirements
 #
 
-zstyle -t ':zephyr:core' initialized || return 1
 if [[ "$TERM" == (dumb|linux|*bsd*|eterm*) ]]; then
   return 1
 fi
