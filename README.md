@@ -46,7 +46,7 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 - [autosuggestions][zsh-autosuggestions] - Fish-like autosuggestions for zsh
 - clipboard - Handy cross-platform clipboard functions
 - colors\* - Make terminal things more colorful
-- completions\* - Load and initialize the built-in zsh completion system
+- completion\* - Load and initialize the built-in zsh completion system
 - confd - Source conf.d like Fish
 - directory\* - Sets options and aliases related to the dirstack and directories
 - editor\* - Override and fill in the gaps of the default keybinds
