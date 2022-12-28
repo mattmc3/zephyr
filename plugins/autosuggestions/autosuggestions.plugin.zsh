@@ -21,7 +21,7 @@ source $ZEPHYR_HOME/.external/zsh-autosuggestions/zsh-autosuggestions.zsh
 # Variables
 #
 
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=60'
 
 #
 # Keybinds
