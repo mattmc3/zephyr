@@ -2,7 +2,11 @@
 # terminal - Sets terminal window and tab titles.
 ###
 
-# Return if requirements are not found.
+#
+# Requirements
+#
+
+zstyle -t ':zephyr:core' initialized || return 1
 if [[ "$TERM" == (dumb|linux|*bsd*|eterm*) ]]; then
   return 1
 fi

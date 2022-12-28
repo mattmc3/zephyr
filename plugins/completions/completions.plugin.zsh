@@ -7,7 +7,6 @@
 #
 
 zstyle -t ':zephyr:core' initialized || return 1
-
 [[ "$TERM" != 'dumb' ]] || return 1
 
 if zstyle -T ':zephyr:plugins:completions' use-xdg-basedirs; then

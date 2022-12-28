@@ -6,9 +6,8 @@
 # Requirements
 #
 
-0=${(%):-%x}
-: ${ZEPHYR_HOME:=${0:A:h:h:h}}
-zstyle -t ':zephyr:core' initialized || . $ZEPHYR_HOME/lib/init.zsh
+zstyle -t ':zephyr:core' initialized || return 1
+[[ "$TERM" != 'dumb' ]] || return 1
 
 #
 # Init

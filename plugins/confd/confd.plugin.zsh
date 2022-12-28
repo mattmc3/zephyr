@@ -3,6 +3,12 @@
 ###
 
 #
+# Requirements
+#
+
+zstyle -t ':zephyr:core' initialized || return 1
+
+#
 # Init
 #
 
