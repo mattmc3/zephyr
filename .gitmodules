@@ -34,3 +34,6 @@
 [submodule "plugins/utility/external/zman"]
 	path = plugins/utility/external/zman
 	url = https://github.com/mattmc3/zman
+[submodule "plugins/completion/external/zsh-completions"]
+	path = plugins/completion/external/zsh-completions
+	url = https://github.com/zsh-users/zsh-completions

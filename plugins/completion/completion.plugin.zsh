@@ -6,7 +6,6 @@
 # Requirements
 #
 
-zstyle -t ':zephyr:core' initialized || return 1
 [[ "$TERM" != 'dumb' ]] || return 1
 
 if zstyle -T ':zephyr:plugins:completion' use-xdg-basedirs; then
@@ -41,7 +40,7 @@ setopt NO_FLOW_CONTROL     # Disable start/stop characters in shell editor.
 # Use caching to make completion for commands such as dpkg and apt usable.
 zstyle ':completion::complete:*' use-cache on
 zstyle ':completion::complete:*' cache-path "$_zcompcache"
-zstyle ':completion:*:*:git:*' script $ZEPHYR_HOME/.external/git/git-completion.bash
+zstyle ':completion:*:*:git:*' script ${0:a:h}/external/git/git-completion.bash
 
 #
 # Init
@@ -49,7 +48,7 @@ zstyle ':completion:*:*:git:*' script $ZEPHYR_HOME/.external/git/git-completion.
 
 fpath=(
   # add git completions if they exist
-  $ZEPHYR_HOME/.external/git(/N)
+  ${0:a:h}/external/git(/N)
 
   # add curl completions from homebrew if they exist
   /{usr,opt}/{local,homebrew}/opt/curl/share/zsh/site-functions(-/FN)
@@ -58,7 +57,7 @@ fpath=(
   /{usr,opt}/{local,homebrew}/share/zsh/site-functions(-/FN)
 
   # add zsh-users completions if they exist
-  $ZEPHYR_HOME/.external/zsh-completion/src(-/FN)
+  ${0:a:h}/external/zsh-completion/src(-/FN)
 
   # Allow user completions.
   ${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN)
