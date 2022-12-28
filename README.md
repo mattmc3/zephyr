@@ -4,41 +4,37 @@
 
 Zsh is a wonderful shell, but out-of-the-box it needs a bit of a boost. That's where Zephyr comes in.
 
-Zephyr can be thought of as a fast, lightweight set of core Zsh plugins. It pulls together core functionality from frameworks like [zsh-utils], [Oh-My-Zsh][ohmyzsh], and [Prezto][prezto], but removes any bloat and prioritizes speed and simplicity.
+Zephyr combines some of the best functionality from [Prezto][prezto], sprinkles in a bit from [Oh-My-Zsh][ohmyzsh], and removes any bloat and prioritizes speed and simplicity.
+
+Zephyr can be thought of as a fast, lightweight set of essential Zsh plugins.
 
 Combine Zephyr with a [plugin manager][antidote] and some [awesome plugins](https://github.com/unixorn/awesome-zsh-plugins) and you'll have a powerful Zsh setup that rivals anything out there.
 
 ## Install
-
-### Using a Plugin manager
-
-Use [antidote] to load Zephyr:
-
-```shell
-antidote install mattmc3/zephyr
-```
-
-Or, use [antidote] to only load the parts of Zephyr you need:
-
-```shell
-# .zsh_plugins.txt
-mattmc3/zephyr path:plugins/directory
-mattmc3/zephyr path:plugins/editor
-mattmc3/zephyr path:plugins/history
-mattmc3/zephyr path:plugins/completions
-```
-
-### Manually
 
 Add the following snippet to your `.zshrc`:
 
 ```zsh
 # clone zephyr
 [[ -d ${ZDOTDIR:-~}/.zephyr ]] ||
-  git clone https://github.com/mattmc3/zephyr ${ZDOTDIR:-~}/.zephyr
+  git clone --recursive https://github.com/mattmc3/zephyr ${ZDOTDIR:-~}/.zephyr
 
 # source zephyr
 source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
+```
+
+### Using a Plugin manager
+
+If your plugin manager supports using sub-plugins, you can load Zephyr that way as well.
+
+[Antidote][antidote] is one such plugin manager. You can load only the parts of Zephyr you need like so:
+
+```shell
+# .zsh_plugins.txt
+mattmc3/zephyr path:plugins/directory
+mattmc3/zephyr path:plugins/editor
+mattmc3/zephyr path:plugins/history
+mattmc3/zephyr path:plugins/completion
 ```
 
 ## Plugins
