@@ -6,8 +6,8 @@ ZEPHYR_HOME="${0:A:h:h}"
 
 # Load zephyr functions
 fpath+="$ZEPHYR_HOME/functions"
-autoload -Uz autoload-dir
-autoload-dir "$ZEPHYR_HOME/functions"
+autoload -Uz zephyr-autoload-dir
+zephyr-autoload-dir "$ZEPHYR_HOME/functions"
 
 # clone Zephyr requirements
 repos=(
@@ -22,6 +22,7 @@ repos=(
   zsh-users/zsh-history-substring-search
   zsh-users/zsh-syntax-highlighting
   zdharma-continuum/fast-syntax-highlighting
+  agkozak/zsh-z
   rupa/z
 )
 zephyr-clone $repos
