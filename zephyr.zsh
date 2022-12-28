@@ -23,7 +23,7 @@ zstyle -a ':zephyr:load' plugins \
     directory
     utility
     prompt
-    completions
+    completion
   )
 
 # Load plugins.
@@ -41,3 +41,9 @@ for _zephyr_plugin in $_zephyr_plugins; do
   fi
 done
 unset _zephyr_plugin{s,} _initfiles
+
+# Update weekly.
+zephyr-updatecheck
+
+# tell plugins that Zephyr has been initialized
+zstyle ':zephyr:core' initialized 'yes'
