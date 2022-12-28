@@ -42,8 +42,8 @@ for _zephyr_plugin in $_zephyr_plugins; do
   fi
 done
 
-# Update weekly.
-zephyr-updatecheck
+# Update weekly (quietly).
+zephyr-updatecheck &>/dev/null
 
 # tell plugins that Zephyr has been initialized
 zstyle ':zephyr:core' initialized 'yes'

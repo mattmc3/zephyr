@@ -11,5 +11,5 @@ fi
 # Test by changing date on .lastupdated file.
 # touch -a -m -t 200101010909.09 "$ZEPHYR_HOME/.cache/lastupdated"
 local -a oldfiles=($lastupdated(Nmw+1))
-(( $#oldfiles )) && zephyr-update &>/dev/null
+(( $#oldfiles )) && zephyr-update
 #}
