@@ -102,6 +102,9 @@ fi
 # Use zsh-bench.
 export PATH="${0:a:h}/external/zsh-bench:$PATH"
 
+# Use zman.
+source ${0:a:h}/external/zman/zman.zsh
+
 # Use built-in paste magic.
 autoload -Uz bracketed-paste-url-magic
 zle -N bracketed-paste bracketed-paste-url-magic

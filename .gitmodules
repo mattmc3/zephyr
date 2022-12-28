@@ -31,3 +31,6 @@
 [submodule "plugins/z/external/zsh-z"]
 	path = plugins/z/external/zsh-z
 	url = https://github.com/agkozak/zsh-z
+[submodule "plugins/utility/external/zman"]
+	path = plugins/utility/external/zman
+	url = https://github.com/mattmc3/zman
