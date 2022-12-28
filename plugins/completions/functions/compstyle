@@ -1,0 +1,2 @@
+#!/bin/zsh
+autoload -Uz compstyle_${1}_setup && compstyle_${1}_setup
