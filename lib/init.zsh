@@ -27,17 +27,16 @@ repos=(
 zephyr-clone $repos
 unset repos
 
-() {
-  # https://www.oliverspryn.com/blog/adding-git-completion-to-zsh
-  local gitdir=$ZEPHYR_HOME/.external/git
-  if (( ${+commands[curl]} )) && [[ ! -d $gitdir ]]; then
-    mkdir -p $gitdir
+# https://www.oliverspryn.com/blog/adding-git-completion-to-zsh
+_gitdir=$ZEPHYR_HOME/.external/git
+if (( ${+commands[curl]} )) && [[ ! -d $_gitdir ]]; then
+  mkdir -p $_gitdir
 
-    # Download the latest git completion scripts
-    curl -fsSL https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o $gitdir/git-completion.bash
-    curl -fsSL https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.zsh -o $gitdir/_git
-  fi
-}
+  # Download the latest git completion scripts
+  curl -fsSL https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o $_gitdir/git-completion.bash
+  curl -fsSL https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.zsh -o $_gitdir/_git
+fi
+unset _gitdir
 
 # Load pre-reqs.
 if (( ! $+functions[zsh-defer] )); then
