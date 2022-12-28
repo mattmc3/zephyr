@@ -1,7 +1,6 @@
 ~*
 *.zwc
 *.zwc.old
-external/
 .external/
 .prompts/
 contribs/
