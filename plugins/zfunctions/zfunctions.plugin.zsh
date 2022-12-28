@@ -3,24 +3,24 @@
 ###
 
 #
-# Requirements
-#
-
-zstyle -t ':zephyr:core' initialized || return 1
-
-#
 # Init
 #
 
-zephyr-autoload-dir "${0:A:h}/functions"
+# Load plugins functions.
+fpath=("${0:A:h}/functions" $fpath)
+autoload -Uz $fpath[1]/*(.:t)
 
+# Load zfunctions.
 if [[ -z "$ZFUNCDIR" ]]; then
   ZFUNCDIR=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config/zsh}}/functions
 fi
-
 [[ -d "$ZFUNCDIR" ]] || return
-zephyr-autoload-dir "$ZFUNCDIR"
+fpath=("$ZFUNCDIR" $fpath)
+autoload -Uz $fpath[1]/*(.:t)
+
+# Load zfunctions subdirs.
 for _fndir in $ZFUNCDIR/**/*(N/); do
-  zephyr-autoload-dir $_fndir
+  fpath=("$_fndir" $fpath)
+  autoload -Uz $fpath[1]/*(.:t)
 done
 unset _fndir
