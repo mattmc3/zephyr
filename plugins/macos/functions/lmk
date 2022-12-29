@@ -1,0 +1,3 @@
+#!/bin/zsh
+##? lmk - 'Let me know' when a process completes
+say 'Process complete.'

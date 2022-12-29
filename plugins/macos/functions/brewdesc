@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+##? brewdesc - Show descriptions for brew installs.
+
+brew leaves | xargs brew desc --eval-all
