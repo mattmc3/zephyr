@@ -21,7 +21,7 @@ zstyle -a ':zephyr:load' plugins \
 # if nothing provided, use the default list
 (( $#_zephyr_plugins )) ||
   _zephyr_plugins=(
-    colors
+    color
     environment
     editor
     history

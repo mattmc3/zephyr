@@ -1,5 +1,5 @@
 ####
-# colors - Make terminal things more colorful.
+# color - Make terminal things more colorful.
 ###
 
 #
