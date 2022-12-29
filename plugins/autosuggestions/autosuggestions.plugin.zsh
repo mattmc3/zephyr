@@ -12,13 +12,16 @@
 # Init
 #
 
-source ${0:a:h}/external/zsh-autosuggestions/zsh-autosuggestions.zsh
+# Source module files.
+source "${0:a:h}/external/zsh-autosuggestions/zsh-autosuggestions.zsh" || return 1
 
 #
 # Variables
 #
 
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=60'
+# Set highlight color, default 'fg=60'.
+zstyle -s ':zephyr:plugin:autosuggestions:highlight' style \
+  'ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE' || ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=60'
 
 #
 # Keybinds

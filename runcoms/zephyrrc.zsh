@@ -42,8 +42,8 @@ zstyle ':zephyr:load' plugin \
 # Autosuggestions
 #
 
-# Set the query found color.
-# zstyle ':zephyr:plugin:autosuggestions:color' found ''
+# Set the highlight style.
+# zstyle ':zephyr:plugin:autosuggestions:highlight' style 'fg=8'
 
 #
 # Completions
