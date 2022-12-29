@@ -26,7 +26,7 @@ zstyle ':zephyr:*:*' color 'yes'
 
 # Set the Zephyr plugins to load (browse plugins).
 # The order matters.
-zstyle ':zephyr:load' plugin \
+zstyle ':zephyr:load' plugins \
   'environment' \
   'terminal' \
   'editor' \
