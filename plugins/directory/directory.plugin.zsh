@@ -25,15 +25,18 @@ setopt PUSHD_TO_HOME         # pushd with no args goes to home.
 # Aliases
 #
 
-alias -- -='cd -'
-alias dirh='dirs -v'
-for _idx ({1..9}) alias "$_idx"="cd -${_idx}"
+if ! zstyle -t ':zephyr:plugin:directory:alias' skip; then
+  alias -- -='cd -'
+  alias dirh='dirs -v'
+  for _idx ({1..9}) alias "$_idx"="cd -${_idx}"
 
-alias -g ..2='../..'
-alias -g ..3='../../..'
-alias -g ..4='../../../..'
-alias -g ..5='../../../../..'
-alias -g ..6='../../../../../..'
-alias -g ..7='../../../../../../..'
-alias -g ..8='../../../../../../../..'
-alias -g ..9='../../../../../../../../..'
+  alias -g ..1='..'
+  alias -g ..2='../..'
+  alias -g ..3='../../..'
+  alias -g ..4='../../../..'
+  alias -g ..5='../../../../..'
+  alias -g ..6='../../../../../..'
+  alias -g ..7='../../../../../../..'
+  alias -g ..8='../../../../../../../..'
+  alias -g ..9='../../../../../../../../..'
+fi
