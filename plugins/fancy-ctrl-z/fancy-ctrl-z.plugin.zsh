@@ -1,6 +1,6 @@
 # https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
 function fancy-ctrl-z {
-  if [[ -z "$BUFFER" ]]; then
+  if [[ $#BUFFER -eq 0 ]]; then
     BUFFER="fg"
     zle accept-line -w
   else
