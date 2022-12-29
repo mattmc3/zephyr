@@ -90,6 +90,9 @@ alias help=run-help
 # Init
 #
 
+fpath=(${0:A:h}/functions $fpath)
+autoload -Uz $fpath[1]/*(.:t)
+
 # Wrap zsh-defer.
 if (( ! $+functions[zsh-defer] )); then
   function zsh-defer {
@@ -105,7 +108,7 @@ export PATH="${0:a:h}/external/zsh-bench:$PATH"
 # Use zman.
 source ${0:a:h}/external/zman/zman.zsh
 
-# Use built-in paste magic.
+# Use built-in URL magic.
 autoload -Uz bracketed-paste-url-magic
 zle -N bracketed-paste bracketed-paste-url-magic
 autoload -Uz url-quote-magic
