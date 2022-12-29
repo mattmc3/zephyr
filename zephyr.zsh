@@ -11,8 +11,8 @@ autoload -U $fpath[1]/*(.:t)
 _zhome=${ZDOTDIR:-${XDG_CONFIG_HOME:=$HOME/.config}/zsh}
 ZSH_CUSTOM="${ZSH_CUSTOM:-$_zhome}"
 
-# load zephyr zstyles if file exists
-[[ -f ${ZDOTDIR:-$HOME}/.zephyr.zsh ]] && . ${ZDOTDIR:-$HOME}/.zephyr.zsh
+# load zstyles from .zephrc if file found
+[[ -f ${ZDOTDIR:-$HOME}/.zephrc ]] && . ${ZDOTDIR:-$HOME}/.zephrc
 
 # get list of plugins from zstyle or plugins variable
 zstyle -a ':zephyr:load' plugins \
