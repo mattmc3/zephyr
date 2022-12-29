@@ -452,3 +452,22 @@ else
 fi
 
 unset key{,map,_bindings}
+
+#
+# Other Keybindings
+#
+
+# Set ctrl-z as bg/fg toggle
+function symmetric-ctrl-z {
+  # https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
+  if [[ $#BUFFER -eq 0 ]]; then
+    BUFFER="fg"
+    zle accept-line -w
+  else
+    zle push-input -w
+    zle clear-screen -w
+  fi
+}
+zle -N symmetric-ctrl-z
+bindkey '^Z' symmetric-ctrl-z
+
