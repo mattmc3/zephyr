@@ -67,11 +67,6 @@ fpath=(
   $fpath
 )
 
-# Initialize completion styles. Users can set their preferred completion style by
-# calling `compstyle <compstyle>` in their .zshrc, or by defining their own
-# `compstyle_<name>_setup` functions similar to the zsh prompt system.
-autoload -Uz compstyle
-
 # Load and initialize the completion system ignoring insecure directories with a
 # cache time of 20 hours, so it should almost always regenerate the first time a
 # shell is opened each day.
@@ -91,6 +86,19 @@ fi
     zcompile "$_zcompdump"
   fi
 } &!
+
+#
+# Styles
+#
+
+# Initialize completion styles. Users can set their preferred completion style by
+# calling `compstyle <compstyle>` in their .zshrc, or by defining their own
+# `compstyle_<name>_setup` functions similar to the zsh prompt system.
+autoload -Uz compstyle
+zstyle -s ':zephyr:plugin:completion' compstyle \
+  '_compstyle' || _compstyle='zephyr'
+compstyle $_compstyle
+unset _compstyle
 
 #
 # Cleanup

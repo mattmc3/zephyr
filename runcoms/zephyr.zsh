@@ -53,6 +53,9 @@ zstyle ':zephyr:load' plugins \
 # zstyle ':zephyr:plugin:completion:*:hosts' etc-host-ignores \
 #   '0.0.0.0' '127.0.0.1'
 
+# Set the preferred completion style.
+# zstyle ':zephyr:plugin:completion' compstyle 'zephyr'
+
 #
 # Directory
 #
