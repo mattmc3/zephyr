@@ -418,7 +418,7 @@ for keymap in 'emacs' 'viins'; do
   bindkey -M "$keymap" "$key_info[Control]I" expand-or-complete
 
   # Expand .... to ../..
-  if zstyle -t ':zephyr:plugin:editor' dot-expansion; then
+  if zstyle -T ':zephyr:plugin:editor' dot-expansion; then
     bindkey -M "$keymap" "." expand-dot-to-parent-directory-path
   fi
 
@@ -437,7 +437,7 @@ done
 bindkey -M vicmd "$key_info[Delete]" delete-char
 
 # Do not expand .... to ../.. during incremental search.
-if zstyle -t ':zephyr:plugin:editor' dot-expansion; then
+if zstyle -T ':zephyr:plugin:editor' dot-expansion; then
   bindkey -M isearch . self-insert 2> /dev/null
 fi
 

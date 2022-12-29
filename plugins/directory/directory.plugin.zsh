@@ -29,8 +29,6 @@ alias -- -='cd -'
 alias dirh='dirs -v'
 for _idx ({1..9}) alias "$_idx"="cd -${_idx}"
 
-alias -g ...='../..'
-alias -g ....='../../..'
 alias -g ..2='../..'
 alias -g ..3='../../..'
 alias -g ..4='../../../..'

@@ -61,7 +61,7 @@ zstyle ':zephyr:load' plugin \
 zstyle ':zephyr:plugin:editor' key-bindings 'emacs'
 
 # Auto convert .... to ../..
-# zstyle ':zephyr:plugin:editor' dot-expansion 'yes'
+# zstyle ':zephyr:plugin:editor' dot-expansion 'no'
 
 # Allow the zsh prompt context to be shown.
 #zstyle ':zephyr:plugin:editor' ps-context 'yes'
