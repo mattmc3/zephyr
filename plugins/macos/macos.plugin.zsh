@@ -58,7 +58,6 @@ function manp {
   fi
   mandoc -T pdf "$(/usr/bin/man -w $@)" | open -fa Preview
 }
-compdef _man manp
 
 function pfd {
   osascript 2> /dev/null <<EOF
