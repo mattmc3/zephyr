@@ -471,3 +471,44 @@ function symmetric-ctrl-z {
 zle -N symmetric-ctrl-z
 bindkey '^Z' symmetric-ctrl-z
 
+# Run a default command when none is given
+function default-command {
+  # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/magic-enter
+
+  # Only run default commands when in PS1 and command line is empty
+  # http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html#User_002dDefined-Widgets
+  if [[ -n "$BUFFER" || "$CONTEXT" != start ]]; then
+    return
+  fi
+
+  local cmd gitcmd
+  zstyle -s ':zephyr:plugin:editor' default-command 'cmd'
+  zstyle -s ':zephyr:plugin:editor' default-git-command 'gitcmd' || gitcmd="$cmd"
+
+  if command git rev-parse --is-inside-work-tree &>/dev/null; then
+    BUFFER="$gitcmd"
+  else
+    BUFFER="$cmd"
+  fi
+}
+
+# Wrapper for the accept-line zle widget (run when pressing Enter)
+
+# If the wrapper already exists don't redefine it
+(( ! ${+functions[_default-command_accept-line]} )) || return 0
+
+case "$widgets[accept-line]" in
+    # Override the current accept-line widget, calling the old one
+    user:*) zle -N _default-command_orig_accept-line "${widgets[accept-line]#user:}"
+        function _default-command_accept-line() {
+            default-command
+            zle _default-command_orig_accept-line -- "$@"
+        } ;;
+    # If no user widget defined, call the original accept-line widget
+    builtin) function _default-command_accept-line() {
+            default-command
+            zle .accept-line
+        } ;;
+esac
+
+zle -N accept-line _default-command_accept-line
