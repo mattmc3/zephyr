@@ -40,6 +40,11 @@ for _zephyr_plugin in $_zephyr_plugins; do
   if (( $#_initfiles )); then
     # echo "Loading plugin $_zephyr_plugin from $_initfiles[1]"
     source "$_initfiles[1]"
+    if [[ $? -eq 0 ]]; then
+      zstyle ":zephyr:plugin:$_zephyr_plugin" loaded 'yes'
+    else
+      zstyle ":zephyr:plugin:$_zephyr_plugin" loaded 'no'
+    fi
   else
     echo >&2 "zephyr: Plugin not found '$_zephyr_plugin'."
   fi
