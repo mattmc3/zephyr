@@ -1,0 +1,7 @@
+#!/bin/zsh
+
+#compdef manp
+#autoload
+
+# completions for manp match man
+_man
