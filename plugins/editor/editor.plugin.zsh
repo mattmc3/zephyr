@@ -8,10 +8,6 @@
 
 [[ "$TERM" != 'dumb' ]] || return 1
 
-# Load plugins functions.
-fpath=("${0:A:h}/functions" $fpath)
-autoload -Uz $fpath[1]/*(.:t)
-
 #
 # Options
 #
