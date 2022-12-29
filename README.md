@@ -82,8 +82,8 @@ zstyle ':zephyr:*:*' use-xdg-basedirs 'no'
 Or, you can set it for each individual plugin:
 
 ```zsh
-zstyle ':zephyr:plugins:history' use-xdg-basedirs 'no'
-zstyle ':zephyr:plugins:completion' use-xdg-basedirs 'yes'
+zstyle ':zephyr:plugin:history' use-xdg-basedirs 'no'
+zstyle ':zephyr:plugin:completion' use-xdg-basedirs 'yes'
 ```
 
 ## Credits

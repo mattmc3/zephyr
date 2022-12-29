@@ -39,7 +39,7 @@ unset _hist{file,size} _savehist
 # Aliases
 #
 
-if ! zstyle -t ':zephyr:plugins:history:alias' skip; then
+if ! zstyle -t ':zephyr:plugin:history:alias' skip; then
   # Lists the ten most used commands.
   alias history-stat="command history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
   alias hist='fc -l -i'

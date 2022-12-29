@@ -8,7 +8,7 @@
 
 [[ "$TERM" != 'dumb' ]] || return 1
 
-if zstyle -T ':zephyr:plugins:completion' use-xdg-basedirs; then
+if zstyle -T ':zephyr:plugin:completion' use-xdg-basedirs; then
   # Ensure the cache directory exists.
   [[ -d "${XDG_CACHE_HOME:=$HOME/.cache}/zsh" ]] || mkdir -p "$XDG_CACHE_HOME/zsh"
 

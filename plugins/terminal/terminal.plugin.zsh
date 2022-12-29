@@ -13,7 +13,7 @@ fi
 # Sets the terminal window title.
 function set-window-title {
   local title_format{,ted}
-  zstyle -s ':zephyr:plugins:terminal:window-title' format 'title_format' || title_format="%s"
+  zstyle -s ':zephyr:plugin:terminal:window-title' format 'title_format' || title_format="%s"
   zformat -f title_formatted "$title_format" "s:$argv"
   printf '\e]2;%s\a' "${(V%)title_formatted}"
 }
@@ -21,7 +21,7 @@ function set-window-title {
 # Sets the terminal tab title.
 function set-tab-title {
   local title_format{,ted}
-  zstyle -s ':zephyr:plugins:terminal:tab-title' format 'title_format' || title_format="%s"
+  zstyle -s ':zephyr:plugin:terminal:tab-title' format 'title_format' || title_format="%s"
   zformat -f title_formatted "$title_format" "s:$argv"
   printf '\e]1;%s\a' "${(V%)title_formatted}"
 }
@@ -29,7 +29,7 @@ function set-tab-title {
 # Sets the terminal multiplexer tab title.
 function set-multiplexer-title {
   local title_format{,ted}
-  zstyle -s ':zephyr:plugins:terminal:multiplexer-title' format 'title_format' || title_format="%s"
+  zstyle -s ':zephyr:plugin:terminal:multiplexer-title' format 'title_format' || title_format="%s"
   zformat -f title_formatted "$title_format" "s:$argv"
   printf '\ek%s\e\\' "${(V%)title_formatted}"
 }
@@ -116,8 +116,8 @@ then
 fi
 
 # Set up non-Apple terminals.
-if zstyle -t ':zephyr:plugins:terminal' auto-title 'always' \
-  || (zstyle -t ':zephyr:plugins:terminal' auto-title \
+if zstyle -t ':zephyr:plugin:terminal' auto-title 'always' \
+  || (zstyle -t ':zephyr:plugin:terminal' auto-title \
     && ( ! [[ -n "$STY" || -n "$TMUX" ]] ))
 then
   # Sets titles before the prompt is displayed.
