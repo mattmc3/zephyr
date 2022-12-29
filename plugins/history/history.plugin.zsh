@@ -23,15 +23,24 @@ setopt NO_HIST_BEEP              # Do not beep when accessing non-existent histo
 # Variables
 #
 
-HISTFILE=${XDG_DATA_HOME:=~/.local/share}/zsh/history
+zstyle -s ':zephyr:plugin:history' histfile '_histfile' || _histfile="${XDG_DATA_HOME:=~/.local/share}/zsh/history"
+zstyle -s ':zephyr:plugin:history' histsize '_histsize' || _histsize=10000
+zstyle -s ':zephyr:plugin:history' savehist '_savehist' || _savehist=10000
+
+HISTFILE="${_histfile}"  # path to the history file
+HISTSIZE="${_histsize}"  # max history events in session
+SAVEHIST="${_savehist}"  # max history events saved to history file
+unset _hist{file,size} _savehist
+
+# Make sure the path to the history file exists
 [[ -f $HISTFILE ]] || { mkdir -p ${HISTFILE:h} && touch $HISTFILE }
-HISTSIZE=5000   # max history in session
-SAVEHIST=10000  # max entries in HISTFILE
 
 #
 # Aliases
 #
 
-# Lists the ten most used commands.
-alias history-stat="command history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
-alias hist='fc -l -i'
+if ! zstyle -t ':zephyr:plugins:history:alias' skip; then
+  # Lists the ten most used commands.
+  alias history-stat="command history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
+  alias hist='fc -l -i'
+fi
