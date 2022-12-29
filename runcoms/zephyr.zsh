@@ -1,5 +1,5 @@
 ###
-# Set Zephyr options.
+# .zephyr - Set Zephyr options.
 ###
 
 #
@@ -32,7 +32,7 @@ zstyle ':zephyr:load' plugin \
   'editor' \
   'history' \
   'directory' \
-  'spectrum' \
+  'color' \
   'utility' \
   'completion' \
   'history-substring-search' \
@@ -60,11 +60,15 @@ zstyle ':zephyr:load' plugin \
 # Set the key mapping style to 'emacs' or 'vi'.
 zstyle ':zephyr:plugin:editor' key-bindings 'emacs'
 
-# Auto convert .... to ../..
+# Don't auto convert .... to ../..
 # zstyle ':zephyr:plugin:editor' dot-expansion 'no'
 
 # Allow the zsh prompt context to be shown.
-#zstyle ':zephyr:plugin:editor' ps-context 'yes'
+# zstyle ':zephyr:plugin:editor' ps-context 'yes'
+
+# Set the default (magic) command when hitting enter on an empty prompt.
+# zstyle ':zephyr:plugin:editor' default-command 'ls -lh .'
+# zstyle ':zephyr:plugin:editor' default-git-command 'git status -u .'
 
 #
 # History
@@ -73,7 +77,7 @@ zstyle ':zephyr:plugin:editor' key-bindings 'emacs'
 # Set the file to save the history in when an interactive shell exits.
 # zstyle ':zephyr:plugin:history' histfile "${ZDOTDIR:-$HOME}/.zsh_history"
 
-# Set the maximum  number  of  events  stored  in  the  internal history list.
+# Set the maximum number of events stored in the internal history list.
 # zstyle ':zephyr:plugin:history' histsize 10000
 
 # Set the maximum number of history events to save in the history file.
@@ -93,13 +97,6 @@ zstyle ':zephyr:plugin:editor' key-bindings 'emacs'
 # zstyle ':zephyr:plugin:history-substring-search' globbing-flags ''
 
 #
-# macOS
-#
-
-# Set the keyword used by `mand` to open man pages in Dash.app
-# zstyle ':zephyr:plugin:macos:man' dash-keyword 'manpages'
-
-#
 # Prompt
 #
 
@@ -116,16 +113,6 @@ zstyle ':zephyr:plugin:prompt' theme 'pure'
 # Set the prompt to display the return code along with an indicator for non-zero
 # return codes. This is not supported by all prompts.
 # zstyle ':zephyr:plugin:prompt' show-return-val 'yes'
-
-#
-# Python
-#
-
-# Auto switch the Python virtualenv on directory change.
-# zstyle ':zephyr:plugin:python:virtualenv' auto-switch 'yes'
-
-# Automatically initialize virtualenvwrapper if pre-requisites are met.
-# zstyle ':zephyr:plugin:python:virtualenv' initialize 'yes'
 
 #
 # Syntax Highlighting
