@@ -1,5 +1,5 @@
 ###
-# .zephyr - Set Zephyr options.
+# .zephyr.zsh - Set Zephyr zstyle options.
 ###
 
 #
