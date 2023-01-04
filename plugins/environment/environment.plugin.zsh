@@ -63,11 +63,6 @@ export EDITOR="${EDITOR:-vim}"
 export VISUAL="${VISUAL:-nano}"
 export PAGER="${PAGER:-less}"
 
-# Regional settings.
-export LANG="${LANG:-en_US.UTF-8}"
-export LANGUAGE="${LANGUAGE:-en}"
-export LC_ALL="${LC_ALL:-en_US.UTF-8}"
-
 # Set the default Less options.
 # Mouse-wheel scrolling is disabled with -X (disable screen clearing)
 export LESS="${LESS:--g -i -M -R -S -w -z-4}"
