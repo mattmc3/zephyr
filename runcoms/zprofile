@@ -40,8 +40,6 @@ export PAGER="${PAGER:-less}"
 #
 
 export LANG="${LANG:-en_US.UTF-8}"
-export LANGUAGE="${LANGUAGE:-en}"
-export LC_ALL="${LC_ALL:-en_US.UTF-8}"
 
 #
 # Paths
