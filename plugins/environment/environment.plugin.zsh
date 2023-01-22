@@ -21,16 +21,6 @@ setopt NO_HUP                # Don't kill jobs on shell exit.
 setopt NO_CHECK_JOBS         # Don't report on jobs when shell exit.
 
 #
-# Init
-#
-
-# Use built-in paste magic.
-autoload -Uz bracketed-paste-url-magic
-zle -N bracketed-paste bracketed-paste-url-magic
-autoload -Uz url-quote-magic
-zle -N self-insert url-quote-magic
-
-#
 # Variables
 #
 
