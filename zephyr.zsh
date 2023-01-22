@@ -9,7 +9,7 @@ autoload -U $fpath[1]/*(.:t)
 
 # allow overriding plugins
 _zhome=${ZDOTDIR:-${XDG_CONFIG_HOME:=$HOME/.config}/zsh}
-ZSH_CUSTOM="${ZSH_CUSTOM:-$_zhome}"
+_zcust="${ZSH_CUSTOM:-$_zhome}"
 
 # load zstyles from .zstyles if file found
 [[ -f ${ZDOTDIR:-$HOME}/.zstyles ]] && . ${ZDOTDIR:-$HOME}/.zstyles
@@ -20,7 +20,7 @@ zstyle -a ':zephyr:load' plugins '_zephyr_plugins'
 # Load plugins.
 for _zephyr_plugin in $_zephyr_plugins; do
   _initfiles=(
-    $ZSH_CUSTOM/plugins/${_zephyr_plugin}/${_zephyr_plugin}.plugin.zsh(N)
+    $_zcust/plugins/${_zephyr_plugin}/${_zephyr_plugin}.plugin.zsh(N)
     $ZEPHYR_HOME/plugins/${_zephyr_plugin}/${_zephyr_plugin}.plugin.zsh(N)
   )
   if (( $#_initfiles )); then
@@ -43,4 +43,4 @@ zephyr-updatecheck &>/dev/null
 zstyle ':zephyr:core' initialized 'yes'
 
 # cleanup
-unset _zhome _zephyr_plugin{s,} _initfiles
+unset _z{home,cust} _zephyr_plugin{s,} _initfiles
