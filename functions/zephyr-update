@@ -1,8 +1,8 @@
 #!/bin/zsh
 #function zephyr-update {
 emulate -L zsh; setopt local_options extended_glob glob_dots no_monitor
-0=${(%):-%x}
-local lastupdated="${0:a:h:h}/.cache/lastupdated"
+local cache_dir=${XDG_CACHE_HOME:=$HOME/.cache}/zephyr
+local lastupdated="$cache_dir/lastupdated"
 local d
 for d in $ZEPHYR_HOME/**/.git(N/); do
   echo "Zephyr updating ${d:A:h:t}..."
