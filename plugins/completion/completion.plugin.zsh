@@ -46,6 +46,9 @@ zstyle ':completion:*:*:git:*' script ${0:a:h}/external/git/git-completion.bash
 # Init
 #
 
+fpath=(${0:A:h}/functions $fpath)
+autoload -z $fpath[1]/*(.:t)
+
 fpath=(
   # add git completions if they exist
   ${0:a:h}/external/git(/N)
@@ -62,8 +65,7 @@ fpath=(
   # Allow user completions.
   ${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN)
 
-  # this plugin and rest of fpath
-  ${0:A:h}/functions
+  # rest of fpath
   $fpath
 )
 
@@ -95,8 +97,8 @@ fi
 # calling `compstyle <compstyle>` in their .zshrc, or by defining their own
 # `compstyle_<name>_setup` functions similar to the zsh prompt system.
 autoload -Uz compstyle
-zstyle -s ':zephyr:plugin:completion' compstyle \
-  '_compstyle' || _compstyle='zephyr'
+zstyle -s ':zephyr:plugin:completion' compstyle '_compstyle' ||
+  _compstyle='zephyr'
 compstyle $_compstyle
 unset _compstyle
 
