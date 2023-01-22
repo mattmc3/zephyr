@@ -4,20 +4,19 @@
 
 ## Description
 
-| Command     | Description                                                       |
-| ----------- | ----------------------------------------------------------------- |
-| `cdf`       | `cd` to the current Finder directory                              |
-| `flushdns`  | Flush the DNS cache                                               |
-| `hd`        | Hexdump                                                           |
-| `hidefiles` | Hide the hidden files in Finder                                   |
-| `lmk`       | 'Let me know' speaks on command completion (ex: `sleep 2 && lmk`) |
-| `mand`      | Open a specified man page in Dash app                             |
-| `manp`      | Open a specified man page in Preview app                          |
-| `md5sum`    | MD5 checksummer                                                   |
-| `ofd`       | Open the current directory in a Finder window                     |
-| `pfd`       | Return the path of the frontmost Finder window                    |
-| `pfs`       | Return the current Finder selection                               |
-| `pushdf`    | `pushd` to the current Finder directory                           |
-| `rmdsstore` | Remove .DS_Store files recursively in a directory                 |
-| `sha1sum`   | SHA checksummer                                                   |
-| `showfiles` | Show hidden files in Finder                                       |
+| Command     | Description                                                           |
+| ----------- | --------------------------------------------------------------------- |
+| `brew-desc` | Show descriptions of brew installs                                    |
+| `brewls`    | brewls - List top level brew installs                                 |
+| `cdf`       | Change to the current Finder directory                                |
+| `flushdns`  | Flush the DNS cache                                                   |
+| `hidefiles` | Hide hidden dotfiles in Finder                                        |
+| `lmk`       | Have Siri 'Let me know' when command completes (ex: `sleep 2 && lmk`) |
+| `mand`      | Read man page with Dash.app                                           |
+| `manp`      | Read man page with Preview.app                                        |
+| `ofd`       | Open the current directory in Finder                                  |
+| `pfd`       | Print the frontmost Finder directory                                  |
+| `pfs`       | Print the current Finder selection                                    |
+| `pushdf`    | Push to the current Finder directory to the dirstack                  |
+| `rmdsstore` | Remove .DS_Store files recursively in a directory                     |
+| `showfiles` | Show hidden dotfiles in Finder                                        |
