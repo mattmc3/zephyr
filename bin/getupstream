@@ -5,6 +5,31 @@ ZEPHYR_HOME=${0:A:h:h}
 ZEPHYR_CACHE=${XDG_CACHE_HOME:=~/.cache}/zephyr
 mkdir -p $ZEPHYR_CACHE
 
+#region file updaters
+
+function _insert_at_lineno {
+  lineno=$1
+  str=$2
+  file=$3
+  awk -v n=$lineno -v s=$str 'NR == n {print s} {print}' $file >$file.tmp
+  mv -f $file.tmp $file
+}
+
+function _find_match_lineno {
+  pat=$1
+  file=$2
+  awk '/'$pat'/{print NR; exit}' $file
+}
+
+function _truncate_after_lineno {
+  local lineno=$1; (( lineno+=1 ))
+  file=$2
+  awk -v n=$lineno 'NR == n {exit} {print}' $file >$file.tmp
+  mv -f $file.tmp $file
+}
+
+#endregion
+
 function sedi {
   sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
 }
@@ -56,14 +81,85 @@ function _update_completion {
   cp -f $ZEPHYR_CACHE/plugins/zsh-completions/src/_* $ZEPHYR_HOME/plugins/completion/completions
 }
 
-function _update_editor {
-
-}
-
 function _update_history-substring-search {
 }
 
+function _copy_prezto {
+  emulate -L zsh
+
+  local name="$1"
+  local desc="$2"
+  local zephyr_plugin=$ZEPHYR_HOME/plugins/$name/$name.plugin.zsh
+  local prezto_plugin=$ZEPHYR_CACHE/plugins/prezto/modules/$name/init.zsh
+
+  local pre=(
+    '###'
+    "# ${name} - ${desc}"
+    '###'
+  )
+
+  local post=(
+    ''
+    '#'
+    '# Wrap up'
+    '#'
+    ''
+    "zstyle \":zephyr:plugin:${name}\" loaded 'yes'"
+  )
+  printf "%s\n" "${(@)pre}" >| $zephyr_plugin
+  # strip upstream header
+  awk '/^[^#]/{p=1}/^$/{p=1}
+       p{print}' $prezto_plugin >>| $zephyr_plugin
+  sedi -e 's/prezto:module/zephyr:plugin/g' $zephyr_plugin
+  sedi -e 's/[Pp]rezto/zephyr/g' $zephyr_plugin
+  sedi -E 's/setopt BEEP +\# Beep/setopt NO_BEEP  # Do not beep/g' $zephyr_plugin
+
+  printf "%s\n" "${(@)post}" >>| $zephyr_plugin
+}
+
+function _directory_footer {
+  cat <<'EOS'
+if ! zstyle -t ':zephyr:plugin:directory:alias' skip; then
+  alias -- -='cd -'
+  alias dirh='dirs -v'
+  dotdot=".."
+  for index ({1..9}); do
+    alias "$index"="cd +${index}"
+    alias -g "..$index"="$dotdot"
+    dotdot+='/..'
+  done
+  unset index dotdot
+fi
+
+#
+# Wrap up
+#
+
+zstyle ":zephyr:plugin:directory" loaded 'yes'
+EOS
+}
+
+function _update_directory {
+  local zephyr_plugin=$ZEPHYR_HOME/plugins/directory/directory.plugin.zsh
+
+  # start with what prezto offers
+  _copy_prezto directory "Set directory options and define directory aliases."
+
+  # add options
+  local lineno=$(_find_match_lineno '# Options' $zephyr_plugin); (( lineno += 8 ))
+  local opts=(
+    "setopt PUSHD_MINUS          # Swap meanings of +/- to be more natural."
+  )
+  _insert_at_lineno $lineno "${(pj.\\n.)opts}" $zephyr_plugin
+
+  # don't force aliases on people
+  local lineno=$(_find_match_lineno '# Aliases' $zephyr_plugin); (( lineno += 2 ))
+  _truncate_after_lineno $lineno $zephyr_plugin
+  _directory_footer >>| $zephyr_plugin
+}
+
 function _update_terminal {
+  _copy_prezto terminal "Sets terminal window and tab titles."
 }
 
 function _update_utility {
@@ -108,8 +204,9 @@ function _getupstream {
   _git_repos
   _update_completion
   _update_clipboard
+  _update_directory
+  #_update_editor
   _update_terminal
   _update_utility
 }
-
 _getupstream $@
