@@ -1,30 +1,23 @@
-# this file should contain the bare minimum to bootstrap Zephyr so that plugins can
-# remain independent
+# This file should contain the bare minimum to bootstrap Zephyr so that plugins can
+# remain independent.
 
+# Initialize Zephyr.
 0=${(%):-%x}
-ZEPHYR_HOME=${ZEPHYR_HOME:-${0:A:h}}
+source ${0:A:h}/plugins/zephyr/zephyr.plugin.zsh
 
-fpath=($ZEPHYR_HOME/functions $fpath)
-autoload -U $fpath[1]/*(.:t)
-
-# allow overriding plugins
+# Determine plugin locations.
 _zhome=${ZDOTDIR:-${XDG_CONFIG_HOME:=$HOME/.config}/zsh}
 _zcust="${ZSH_CUSTOM:-$_zhome}"
 
-# load zstyles from .zstyles if file found
-[[ -f ${ZDOTDIR:-$HOME}/.zstyles ]] && . ${ZDOTDIR:-$HOME}/.zstyles
-
-# get list of plugins from zstyle
-zstyle -a ':zephyr:load' plugins '_zephyr_plugins'
-
 # Load plugins.
+zstyle -a ':zephyr:load' plugins '_zephyr_plugins'
 for _zephyr_plugin in $_zephyr_plugins; do
+  # Allow overriding plugins.
   _initfiles=(
     $_zcust/plugins/${_zephyr_plugin}/${_zephyr_plugin}.plugin.zsh(N)
     $ZEPHYR_HOME/plugins/${_zephyr_plugin}/${_zephyr_plugin}.plugin.zsh(N)
   )
   if (( $#_initfiles )); then
-    # echo "Loading plugin $_zephyr_plugin from $_initfiles[1]"
     source "$_initfiles[1]"
     if [[ $? -eq 0 ]]; then
       zstyle ":zephyr:plugin:$_zephyr_plugin" loaded 'yes'
@@ -38,9 +31,6 @@ done
 
 # Update weekly (quietly).
 zephyr-updatecheck &>/dev/null
-
-# tell plugins that Zephyr has been initialized
-zstyle ':zephyr:core' initialized 'yes'
 
 # cleanup
 unset _z{home,cust} _zephyr_plugin{s,} _initfiles

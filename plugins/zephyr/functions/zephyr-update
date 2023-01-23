@@ -4,7 +4,7 @@ emulate -L zsh; setopt local_options extended_glob glob_dots no_monitor
 local cache_dir=${XDG_CACHE_HOME:=$HOME/.cache}/zephyr
 local lastupdated="$cache_dir/lastupdated"
 local d
-for d in $ZEPHYR_HOME/**/.git(N/); do
+for d in $ZEPHYR_HOME/plugins/.external/*/.git(N/); do
   echo "Zephyr updating ${d:A:h:t}..."
   command git -C "${d:A:h}" pull --quiet --ff --depth 1 --rebase --autostash &
 done
