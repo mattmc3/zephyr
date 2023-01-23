@@ -53,3 +53,5 @@ autoload -U $fpath[1]/*(.:t)
 #
 
 unset _brewcmd _cache_{dir,files}
+
+zstyle ":zephyr:plugin:brew" loaded 'yes'

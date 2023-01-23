@@ -44,3 +44,9 @@ if ! zstyle -t ':zephyr:plugin:history:alias' skip; then
   alias history-stat="command history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
   alias hist='fc -li'
 fi
+
+#
+# Cleanup
+#
+
+zstyle ":zephyr:plugin:history" loaded 'yes'

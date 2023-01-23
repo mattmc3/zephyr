@@ -58,3 +58,9 @@ fi
 
 # Use `< file` to quickly view the contents of any file.
 [[ -z "$READNULLCMD" ]] || READNULLCMD=$PAGER
+
+#
+# Cleanup
+#
+
+zstyle ":zephyr:plugin:environment" loaded 'yes'

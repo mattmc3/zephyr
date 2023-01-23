@@ -18,3 +18,9 @@
 
 fpath=(${0:A:h}/functions ${0:A:h}/completions $fpath)
 autoload -U $fpath[1]/*(.:t)
+
+#
+# Cleanup
+#
+
+zstyle ":zephyr:plugin:macos" loaded 'yes'

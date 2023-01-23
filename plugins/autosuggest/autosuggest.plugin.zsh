@@ -35,3 +35,9 @@ if [[ -n "$key_info" ]]; then
   bindkey -M viins "$key_info[Control]F" vi-forward-word
   bindkey -M viins "$key_info[Control]E" vi-add-eol
 fi
+
+#
+# Cleanup
+#
+
+zstyle ":zephyr:plugin:autosuggest" loaded 'yes'

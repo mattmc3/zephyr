@@ -126,3 +126,9 @@ then
   # Sets titles before command execution.
   add-zsh-hook preexec _terminal-set-titles-with-command
 fi
+
+#
+# Cleanup
+#
+
+zstyle ":zephyr:plugin:terminal" loaded 'yes'

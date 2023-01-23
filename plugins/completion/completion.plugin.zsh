@@ -78,3 +78,5 @@ _compstyle_fn="compstyle_${_compstyle}_setup"
 #
 
 unset _compstyle{,_fn}
+
+zstyle ":zephyr:plugin:completion" loaded 'yes'

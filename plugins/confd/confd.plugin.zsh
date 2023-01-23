@@ -25,3 +25,5 @@ done
 #
 
 unset _rcfile _confd _zhome
+
+zstyle ":zephyr:plugin:confd" loaded 'yes'

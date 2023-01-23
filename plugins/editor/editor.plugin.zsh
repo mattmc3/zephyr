@@ -512,3 +512,9 @@ case "$widgets[accept-line]" in
 esac
 
 zle -N accept-line _default-command_accept-line
+
+#
+# Cleanup
+#
+
+zstyle ":zephyr:plugin:editor" loaded 'yes'

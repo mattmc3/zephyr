@@ -41,3 +41,9 @@ if ! zstyle -t ':zephyr:plugin:directory:alias' skip; then
   # clean up
   unset _idx _dotdots
 fi
+
+#
+# Cleanup
+#
+
+zstyle ":zephyr:plugin:directory" loaded 'yes'

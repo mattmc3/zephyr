@@ -29,3 +29,9 @@ PS2='${${${(%):-%_}//[^ ]}// /  }    '
 fpath+="${0:A:h}/functions"
 autoload -Uz promptinit && promptinit
 [[ -z "$ZSH_THEME" ]] || prompt $ZSH_THEME
+
+#
+# Cleanup
+#
+
+zstyle ":zephyr:plugin:prompt" loaded 'yes'

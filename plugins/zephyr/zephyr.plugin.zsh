@@ -50,11 +50,11 @@ if (( ! $+functions[zsh-defer] )); then
   }
 fi
 
-# Tell plugins that Zephyr has been initialized.
-zstyle ':zephyr:core' initialized 'yes'
-
 #
 # Cleanup
 #
 
 unset _repos
+
+# Tell plugins that Zephyr has been initialized.
+zstyle ':zephyr:core' initialized 'yes'

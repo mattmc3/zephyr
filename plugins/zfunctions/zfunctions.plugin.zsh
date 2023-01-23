@@ -24,3 +24,9 @@ for _fndir in $ZFUNCDIR/**/*(N/); do
   autoload -Uz $fpath[1]/*(.:t)
 done
 unset _fndir
+
+#
+# Cleanup
+#
+
+zstyle ":zephyr:plugin:zfunctions" loaded 'yes'

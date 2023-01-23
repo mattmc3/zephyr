@@ -17,3 +17,9 @@ fi
 #
 
 zsh-defer source ${0:A:h:h}/.external/fast-syntax-highlighting/init.zsh || return 1
+
+#
+# Cleanup
+#
+
+zstyle ":zephyr:plugin:syntax-highlighting" loaded 'yes'
