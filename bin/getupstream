@@ -5,6 +5,28 @@ ZEPHYR_HOME=${0:A:h:h}
 ZEPHYR_CACHE=${XDG_CACHE_HOME:=~/.cache}/zephyr
 mkdir -p $ZEPHYR_CACHE
 
+function sedi {
+  sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
+}
+
+function _print_zsh_function {
+  local filepath=$1
+  if [[ ! -f $filepath ]]; then
+    echo >&2 "File not found '$filepath'."
+    return 1
+  fi
+
+  # we don't need a shebang, but it helps syntax highlighters
+  echo '#!/bin/zsh'
+  # comment everything except the function body
+  awk 'BEGIN{c=1}
+       c{$0 = "#" $0}
+       /^function.+{$/{c=0}
+       /() {$/{c=0}
+       /^}$/{$0 = "#" $0;c=1}
+       {print}' $filepath
+}
+
 function _update_clipboard {
   emulate -L zsh
 
@@ -18,15 +40,7 @@ function _update_clipboard {
     elif [[ $name == clipboard ]]; then
       name=detect-clipboard
     fi
-    # we don't need a shebang, but it helps syntax highlighters
-    echo "#!/bin/zsh" > $clipplug/functions/$name
-    # comment everything except the function body
-    awk 'BEGIN{c=1}
-         c{$0 = "#" $0}
-         /^function.+{$/{c=0}
-         /() {$/{c=0}
-         /^}$/{$0 = "#" $0;c=1}
-         {print}' $omzdir/$omzpath >>| $clipplug/functions/$name
+    _print_zsh_function $omzdir/$omzpath >| $clipplug/functions/$name
   done
 }
 
@@ -43,15 +57,23 @@ function _update_completion {
 }
 
 function _update_editor {
-}
 
-function _update_extract {
 }
 
 function _update_history-substring-search {
 }
 
 function _update_terminal {
+}
+
+function _update_utility {
+  emulate -L zsh
+
+  local zephyr_plugin=$ZEPHYR_HOME/plugins/utility
+  local omz_extract_plugin=$ZEPHYR_CACHE/plugins/ohmyzsh/plugins/extract
+
+  _print_zsh_function $omz_extract_plugin/extract.plugin.zsh >| $zephyr_plugin/functions/extract
+  cp -f $omz_extract_plugin/_extract $zephyr_plugin/completions
 }
 
 function _update_z {
@@ -86,6 +108,8 @@ function _getupstream {
   _git_repos
   _update_completion
   _update_clipboard
+  _update_terminal
+  _update_utility
 }
 
 _getupstream $@
