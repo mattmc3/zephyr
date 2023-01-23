@@ -1,7 +1,7 @@
 0=${(%):-%N}
 
-# if Zephyr is being loaded as a plugin, and a .zstyles file is not found, then there's
-# a chance the user didn't configure the list plugins. If that's the case then let's
+# If Zephyr is being loaded as a plugin, and a .zstyles file is not found, then there's
+# a chance the user didn't configure a Zephyr plugin list. If that's the case then let's
 # setup a reasonable default list.
 if [[ ! -f ${ZDOTDIR:-$HOME}/.zstyles ]]; then
   # get list of plugins from zstyle
