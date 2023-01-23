@@ -86,7 +86,7 @@ fi
 [[ -z "$READNULLCMD" ]] || READNULLCMD=$PAGER
 
 #
-# Cleanup
+# Wrap up
 #
 
 zstyle ":zephyr:plugin:environment" loaded 'yes'

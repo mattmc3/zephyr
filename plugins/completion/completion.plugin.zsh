@@ -68,7 +68,7 @@ _compstyle_fn="compstyle_${_compstyle}_setup"
 (( $+functions[$_compstyle_fn] )) && $_compstyle_fn || return 1
 
 #
-# Cleanup
+# Wrap up
 #
 
 unset _compstyle{,_fn}

@@ -43,7 +43,7 @@ if ! zstyle -t ':zephyr:plugin:directory:alias' skip; then
 fi
 
 #
-# Cleanup
+# Wrap up
 #
 
 zstyle ":zephyr:plugin:directory" loaded 'yes'

@@ -514,7 +514,7 @@ esac
 zle -N accept-line _default-command_accept-line
 
 #
-# Cleanup
+# Wrap up
 #
 
 zstyle ":zephyr:plugin:editor" loaded 'yes'

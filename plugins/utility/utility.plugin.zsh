@@ -54,7 +54,7 @@ autoload -Uz $fpath[1]/*(.:t)
 export PATH="${0:A:h}/external/zsh-bench:$PATH"
 
 #
-# Cleanup
+# Wrap up
 #
 
 zstyle ":zephyr:plugin:utility" loaded 'yes'

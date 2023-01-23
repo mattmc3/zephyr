@@ -37,7 +37,7 @@ if [[ -n "$key_info" ]]; then
 fi
 
 #
-# Cleanup
+# Wrap up
 #
 
 zstyle ":zephyr:plugin:autosuggest" loaded 'yes'

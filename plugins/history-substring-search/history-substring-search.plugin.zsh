@@ -35,7 +35,7 @@ bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 
 #
-# Cleanup
+# Wrap up
 #
 
 zstyle ":zephyr:plugin:history-substring-search" loaded 'yes'

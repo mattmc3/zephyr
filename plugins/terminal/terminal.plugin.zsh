@@ -2,10 +2,7 @@
 # terminal - Sets terminal window and tab titles.
 ###
 
-#
-# Requirements
-#
-
+# Return if requirements are not found.
 if [[ "$TERM" == (dumb|linux|*bsd*|eterm*) ]]; then
   return 1
 fi
@@ -128,7 +125,7 @@ then
 fi
 
 #
-# Cleanup
+# Wrap up
 #
 
 zstyle ":zephyr:plugin:terminal" loaded 'yes'

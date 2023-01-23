@@ -50,7 +50,7 @@ if (( ! $+functions[zsh-defer] )); then
 fi
 
 #
-# Cleanup
+# Wrap up
 #
 
 unset _repos

@@ -26,7 +26,7 @@ done
 unset _fndir
 
 #
-# Cleanup
+# Wrap up
 #
 
 zstyle ":zephyr:plugin:zfunctions" loaded 'yes'

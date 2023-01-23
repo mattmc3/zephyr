@@ -29,7 +29,7 @@ bindkey -M viins "^O" copybuffer
 bindkey -M vicmd "^O" copybuffer
 
 #
-# Cleanup
+# Wrap up
 #
 
 zstyle ":zephyr:plugin:clipboard" loaded 'yes'

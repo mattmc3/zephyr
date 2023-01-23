@@ -17,7 +17,7 @@ ZSHZ_DATA=${XDG_DATA_HOME:=$HOME/.local/share}/zsh-z/data
 [[ -f $ZSHZ_DATA ]] || { mkdir -p ${ZSHZ_DATA:h} && touch $ZSHZ_DATA }
 
 #
-# Cleanup
+# Wrap up
 #
 
 zstyle ":zephyr:plugin:z" loaded 'yes'

@@ -46,7 +46,7 @@ if ! zstyle -t ':zephyr:plugin:history:alias' skip; then
 fi
 
 #
-# Cleanup
+# Wrap up
 #
 
 zstyle ":zephyr:plugin:history" loaded 'yes'

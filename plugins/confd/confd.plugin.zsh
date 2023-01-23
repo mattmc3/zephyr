@@ -21,7 +21,7 @@ for _rcfile in $_confd[1]/*.{z,}sh(N); do
 done
 
 #
-# Cleanup
+# Wrap up
 #
 
 unset _rcfile _confd _zhome

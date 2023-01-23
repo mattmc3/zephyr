@@ -32,5 +32,5 @@ done
 # Update weekly (quietly).
 zephyr-updatecheck &>/dev/null
 
-# cleanup
+# Wrap up
 unset _z{home,cust} _zephyr_plugin{s,} _initfiles

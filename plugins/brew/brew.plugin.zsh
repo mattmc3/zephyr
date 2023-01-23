@@ -49,7 +49,7 @@ fpath=(${0:A:h}/functions $fpath)
 autoload -U $fpath[1]/*(.:t)
 
 #
-# Cleanup
+# Wrap up
 #
 
 unset _brewcmd _cache_{dir,files}

@@ -31,7 +31,7 @@ autoload -Uz promptinit && promptinit
 [[ -z "$ZSH_THEME" ]] || prompt $ZSH_THEME
 
 #
-# Cleanup
+# Wrap up
 #
 
 zstyle ":zephyr:plugin:prompt" loaded 'yes'
