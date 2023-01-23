@@ -34,21 +34,15 @@ setopt NO_FLOW_CONTROL     # Disable start/stop characters in shell editor.
 # Init
 #
 
-fpath=(${0:A:h}/functions $fpath)
+fpath=(${0:A:h}/functions ${0:A:h}/completions $fpath)
 autoload -z $fpath[1]/*(.:t)
 
 fpath=(
-  # add git completions if they exist
-  ${0:A:h}/external/git(/N)
-
   # add curl completions from homebrew if they exist
   /{usr,opt}/{local,homebrew}/opt/curl/share/zsh/site-functions(-/FN)
 
   # add zsh completions
   /{usr,opt}/{local,homebrew}/share/zsh/site-functions(-/FN)
-
-  # add zsh-users completions if they exist
-  ${0:A:h:h}/.external/zsh-completion/src(-/FN)
 
   # Allow user completions.
   ${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN)

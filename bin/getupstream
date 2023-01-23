@@ -1,0 +1,68 @@
+#!/bin/zsh
+
+0=${(%):-%N}
+ZEPHYR_HOME=${0:A:h:h}
+ZEPHYR_CACHE=${XDG_CACHE_HOME:=~/.cache}/zephyr
+mkdir -p $ZEPHYR_CACHE
+
+function _update_clipboard {
+}
+
+function _update_completion {
+  # https://www.oliverspryn.com/blog/adding-git-completion-to-zsh
+  local libdir=$ZEPHYR_HOME/plugins/completion/lib
+  local f
+  rm $libdir/git-completion.*
+  echo "Getting git completions..."
+  curl -o $libdir/git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+  curl -o $libdir/git-completion.zsh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.zsh
+  echo "Updating zsh-completions..."
+  cp -f $ZEPHYR_CACHE/plugins/zsh-completions/src/_* $ZEPHYR_HOME/plugins/completion/completions
+}
+
+function _update_editor {
+}
+
+function _update_extract {
+}
+
+function _update_history-substring-search {
+}
+
+function _update_terminal {
+}
+
+function _update_z {
+}
+
+function _git_repos {
+  local -a repos=(
+    agkozak/zsh-z
+    ohmyzsh/ohmyzsh
+    sorin-ionescu/prezto
+    #romkatv/zsh-bench
+    #romkatv/zsh-defer
+    #sindresorhus/pure
+    #zdharma-continuum/fast-syntax-highlighting
+    #zsh-users/zsh-autosuggestions
+    zsh-users/zsh-completions
+    zsh-users/zsh-history-substring-search
+  )
+  for repo in $repos; do
+    repodir=$ZEPHYR_CACHE/plugins/${repo:t}
+    if [[ -d $repodir ]]; then
+      echo "Refreshing $repo..."
+      git -C $repodir pull --ff --rebase --autostash
+    else
+      echo "Cloning $repo..."
+      git clone --depth 1 https://github.com/$repo $repodir
+    fi
+  done
+}
+
+function _getupstream {
+  _git_repos
+  _update_completion
+}
+
+_getupstream $@
