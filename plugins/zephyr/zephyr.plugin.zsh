@@ -39,6 +39,14 @@ _repos=(
 )
 zephyr-clone $_repos
 
+# Wrap zsh-defer.
+if (( ! $+functions[zsh-defer] )); then
+  function zsh-defer {
+    source ${ZEPHYR_HOME}/plugins/.external/zsh-defer/zsh-defer.plugin.zsh || return 1
+    zsh-defer "$@"
+  }
+fi
+
 # Tell plugins that Zephyr has been initialized.
 zstyle ':zephyr:core' initialized 'yes'
 
