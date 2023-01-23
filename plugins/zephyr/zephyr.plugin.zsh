@@ -29,6 +29,7 @@ autoload -U $fpath[1]/*(.:t)
 
 # Clone external deps.
 _repos=(
+  ohmyzsh/ohmyzsh
   romkatv/zsh-bench
   romkatv/zsh-defer
   zdharma-continuum/fast-syntax-highlighting
