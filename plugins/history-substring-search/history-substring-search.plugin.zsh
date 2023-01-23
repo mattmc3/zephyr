@@ -8,11 +8,15 @@
 
 [[ "$TERM" != 'dumb' ]] || return 1
 
+if ! zstyle -t ':zephyr:core' initialized; then
+  source ${0:A:h:h}/zephyr/zephyr.plugin.zsh
+fi
+
 #
 # Init
 #
 
-source ${0:a:h}/external/zsh-history-substring-search/zsh-history-substring-search.zsh
+source ${0:A:h:h}/.external/zsh-history-substring-search/init.zsh || return 1
 
 #
 # Keybinds

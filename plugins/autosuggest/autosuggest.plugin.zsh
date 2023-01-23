@@ -8,15 +8,15 @@
 
 [[ "$TERM" != 'dumb' ]] || return 1
 
+if ! zstyle -t ':zephyr:core' initialized; then
+  source ${0:A:h:h}/zephyr/zephyr.plugin.zsh
+fi
+
 #
 # Init
 #
 
-# Source module files.
-zsh_autosuggestions="${0:A:h}/external/zsh-autosuggestions"
-[[ -d "$zsh_autosuggestions" ]] ||
-  git clone --quiet --depth 1 https://github.com/zsh-users/zsh-autosuggestions "$zsh_autosuggestions"
-source "$zsh_autosuggestions/zsh-autosuggestions.zsh" || return 1
+source ${0:A:h:h}/.external/zsh-autosuggestions/init.zsh || return 1
 
 #
 # Variables
