@@ -32,6 +32,7 @@ _repos=(
   ohmyzsh/ohmyzsh
   romkatv/zsh-bench
   romkatv/zsh-defer
+  sindresorhus/pure
   zdharma-continuum/fast-syntax-highlighting
   zsh-users/zsh-autosuggestions
   zsh-users/zsh-completions

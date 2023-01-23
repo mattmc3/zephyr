@@ -12,5 +12,8 @@ function precmd_pipestatus {
 }
 add-zsh-hook precmd precmd_pipestatus
 
-fpath+=${0:h:h}/external/pure
-source ${0:h:h}/external/pure/pure.zsh
+# use 2 space indent for each new level
+PS2='${${${(%):-%_}//[^ ]}// /  }    '
+
+fpath+=${0:A:h:h:h}/.external/pure
+source ${0:A:h:h:h}/.external/pure/pure.zsh
