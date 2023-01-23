@@ -6,6 +6,28 @@ ZEPHYR_CACHE=${XDG_CACHE_HOME:=~/.cache}/zephyr
 mkdir -p $ZEPHYR_CACHE
 
 function _update_clipboard {
+  emulate -L zsh
+
+  local omzdir=$ZEPHYR_CACHE/plugins/ohmyzsh
+  local clipplug=$ZEPHYR_HOME/plugins/clipboard
+  local omzpath name
+  for omzpath in lib/clipboard.zsh copyfile copypath copybuffer; do
+    name=$omzpath:t:r
+    if [[ $name == $omzpath ]]; then
+      omzpath=plugins/$name/$name.plugin.zsh
+    elif [[ $name == clipboard ]]; then
+      name=detect-clipboard
+    fi
+    # we don't need a shebang, but it helps syntax highlighters
+    echo "#!/bin/zsh" > $clipplug/functions/$name
+    # comment everything except the function body
+    awk 'BEGIN{c=1}
+         c{$0 = "#" $0}
+         /^function.+{$/{c=0}
+         /() {$/{c=0}
+         /^}$/{$0 = "#" $0;c=1}
+         {print}' $omzdir/$omzpath >>| $clipplug/functions/$name
+  done
 }
 
 function _update_completion {
@@ -63,6 +85,7 @@ function _git_repos {
 function _getupstream {
   _git_repos
   _update_completion
+  _update_clipboard
 }
 
 _getupstream $@
