@@ -8,18 +8,12 @@
 
 [[ "$TERM" != 'dumb' ]] || return 1
 
+if ! zstyle -t ':zephyr:core' initialized; then
+  source ${0:A:h:h}/zephyr/zephyr.plugin.zsh
+fi
+
 #
 # Init
 #
 
-# TODO: allow user to select zsh-syntax-highlighting or fast-syntax-highlighting
-#_initfile=${0:a:h}/external/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
-_initfile=${0:a:h}/external/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
-
-(( $+functions[zsh-defer] )) && zsh-defer . $_initfile || . $_initfile
-
-#
-# Cleanup
-#
-
-unset _initfile
+zsh-defer source ${0:A:h:h}/.external/fast-syntax-highlighting/init.zsh || return 1
