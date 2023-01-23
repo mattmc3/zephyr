@@ -4,9 +4,8 @@
 
 # Source Zephyr.
 ZEPHYR_HOME=${ZDOTDIR:-$HOME}/.zephyr
-if [[ ! -d "$ZEPHYR_HOME" ]]; then
+[[ -d "$ZEPHYR_HOME" ]] ||
   git clone --recursive git@github.com:mattmc3/zephyr "$ZEPHYR_HOME"
-fi
 source $ZEPHYR_HOME/zepyhr.zsh
 
 # Customize to your needs...
