@@ -8,16 +8,13 @@
 
 [[ "$TERM" != 'dumb' ]] || return 1
 
-if zstyle -T ':zephyr:plugin:completion' use-xdg-basedirs; then
-  # Ensure the cache directory exists.
-  [[ -d "${XDG_CACHE_HOME:=$HOME/.cache}/zsh" ]] || mkdir -p "$XDG_CACHE_HOME/zsh"
-
-  _zcompdump="$XDG_CACHE_HOME/zsh/compdump"
-  _zcompcache="$XDG_CACHE_HOME/zsh/compcache"
-else
-  _zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
-  _zcompcache="${ZDOTDIR:-$HOME}/.zcompcache"
+if ! zstyle -t ':zephyr:core' initialized; then
+  source ${0:A:h:h}/zephyr/zephyr.plugin.zsh
 fi
+
+# Ensure the cache directory exists.
+[[ -d "${XDG_CACHE_HOME:=$HOME/.cache}/zsh" ]] || mkdir -p "$XDG_CACHE_HOME/zsh"
+ZSH_COMPDUMP="$XDG_CACHE_HOME/zsh/compdump"
 
 #
 # Options
@@ -34,15 +31,6 @@ setopt NO_MENU_COMPLETE    # Do not autoselect the first completion entry.
 setopt NO_FLOW_CONTROL     # Disable start/stop characters in shell editor.
 
 #
-# Styles
-#
-
-# Use caching to make completion for commands such as dpkg and apt usable.
-zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path "$_zcompcache"
-zstyle ':completion:*:*:git:*' script ${0:a:h}/external/git/git-completion.bash
-
-#
 # Init
 #
 
@@ -51,7 +39,7 @@ autoload -z $fpath[1]/*(.:t)
 
 fpath=(
   # add git completions if they exist
-  ${0:a:h}/external/git(/N)
+  ${0:A:h}/external/git(/N)
 
   # add curl completions from homebrew if they exist
   /{usr,opt}/{local,homebrew}/opt/curl/share/zsh/site-functions(-/FN)
@@ -60,7 +48,7 @@ fpath=(
   /{usr,opt}/{local,homebrew}/share/zsh/site-functions(-/FN)
 
   # add zsh-users completions if they exist
-  ${0:a:h}/external/zsh-completion/src(-/FN)
+  ${0:A:h:h}/.external/zsh-completion/src(-/FN)
 
   # Allow user completions.
   ${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN)
@@ -69,25 +57,8 @@ fpath=(
   $fpath
 )
 
-# Load and initialize the completion system ignoring insecure directories with a
-# cache time of 20 hours, so it should almost always regenerate the first time a
-# shell is opened each day.
-autoload -Uz compinit
-_comp_files=($_zcompdump(Nmh-20))
-if (( $#_comp_files )); then
-  compinit -i -C -d "$_zcompdump"
-else
-  compinit -i -d "$_zcompdump"
-  # Keep $_zcompdump younger than cache time even if it isn't regenerated.
-  touch "$_zcompdump"
-fi
-
-# Compile compdump, if modified, in background to increase startup speed.
-{
-  if [[ -s "$_zcompdump" && (! -s "${_zcompdump}.zwc" || "$_zcompdump" -nt "${_zcompdump}.zwc") ]]; then
-    zcompile "$_zcompdump"
-  fi
-} &!
+# Initialize completions.
+run-compinit
 
 #
 # Styles
@@ -96,14 +67,14 @@ fi
 # Initialize completion styles. Users can set their preferred completion style by
 # calling `compstyle <compstyle>` in their .zshrc, or by defining their own
 # `compstyle_<name>_setup` functions similar to the zsh prompt system.
-autoload -Uz compstyle
 zstyle -s ':zephyr:plugin:completion' compstyle '_compstyle' ||
   _compstyle='zephyr'
-compstyle $_compstyle
-unset _compstyle
+_compstyle_fn="compstyle_${_compstyle}_setup"
+
+(( $+functions[$_compstyle_fn] )) && $_compstyle_fn || return 1
 
 #
 # Cleanup
 #
 
-unset _cache_dir _comp_files _zcompdump _zcompcache
+unset _compstyle{,_fn}
