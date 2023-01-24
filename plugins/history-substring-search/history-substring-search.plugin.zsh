@@ -16,7 +16,7 @@ fi
 # Init
 #
 
-source ${0:A:h:h}/.external/zsh-history-substring-search/init.zsh || return 1
+source ${0:A:h}/lib/zsh-history-substring-search.zsh || return 1
 
 #
 # Keybinds

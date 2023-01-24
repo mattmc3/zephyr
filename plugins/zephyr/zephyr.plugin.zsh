@@ -29,15 +29,15 @@ autoload -U $fpath[1]/*(.:t)
 
 # Clone external deps.
 _repos=(
-  agkozak/zsh-z
-  ohmyzsh/ohmyzsh
+  #agkozak/zsh-z
+  #ohmyzsh/ohmyzsh
   romkatv/zsh-bench
   romkatv/zsh-defer
   sindresorhus/pure
   zdharma-continuum/fast-syntax-highlighting
   zsh-users/zsh-autosuggestions
-  zsh-users/zsh-history-substring-search
-  zsh-users/zsh-syntax-highlighting
+  #zsh-users/zsh-history-substring-search
+  #zsh-users/zsh-syntax-highlighting
 )
 zephyr-clone $_repos
 

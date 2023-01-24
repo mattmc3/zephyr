@@ -7,6 +7,14 @@ mkdir -p $ZEPHYR_CACHE
 
 #region file updaters
 
+function _prepend_header {
+  file=$1
+  mv -f $file $file.tmp
+  _generated_header >$file
+  cat $file.tmp >>$file
+  rm $file.tmp
+}
+
 function _insert_at_lineno {
   lineno=$1
   str=$2
@@ -30,6 +38,47 @@ function _truncate_after_lineno {
 
 #endregion
 
+#region heredoc functions
+
+function _generated_header {
+  cat <<'EOS'
+################################################################################
+###
+### GENERATED: Do not modify. This file was generated from upstream sources
+###            and assembled via Zephyr's getupstream utility. Any changes
+###            should be merged by the upstream maintainer, not here.
+###
+################################################################################
+
+EOS
+}
+
+function _directory_footer {
+  cat <<'EOS'
+if ! zstyle -t ':zephyr:plugin:directory:alias' skip; then
+  alias -- -='cd -'
+  alias dirh='dirs -v'
+  dotdot=".."
+  for index ({1..9}); do
+    alias "$index"="cd +${index}"
+    alias -g "..$index"="$dotdot"
+    dotdot+='/..'
+  done
+  unset index dotdot
+fi
+
+#
+# Wrap up
+#
+
+zstyle ":zephyr:plugin:directory" loaded 'yes'
+EOS
+}
+
+#endregion
+
+#region helpers
+
 function sedi {
   sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
 }
@@ -50,38 +99,6 @@ function _print_zsh_function {
        /() {$/{c=0}
        /^}$/{$0 = "#" $0;c=1}
        {print}' $filepath
-}
-
-function _update_clipboard {
-  emulate -L zsh
-
-  local omzdir=$ZEPHYR_CACHE/plugins/ohmyzsh
-  local clipplug=$ZEPHYR_HOME/plugins/clipboard
-  local omzpath name
-  for omzpath in lib/clipboard.zsh copyfile copypath copybuffer; do
-    name=$omzpath:t:r
-    if [[ $name == $omzpath ]]; then
-      omzpath=plugins/$name/$name.plugin.zsh
-    elif [[ $name == clipboard ]]; then
-      name=detect-clipboard
-    fi
-    _print_zsh_function $omzdir/$omzpath >| $clipplug/functions/$name
-  done
-}
-
-function _update_completion {
-  # https://www.oliverspryn.com/blog/adding-git-completion-to-zsh
-  local libdir=$ZEPHYR_HOME/plugins/completion/lib
-  local f
-  rm $libdir/git-completion.*
-  echo "Getting git completions..."
-  curl -o $libdir/git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
-  curl -o $libdir/git-completion.zsh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.zsh
-  echo "Updating zsh-completions..."
-  cp -f $ZEPHYR_CACHE/plugins/zsh-completions/src/_* $ZEPHYR_HOME/plugins/completion/completions
-}
-
-function _update_history-substring-search {
 }
 
 function _copy_prezto {
@@ -117,29 +134,43 @@ function _copy_prezto {
   printf "%s\n" "${(@)post}" >>| $zephyr_plugin
 }
 
-function _directory_footer {
-  cat <<'EOS'
-if ! zstyle -t ':zephyr:plugin:directory:alias' skip; then
-  alias -- -='cd -'
-  alias dirh='dirs -v'
-  dotdot=".."
-  for index ({1..9}); do
-    alias "$index"="cd +${index}"
-    alias -g "..$index"="$dotdot"
-    dotdot+='/..'
+#endregion
+
+function _update_clipboard {
+  emulate -L zsh
+  echo "Updating clipboard..."
+
+  local omzdir=$ZEPHYR_CACHE/plugins/ohmyzsh
+  local clipplug=$ZEPHYR_HOME/plugins/clipboard
+  local omzpath name
+  for omzpath in lib/clipboard.zsh copyfile copypath copybuffer; do
+    name=$omzpath:t:r
+    if [[ $name == $omzpath ]]; then
+      omzpath=plugins/$name/$name.plugin.zsh
+    elif [[ $name == clipboard ]]; then
+      name=detect-clipboard
+    fi
+    _print_zsh_function $omzdir/$omzpath >| $clipplug/functions/$name
   done
-  unset index dotdot
-fi
+}
 
-#
-# Wrap up
-#
+function _update_completion {
+  emulate -L zsh
+  echo "Updating completion..."
 
-zstyle ":zephyr:plugin:directory" loaded 'yes'
-EOS
+  # https://www.oliverspryn.com/blog/adding-git-completion-to-zsh
+  local libdir=$ZEPHYR_HOME/plugins/completion/lib
+  local gitdir=$ZEPHYR_CACHE/plugins/git
+  cp -f $gitdir/git-completion.bash $libdir
+  cp -f $gitdir/git-completion.zsh $libdir
+
+  cp -f $ZEPHYR_CACHE/plugins/zsh-completions/src/_* $ZEPHYR_HOME/plugins/completion/completions
 }
 
 function _update_directory {
+  emulate -L zsh
+  echo "Updating directory..."
+
   local zephyr_plugin=$ZEPHYR_HOME/plugins/directory/directory.plugin.zsh
 
   # start with what prezto offers
@@ -158,12 +189,52 @@ function _update_directory {
   _directory_footer >>| $zephyr_plugin
 }
 
+# function _update_editor {
+#   # emulate -L zsh
+#   # echo "Updating editor..."
+
+#   local zephyr_plugin=$ZEPHYR_HOME/plugins/editor/editor.plugin.zsh
+#   local -A plugins=(
+#     magic-enter   default-command
+#     fancy-ctrl-z  symmetric-ctrl-z
+#   )
+
+#   # for omzplug zephplug in ${(kv)plugins}; do
+#   #   omzpath=
+#   #   if [[ $name == $omzpath ]]; then
+#   #     omzpath=plugins/$name/$name.plugin.zsh
+#   #   elif [[ $name == clipboard ]]; then
+#   #     name=detect-clipboard
+#   #   fi
+#   #   _print_zsh_function $omzdir/$omzpath >| $clipplug/functions/$name
+#   # done
+
+#   _copy_prezto editor "Set editor specific key bindings, options, and variables."
+#   find="if zstyle -t ':zephyr:plugin:editor' dot-expansion; then"
+#   repl="if zstyle -T ':zephyr:plugin:editor' dot-expansion; then"
+#   sedi -e "s/$find/$repl/g" $zephyr_plugin
+# }
+
+function _update_history-substring-search {
+  emulate -L zsh
+  echo "Updating history-substring-search..."
+
+  local zephyr_plugin=$ZEPHYR_HOME/plugins/history-substring-search
+  local upstream_plugin=$ZEPHYR_CACHE/plugins/zsh-history-substring-search
+  cp -f $upstream_plugin/zsh-history-substring-search.zsh $zephyr_plugin/lib
+  _prepend_header $zephyr_plugin/lib/zsh-history-substring-search.zsh
+}
+
 function _update_terminal {
+  emulate -L zsh
+  echo "Updating terminal..."
+
   _copy_prezto terminal "Sets terminal window and tab titles."
 }
 
 function _update_utility {
   emulate -L zsh
+  echo "Updating utility..."
 
   local zephyr_plugin=$ZEPHYR_HOME/plugins/utility
   local omz_extract_plugin=$ZEPHYR_CACHE/plugins/ohmyzsh/plugins/extract
@@ -173,6 +244,14 @@ function _update_utility {
 }
 
 function _update_z {
+  emulate -L zsh
+  echo "Updating z..."
+
+  local zephyr_plugin=$ZEPHYR_HOME/plugins/z
+  local upstream_plugin=$ZEPHYR_CACHE/plugins/zsh-z
+  cp -f $upstream_plugin/_zshz $zephyr_plugin/completions/
+  cp -f $upstream_plugin/zsh-z.plugin.zsh $zephyr_plugin/lib/zsh-z.zsh
+  _prepend_header $zephyr_plugin/lib/zsh-z.zsh
 }
 
 function _git_repos {
@@ -181,7 +260,7 @@ function _git_repos {
     ohmyzsh/ohmyzsh
     sorin-ionescu/prezto
     #romkatv/zsh-bench
-    #romkatv/zsh-defer
+    #romkatv/zsh-defer  # GPL, so no
     #sindresorhus/pure
     #zdharma-continuum/fast-syntax-highlighting
     #zsh-users/zsh-autosuggestions
@@ -198,15 +277,25 @@ function _git_repos {
       git clone --depth 1 https://github.com/$repo $repodir
     fi
   done
+
+  gitdir=$ZEPHYR_CACHE/plugins/git
+  rm -rf $ZEPHYR_CACHE/plugins/git
+  mkdir -p $gitdir
+  echo "Getting git completions..."
+  curl -o $gitdir/git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+  curl -o $gitdir/git-completion.zsh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.zsh
 }
 
 function _getupstream {
   _git_repos
-  _update_completion
+  echo "-----------"
   _update_clipboard
+  _update_completion
   _update_directory
   #_update_editor
+  _update_history-substring-search
   _update_terminal
   _update_utility
+  _update_z
 }
 _getupstream $@
