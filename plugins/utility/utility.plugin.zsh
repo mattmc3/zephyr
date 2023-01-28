@@ -53,6 +53,31 @@ autoload -Uz $fpath[1]/*(.:t)
 # Use zsh-bench.
 export PATH="${0:A:h}/external/zsh-bench:$PATH"
 
+# Fallback function for missing open command.
+if (( ! $+commands[open] )); then
+  function open {
+    local open_cmd
+    if [[ $OSTYPE == darwin* ]]; then
+      open_cmd='command open'
+    elif [[ $OSTYPE == cygwin* ]]; then
+      open_cmd='cygstart'
+    elif [[ $OSTYPE == linux* ]]; then
+      if [[ "$(uname -r)" == *icrosoft* ]]; then
+        open_cmd='cmd.exe /c start ""'
+        [[ -e "$1" ]] && { 1="$(wslpath -w "${1:a}")" || return 1 }
+      else
+        open_cmd='nohup xdg-open'
+      fi
+    elif [[ $OSTYPE == msys* ]]; then
+      open_cmd='start ""'
+    else
+      echo "Platform $OSTYPE not supported"
+      return 1
+    fi
+    ${=open_cmd} "$@" &>/dev/null
+  }
+fi
+
 #
 # Wrap up
 #
