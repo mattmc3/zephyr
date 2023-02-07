@@ -35,7 +35,6 @@ zstyle ':zephyr:load' plugins \
   'color' \
   'utility' \
   'completion' \
-  'history-substring-search' \
   'prompt'
 
 #
@@ -116,7 +115,8 @@ zstyle ':zephyr:plugin:editor' key-bindings 'emacs'
 # Set the prompt theme to load.
 # Setting it to 'random' loads a random theme.
 # Auto set to 'off' on dumb terminals.
-zstyle ':zephyr:plugin:prompt' theme 'pure'
+zstyle ':zephyr:plugin:prompt' theme 'starship'
+zstyle ':zephyr:plugin:prompt:starship' config 'zephyr'
 
 # Set the working directory prompt display length.
 # By default, it is set to 'short'. Set it to 'long' (without '~' expansion)
