@@ -2,17 +2,20 @@
 # editor - Set editor specific key bindings, options, and variables.
 ###
 
+
 #
 # Requirements
 #
 
 [[ "$TERM" != 'dumb' ]] || return 1
 
+
 #
 # Options
 #
 
 setopt NO_BEEP  # Do not beep on error in line editor.
+
 
 #
 # Variables
@@ -66,206 +69,64 @@ for key in "${(k)key_info[@]}"; do
   fi
 done
 
+
 #
-# External Editor
+# Zle Functions
 #
+
+# Autoload functions.
+fpath=(${0:A:h}/functions $fpath)
+autoload -Uz $fpath[1]/*(.:t)
 
 # Allow command line editing in an external editor.
 autoload -Uz edit-command-line
 zle -N edit-command-line
 
-#
-# Functions
-#
-# Runs bindkey but for all of the keymaps. Running it with no arguments will
-# print out the mappings for all of the keymaps.
-function bindkey-all {
-  local keymap=''
-  for keymap in $(bindkey -l); do
-    [[ "$#" -eq 0 ]] && printf "#### %s\n" "${keymap}" 1>&2
-    bindkey -M "${keymap}" "$@"
-  done
-}
-# Exposes information about the Zsh Line Editor via the $editor_info associative
-# array.
-function editor-info {
-  # Ensure that we're going to set the editor-info for prompts that
-  # are zephyr managed and/or compatible.
-  if zstyle -t ':zephyr:plugin:prompt' managed; then
-    # Clean up previous $editor_info.
-    unset editor_info
-    typeset -gA editor_info
-
-    if [[ "$KEYMAP" == 'vicmd' ]]; then
-      zstyle -s ':zephyr:plugin:editor:info:keymap:alternate' format 'REPLY'
-      editor_info[keymap]="$REPLY"
-    else
-      zstyle -s ':zephyr:plugin:editor:info:keymap:primary' format 'REPLY'
-      editor_info[keymap]="$REPLY"
-
-      if [[ "$ZLE_STATE" == *overwrite* ]]; then
-        zstyle -s ':zephyr:plugin:editor:info:keymap:primary:overwrite' format 'REPLY'
-        editor_info[overwrite]="$REPLY"
-      else
-        zstyle -s ':zephyr:plugin:editor:info:keymap:primary:insert' format 'REPLY'
-        editor_info[overwrite]="$REPLY"
-      fi
-    fi
-
-    unset REPLY
-    zle zle-reset-prompt
-  fi
-}
-zle -N editor-info
-
-# Reset the prompt based on the current context and
-# the ps-context option.
-function zle-reset-prompt {
-  if zstyle -t ':zephyr:plugin:editor' ps-context; then
-    # If we aren't within one of the specified contexts, then we want to reset
-    # the prompt with the appropriate editor_info[keymap] if there is one.
-    if [[ $CONTEXT != (select|cont) ]]; then
-      zle reset-prompt
-      zle -R
-    fi
-  else
-    zle reset-prompt
-    zle -R
-  fi
-}
-zle -N zle-reset-prompt
-
-# Updates editor information when the keymap changes.
-function zle-keymap-select {
-  zle editor-info
-}
-zle -N zle-keymap-select
-
-# Enables terminal application mode and updates editor information.
-function zle-line-init {
-  # The terminal must be in application mode when ZLE is active for $terminfo
-  # values to be valid.
-  if (( $+terminfo[smkx] )); then
-    # Enable terminal application mode.
-    echoti smkx
-  fi
-
-  # Update editor information.
-  zle editor-info
-}
+# Enable terminal application mode and updates editor information.
 zle -N zle-line-init
 
-# Disables terminal application mode and updates editor information.
-function zle-line-finish {
-  # The terminal must be in application mode when ZLE is active for $terminfo
-  # values to be valid.
-  if (( $+terminfo[rmkx] )); then
-    # Disable terminal application mode.
-    echoti rmkx
-  fi
-
-  # Update editor information.
-  zle editor-info
-}
+# Disable terminal application mode and updates editor information.
 zle -N zle-line-finish
 
-# Toggles emacs overwrite mode and updates editor information.
-function overwrite-mode {
-  zle .overwrite-mode
-  zle editor-info
-}
-zle -N overwrite-mode
-
-# Enters vi insert mode and updates editor information.
-function vi-insert {
-  zle .vi-insert
-  zle editor-info
-}
-zle -N vi-insert
-
-# Moves to the first non-blank character then enters vi insert mode and updates
-# editor information.
-function vi-insert-bol {
-  zle .vi-insert-bol
-  zle editor-info
-}
-zle -N vi-insert-bol
-
-# Enters vi replace mode and updates editor information.
-function vi-replace  {
-  zle .vi-replace
-  zle editor-info
-}
-zle -N vi-replace
-
-# Expands .... to ../..
-function expand-dot-to-parent-directory-path {
-  if [[ $LBUFFER = *.. ]]; then
-    LBUFFER+='/..'
-  else
-    LBUFFER+='.'
-  fi
-}
+# Expand .... to ../..
 zle -N expand-dot-to-parent-directory-path
 
-# Displays an indicator when completing.
-function expand-or-complete-with-indicator {
-  local indicator
-  zstyle -s ':zephyr:plugin:editor:info:completing' format 'indicator'
-
-  # This is included to work around a bug in zsh which shows up when interacting
-  # with multi-line prompts.
-  if [[ -z "$indicator" ]]; then
-    zle expand-or-complete
-    return
-  fi
-
-  print -Pn "$indicator"
-  zle expand-or-complete
-  zle redisplay
-}
-zle -N expand-or-complete-with-indicator
-
-# Inserts 'sudo ' at the beginning of the line.
-function prepend-sudo {
-  if [[ "$BUFFER" != su(do|)\ * ]]; then
-    BUFFER="sudo $BUFFER"
-    (( CURSOR += 5 ))
-  fi
-}
+# Insert 'sudo ' at the beginning of the line.
 zle -N prepend-sudo
 
-# Expand aliases
-function glob-alias {
-  zle _expand_alias
-  zle expand-word
-  zle magic-space
-}
+# Expand aliases.
 zle -N glob-alias
 
 # Toggle the comment character at the start of the line. This is meant to work
-# around a buggy implementation of pound-insert in zsh.
-#
-# This is currently only used for the emacs keys because vi-pound-insert has
-# been reported to work properly.
-function pound-toggle {
-  if [[ "$BUFFER" = '#'* ]]; then
-    # Because of an oddity in how zsh handles the cursor when the buffer size
-    # changes, we need to make this check before we modify the buffer and let
-    # zsh handle moving the cursor back if it's past the end of the line.
-    if [[ $CURSOR != $#BUFFER ]]; then
-      (( CURSOR -= 1 ))
-    fi
-    BUFFER="${BUFFER:1}"
-  else
-    BUFFER="#$BUFFER"
-    (( CURSOR += 1 ))
-  fi
-}
+# around a buggy implementation of pound-insert in zsh for emacs mode.
 zle -N pound-toggle
+
+# Set ctrl-z as bg/fg toggle.
+zle -N symmetric-ctrl-z
+
+# Wrapper for the accept-line zle widget (run when pressing Enter)
+# If the wrapper already exists don't redefine it
+if (( ! ${+functions[_default-command-accept-line]} )); then
+  case "$widgets[accept-line]" in
+    # Override the current accept-line widget, calling the old one
+    user:*) zle -N _default-command-orig-accept-line "${widgets[accept-line]#user:}"
+      function _default-command-accept-line() {
+        default-command
+        zle _default-command-orig-accept-line -- "$@"
+      } ;;
+    # If no user widget defined, call the original accept-line widget
+    builtin) function _default-command-accept-line() {
+        default-command
+        zle .accept-line
+      } ;;
+  esac
+fi
+# Run a default command when none is given
+zle -N accept-line _default-command-accept-line
 
 # Reset to default key bindings.
 bindkey -d
+
 
 #
 # Emacs Key Bindings
@@ -294,17 +155,9 @@ bindkey -M emacs "$key_info[Control]X$key_info[Control]]" vi-match-bracket
 # Edit command in an external editor.
 bindkey -M emacs "$key_info[Control]X$key_info[Control]E" edit-command-line
 
-if (( $+widgets[history-incremental-pattern-search-backward] )); then
-  bindkey -M emacs "$key_info[Control]R" \
-    history-incremental-pattern-search-backward
-  bindkey -M emacs "$key_info[Control]S" \
-    history-incremental-pattern-search-forward
-fi
-
-# Toggle comment at the start of the line. Note that we use pound-toggle which
-# is similar to pount insert, but meant to work around some issues that were
-# being seen in iTerm.
-bindkey -M emacs "$key_info[Escape];" pound-toggle
+# Toggle comment at the start of the line properly for Emacs mode.
+# Note that we use this to overcome issues with the built-in pound-insert.
+bindkey -M emacs "$key_info[Escape];" emacs-pound-insert
 
 
 #
@@ -319,16 +172,9 @@ bindkey -M vicmd "u" undo
 bindkey -M viins "$key_info[Control]_" undo
 bindkey -M vicmd "$key_info[Control]R" redo
 
-if (( $+widgets[history-incremental-pattern-search-backward] )); then
-  bindkey -M vicmd "?" history-incremental-pattern-search-backward
-  bindkey -M vicmd "/" history-incremental-pattern-search-forward
-else
-  bindkey -M vicmd "?" history-incremental-search-backward
-  bindkey -M vicmd "/" history-incremental-search-forward
-fi
-
 # Toggle comment at the start of the line.
 bindkey -M vicmd "#" vi-pound-insert
+
 
 #
 # Emacs and Vi Key Bindings
@@ -427,6 +273,9 @@ for keymap in 'emacs' 'viins'; do
 
   # control-space expands all aliases, including global
   bindkey -M "$keymap" "$key_info[Control] " glob-alias
+
+  # Control-z toggles bg/fg
+  bindkey -M "$keymap" "$key_info[Control]Z" symmetric-ctrl-z
 done
 
 # Delete key deletes character in vimcmd cmd mode instead of weird default functionality
@@ -436,6 +285,7 @@ bindkey -M vicmd "$key_info[Delete]" delete-char
 if zstyle -T ':zephyr:plugin:editor' dot-expansion; then
   bindkey -M isearch . self-insert 2> /dev/null
 fi
+
 
 #
 # Layout
@@ -452,66 +302,6 @@ else
 fi
 
 unset key{,map,_bindings}
-
-#
-# Other Keybindings
-#
-
-# Set ctrl-z as bg/fg toggle
-function symmetric-ctrl-z {
-  # https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
-  if [[ $#BUFFER -eq 0 ]]; then
-    BUFFER="fg"
-    zle accept-line -w
-  else
-    zle push-input -w
-    zle clear-screen -w
-  fi
-}
-zle -N symmetric-ctrl-z
-bindkey '^Z' symmetric-ctrl-z
-
-# Run a default command when none is given
-function default-command {
-  # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/magic-enter
-
-  # Only run default commands when in PS1 and command line is empty
-  # http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html#User_002dDefined-Widgets
-  if [[ -n "$BUFFER" || "$CONTEXT" != start ]]; then
-    return
-  fi
-
-  local cmd gitcmd
-  zstyle -s ':zephyr:plugin:editor' default-command 'cmd'
-  zstyle -s ':zephyr:plugin:editor' default-git-command 'gitcmd' || gitcmd="$cmd"
-
-  if command git rev-parse --is-inside-work-tree &>/dev/null; then
-    BUFFER="$gitcmd"
-  else
-    BUFFER="$cmd"
-  fi
-}
-
-# Wrapper for the accept-line zle widget (run when pressing Enter)
-
-# If the wrapper already exists don't redefine it
-(( ! ${+functions[_default-command_accept-line]} )) || return 0
-
-case "$widgets[accept-line]" in
-    # Override the current accept-line widget, calling the old one
-    user:*) zle -N _default-command_orig_accept-line "${widgets[accept-line]#user:}"
-        function _default-command_accept-line() {
-            default-command
-            zle _default-command_orig_accept-line -- "$@"
-        } ;;
-    # If no user widget defined, call the original accept-line widget
-    builtin) function _default-command_accept-line() {
-            default-command
-            zle .accept-line
-        } ;;
-esac
-
-zle -N accept-line _default-command_accept-line
 
 #
 # Wrap up
