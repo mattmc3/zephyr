@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+##? sedi - cross platform `sed -i` syntax
+
 #function sedi {
 if sed --version &>/dev/null; then
   # GNU
