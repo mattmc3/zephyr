@@ -3,14 +3,6 @@
 ###
 
 #
-# Requirements
-#
-
-if ! zstyle -t ':zephyr:core' initialized; then
-  source ${0:A:h:h}/zephyr/zephyr.plugin.zsh
-fi
-
-#
 # Options
 #
 
@@ -49,9 +41,6 @@ alias help=run-help
 # Autoload functions.
 fpath=(${0:A:h}/functions $fpath)
 autoload -Uz $fpath[1]/*(.:t)
-
-# Use zsh-bench.
-export PATH="${0:A:h}/external/zsh-bench:$PATH"
 
 # Fallback function for missing open command.
 if (( ! $+commands[open] )); then

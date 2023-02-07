@@ -8,10 +8,6 @@
 
 [[ "$TERM" != 'dumb' ]] || return 1
 
-if ! zstyle -t ':zephyr:core' initialized; then
-  source ${0:A:h:h}/zephyr/zephyr.plugin.zsh
-fi
-
 # Ensure the cache directory exists.
 [[ -d "${XDG_CACHE_HOME:=$HOME/.cache}/zsh" ]] || mkdir -p "$XDG_CACHE_HOME/zsh"
 ZSH_COMPDUMP="$XDG_CACHE_HOME/zsh/compdump"
@@ -34,7 +30,7 @@ setopt NO_FLOW_CONTROL     # Disable start/stop characters in shell editor.
 # Init
 #
 
-fpath=(${0:A:h}/functions ${0:A:h}/completions $fpath)
+fpath=(${0:A:h}/functions $fpath)
 autoload -z $fpath[1]/*(.:t)
 
 fpath=(

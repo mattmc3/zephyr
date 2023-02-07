@@ -3,7 +3,7 @@
 
 # Initialize Zephyr.
 0=${(%):-%x}
-source ${0:A:h}/plugins/zephyr/zephyr.plugin.zsh
+ZEPHYR_HOME=${0:A:h}
 
 # Determine plugin locations.
 _zhome=${ZDOTDIR:-${XDG_CONFIG_HOME:=$HOME/.config}/zsh}
@@ -28,9 +28,6 @@ for _zephyr_plugin in $_zephyr_plugins; do
     echo >&2 "zephyr: Plugin not found '$_zephyr_plugin'."
   fi
 done
-
-# Update weekly (quietly).
-zephyr-updatecheck &>/dev/null
 
 # Wrap up
 unset _z{home,cust} _zephyr_plugin{s,} _initfiles
