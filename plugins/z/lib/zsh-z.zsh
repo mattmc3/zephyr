@@ -12,7 +12,7 @@
 #
 # https://github.com/agkozak/zsh-z
 #
-# Copyright (c) 2018-2022 Alexandros Kozak
+# Copyright (c) 2018-2023 Alexandros Kozak
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -157,9 +157,19 @@ zshz() {
   local REPLY
   local -a lines
 
-  # Allow the user to specify the datafile name in $ZSHZ_DATA (default: ~/.z)
+  # Allow the user to specify a custom datafile in $ZSHZ_DATA (or legacy $_Z_DATA)
+  local custom_datafile="${ZSHZ_DATA:-$_Z_DATA}"
+
+  # If a datafile was provided as a standalone file without a directory path
+  # print a warning and exit
+  if [[ -n ${custom_datafile} && ${custom_datafile} != */* ]]; then
+    print "ERROR: You configured a custom Zsh-z datafile (${custom_datafile}), but have not specified its directory." >&2
+    exit
+  fi
+
+  # If the user specified a datafile, use that or default to ~/.z
   # If the datafile is a symlink, it gets dereferenced
-  local datafile=${${ZSHZ_DATA:-${_Z_DATA:-${HOME}/.z}}:A}
+  local datafile=${${custom_datafile:-$HOME/.z}:A}
 
   # If the datafile is a directory, print a warning and exit
   if [[ -d $datafile ]]; then
@@ -169,7 +179,7 @@ zshz() {
 
   # Make sure that the datafile exists before attempting to read it or lock it
   # for writing
-  [[ -f $datafile ]] || touch "$datafile"
+  [[ -f $datafile ]] || { mkdir -p "${datafile:h}" && touch "$datafile" }
 
   # Bail if we don't own the datafile and $ZSHZ_OWNER is not set
   [[ -z ${ZSHZ_OWNER:-${_Z_OWNER}} && -f $datafile && ! -O $datafile ]] &&
