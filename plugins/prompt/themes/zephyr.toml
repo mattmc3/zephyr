@@ -7,9 +7,9 @@ format = """$python$directory$character"""
 right_format = """$status$all$git_branch$git_status"""
 
 [character]
-success_symbol = "[❯](cyan)"
-error_symbol = "[❯](red)"
-vicmd_symbol = "[❮](purple)"
+success_symbol = "[❯](purple)[❯](cyan)"
+error_symbol = "[❯](yellow)[❯](red)"
+vicmd_symbol = "[❮](purple)[❮](cyan)"
 # success_symbol = "[⨠](purple)"
 # error_symbol = "[⨠](red)"
 # vicmd_symbol = "[⪻](yellow)"
