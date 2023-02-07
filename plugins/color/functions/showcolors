@@ -2,6 +2,7 @@
 
 ##? showcolors - show ANSI terminal color codes and effects.
 
+# tput cmds - setaf:fgcolor; smul:underline; smso:standout; sgr0:clear;
 local normal=$(tput sgr0)
 local black=$(tput setaf 0)
 local white=$(tput setaf 7)
