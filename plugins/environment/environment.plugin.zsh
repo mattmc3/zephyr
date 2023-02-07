@@ -16,7 +16,7 @@ export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-$HOME/.xdg}
 
 # Ensure XDG dirs exist.
 for xdgdir in XDG_{CONFIG,CACHE,DATA,STATE}_HOME XDG_RUNTIME_DIR; do
-  [[ -e ${(P)xdgdir} ]] || echo mkdir -p ${(P)xdgdir}
+  [[ -e ${(P)xdgdir} ]] || mkdir -p ${(P)xdgdir}
 done
 
 #
