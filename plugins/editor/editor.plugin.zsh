@@ -264,10 +264,6 @@ for keymap in 'emacs' 'viins'; do
     bindkey -M "$keymap" "." expand-dot-to-parent-directory-path
   fi
 
-  # Display an indicator when completing.
-  bindkey -M "$keymap" "$key_info[Control]I" \
-    expand-or-complete-with-indicator
-
   # Insert 'sudo ' at the beginning of the line.
   bindkey -M "$keymap" "$key_info[Control]X$key_info[Control]S" prepend-sudo
 
