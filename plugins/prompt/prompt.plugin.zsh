@@ -31,15 +31,18 @@ fpath=(${0:A:h}/functions $fpath)
 autoload -Uz $fpath[1]/*(.:t)
 
 # Use zstyle for the prompt theme.
-zstyle -s ':zephyr:plugin:prompt' theme 'theme_name' ||
-  theme_name=${ZSH_THEME:-starship}
+zstyle -s ':zephyr:plugin:prompt' theme theme_name ||
+  theme_name=${ZSH_THEME:-zephyr}
 
-# Use zstyle to get the preferred starship prompt theme.
-if [[ "$theme_name" == starship ]] &&
-   zstyle -s ':zephyr:plugin:prompt:starship' config _toml
-then
-  export STARSHIP_CONFIG=${0:A:h}/themes/${_toml}.toml
-  unset _toml
+# See if we need to set STARSHIP_CONFIG
+zstyle -s ':zephyr:plugin:prompt:starship' config starshipcfg ||
+  starshipcfg=
+
+# Use zstyle to set the preferred starship prompt theme.
+if [[ -e "${XDG_CONFIG_HOME:=$HOME/.config}/starship/${starshipcfg}.toml" ]]; then
+  STARSHIP_CONFIG="${XDG_CONFIG_HOME:=$HOME/.config}/starship/${starshipcfg}.toml"
+elif [[ -n "$starshipcfg" ]]; then
+  STARSHIP_CONFIG="$starshipcfg"
 fi
 
 # Run the prompt setup function directly, or use the promptinit system.
@@ -54,5 +57,5 @@ fi
 # Wrap up
 #
 
-unset theme_name
+unset theme_name starshipcfg
 zstyle ":zephyr:plugin:prompt" loaded 'yes'

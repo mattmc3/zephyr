@@ -1,5 +1,7 @@
+0=${(%):-%x}
 check-starship-exists || return 1
 
+export STARSHIP_CONFIG="${0:A:h:h}/themes/zephyr.toml"
 #eval "$(starship init zsh)"
 source <(starship init zsh --print-full-init)
 
