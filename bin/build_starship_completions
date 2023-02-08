@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+
+0=${(%):-%N}
+
+_starship=${0:A:h:h}/plugins/prompt/functions/_starship
+starship completions zsh >| $_starship
+echo "" >> $_starship
+echo "# vim: ft=zsh sw=2 ts=2 et" >> $_starship
