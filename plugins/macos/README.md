@@ -6,8 +6,6 @@
 
 | Command     | Description                                                           |
 | ----------- | --------------------------------------------------------------------- |
-| `brew-desc` | Show descriptions of brew installs                                    |
-| `brewls`    | brewls - List top level brew installs                                 |
 | `cdf`       | Change to the current Finder directory                                |
 | `flushdns`  | Flush the DNS cache                                                   |
 | `hidefiles` | Hide hidden dotfiles in Finder                                        |
@@ -15,6 +13,7 @@
 | `mand`      | Read man page with Dash.app                                           |
 | `manp`      | Read man page with Preview.app                                        |
 | `ofd`       | Open the current directory in Finder                                  |
+| `peek`      | Quick look at a file                                                  |
 | `pfd`       | Print the frontmost Finder directory                                  |
 | `pfs`       | Print the current Finder selection                                    |
 | `pushdf`    | Push to the current Finder directory to the dirstack                  |
