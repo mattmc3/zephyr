@@ -1,0 +1,61 @@
+#!/bin/zsh
+
+0=${(%):-%N}
+ZEPHYR_HOME=${0:A:h:h}
+ZEPHYR_CACHE=${XDG_CACHE_HOME:=~/.cache}/zephyr
+mkdir -p $ZEPHYR_CACHE
+
+function sedi {
+  sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
+}
+
+function _copy_prezto {
+  emulate -L zsh
+
+  local name="$1"
+  local desc="$2"
+  local zephyr_plugin=$ZEPHYR_HOME/plugins/$name/$name.plugin.zsh
+  local prezto_plugin=$ZEPHYR_CACHE/plugins/prezto/modules/$name/init.zsh
+
+  local pre=(
+    '###'
+    "# ${name} - ${desc}"
+    '###'
+  )
+
+  local post=(
+    ''
+    '#'
+    '# Wrap up'
+    '#'
+    ''
+    "zstyle \":zephyr:plugin:${name}\" loaded 'yes'"
+  )
+
+  echo "Updating $name..."
+
+  printf "%s\n" "${(@)pre}" >| $zephyr_plugin
+  # strip upstream header
+  awk '/^[^#]/{p=1}/^$/{p=1}
+       p{print}' $prezto_plugin >>| $zephyr_plugin
+  sedi -e 's/prezto:module/zephyr:plugin/g' $zephyr_plugin
+  sedi -e 's/[Pp]rezto/zephyr/g' $zephyr_plugin
+
+  printf "%s\n" "${(@)post}" >>| $zephyr_plugin
+}
+
+function build_prezto_plugins {
+  emulate -L zsh
+  local repo="sorin-ionescu/prezto"
+  local repodir=$ZEPHYR_CACHE/plugins/${repo:t}
+  if [[ -d $repodir ]]; then
+    echo "Refreshing $repo..."
+    git -C $repodir pull --ff --rebase --autostash
+  else
+    echo "Cloning $repo..."
+    git clone --depth 1 https://github.com/$repo $repodir
+  fi
+  echo "-----------"
+  _copy_prezto terminal "Sets terminal window and tab titles."
+}
+build_prezto_plugins $@
