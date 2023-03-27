@@ -99,7 +99,7 @@ zle -N glob-alias
 
 # Toggle the comment character at the start of the line. This is meant to work
 # around a buggy implementation of pound-insert in zsh for emacs mode.
-zle -N pound-toggle
+zle -N emacs-pound-insert
 
 # Set ctrl-z as bg/fg toggle.
 zle -N symmetric-ctrl-z
