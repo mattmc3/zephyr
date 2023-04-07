@@ -1,6 +1,4 @@
-###
-# terminal - Sets terminal window and tab titles.
-###
+##? terminal - Sets terminal window and tab titles.
 
 # Return if requirements are not found.
 if [[ "$TERM" == (dumb|linux|*bsd*|eterm*) ]]; then
@@ -124,8 +122,5 @@ then
   add-zsh-hook preexec _terminal-set-titles-with-command
 fi
 
-#
-# Wrap up
-#
-
+# Tell Zephyr this plugin is loaded.
 zstyle ":zephyr:plugin:terminal" loaded 'yes'
