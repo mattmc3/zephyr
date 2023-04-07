@@ -1,10 +1,4 @@
-###
-# utility - Hodgepodge of Zsh shell options and utilities.
-###
-
-#
-# Options
-#
+# utility - Misc Zsh shell options and utilities.
 
 # Glob options.
 setopt EXTENDED_GLOB         # Use more awesome globbing features.
@@ -26,73 +20,9 @@ setopt NO_BG_NICE            # Don't run all background jobs at a lower priority
 setopt NO_HUP                # Don't kill jobs on shell exit.
 setopt NO_CHECK_JOBS         # Don't report on jobs when shell exit.
 
-
-#
-# Functions
-#
-
 # Autoload functions.
 fpath=(${0:A:h}/functions $fpath)
 autoload -Uz $fpath[1]/*(.:t)
-
-
-#
-# Commands
-#
-
-# Fallback function for missing envsubst command.
-if (( ! $+commands[envsubst] )); then
-  function envsubst {
-    python -c 'import os,sys;[sys.stdout.write(os.path.expandvars(l)) for l in sys.stdin]'
-  }
-fi
-
-# Fallback aliases for missing pbcopy/pbpaste commands.
-if (( ! $+commands[pbcopy] )); then
-  if [[ "$OSTYPE" == (cygwin|msys)* ]]; then
-    alias pbcopy='tee > /dev/clipboard'
-    alias pbpaste='cat /dev/clipboard'
-  elif (( $+commands[clip.exe] )) && (( $+commands[powershell.exe] )); then
-    alias pbcopy="clip.exe"
-    alias pbpaste="powershell.exe -noprofile -command Get-Clipboard"
-  elif [ -n $WAYLAND_DISPLAY ] && (( ${+commands[wl-copy]} )) && (( ${+commands[wl-paste]} )); then
-    alias pbcopy="wl-copy"
-    alias pbpaste="wl-paste"
-  elif [ -n $DISPLAY ] && (( ${+commands[xsel]} )); then
-    alias pbcopy="xsel --clipboard --input"
-    alias pbpaste="xsel --clipboard --output"
-  elif [ -n $DISPLAY ] && (( ${+commands[xclip]} )); then
-    alias pbcopy='xclip -selection clipboard -in'
-    alias pbpaste='xclip -selection clipboard -out'
-  elif (( ${+commands[win32yank]} )); then
-    alias pbcopy='win32yank -i'
-    alias pbpaste='win32yank -o'
-  elif [[ $OSTYPE == linux-android* ]] && (( $+commands[termux-clipboard-set] )); then
-    alias pbcopy='termux-clipboard-set'
-    alias pbpaste='termux-clipboard-get'
-  elif [ -n $TMUX ] && (( ${+commands[tmux]} )); then
-    alias pbcopy='tmux load-buffer'
-    alias pbpaste='tmux save-buffer'
-  fi
-fi
-
-# Fallback function for missing open command.
-if (( ! $+commands[open] )); then
-  if [[ $OSTYPE == cygwin* ]]; then
-    alias open='cygstart'
-  elif [[ $OSTYPE == msys* ]]; then
-    alias open='start ""'
-  elif (( $+commands[xdg-open] )); then
-    alias open='xdg-open'
-  elif [[ $OSTYPE == linux* ]] && [[ "$(uname -r)" == *icrosoft* ]]; then
-    alias open='cmd.exe /c start ""'
-  fi
-fi
-
-
-#
-# Misc
-#
 
 # Use built-in paste magic.
 autoload -Uz bracketed-paste-url-magic
@@ -104,9 +34,5 @@ zle -N self-insert url-quote-magic
 (( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
 alias help=run-help
 
-
-#
-# Wrap up
-#
-
+# Tell Zephyr this plugin is loaded.
 zstyle ":zephyr:plugin:utility" loaded 'yes'

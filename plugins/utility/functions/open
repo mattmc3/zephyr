@@ -1,0 +1,16 @@
+#!/bin/zsh
+function open {
+  # Fallback function for missing open command.
+  if (( $+commands[open] )); then
+    command open "$@"
+  elif [[ $OSTYPE == cygwin* ]]; then
+    cygstart "$@"
+  elif [[ $OSTYPE == msys* ]]; then
+    start "" "$@"
+  elif (( $+commands[xdg-open] )); then
+    xdg-open "$@"
+  elif [[ $OSTYPE == linux* ]] && [[ "$(uname -r)" == *icrosoft* ]]; then
+    cmd.exe /c start "" "$@"
+  fi
+}
+open "$@"

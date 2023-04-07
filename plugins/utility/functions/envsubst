@@ -1,0 +1,9 @@
+#!/bin/zsh
+function envsubst {
+  if (( $+commands[envsubst] )); then
+    command envsubst "$@"
+  else
+    python -c 'import os,sys;[sys.stdout.write(os.path.expandvars(l)) for l in sys.stdin]'
+  fi
+}
+envsubst "$@"
