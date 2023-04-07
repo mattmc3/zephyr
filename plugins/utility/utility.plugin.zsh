@@ -1,4 +1,4 @@
-# utility - Misc Zsh shell options and utilities.
+##? utility - Misc Zsh shell options and utilities.
 
 # Glob options.
 setopt EXTENDED_GLOB         # Use more awesome globbing features.
