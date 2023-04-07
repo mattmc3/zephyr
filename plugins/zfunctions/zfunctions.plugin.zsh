@@ -1,10 +1,4 @@
-###
-# zfunctions - Use a Fish-like functions directory for zsh functions.
-###
-
-#
-# Init
-#
+##? zfunctions - Use a Fish-like functions directory for zsh functions.
 
 # Load plugins functions.
 fpath=("${0:A:h}/functions" $fpath)
@@ -25,8 +19,5 @@ for _fndir in $ZFUNCDIR/**/*(N/); do
 done
 unset _fndir
 
-#
-# Wrap up
-#
-
+# Tell Zephyr this plugin is loaded.
 zstyle ":zephyr:plugin:zfunctions" loaded 'yes'
