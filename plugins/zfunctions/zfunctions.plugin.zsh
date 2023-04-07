@@ -13,7 +13,7 @@ fpath=("$ZFUNCDIR" $fpath)
 autoload -Uz $fpath[1]/*(.:t)
 
 # Load zfunctions subdirs.
-for _fndir in $ZFUNCDIR/**/*(N/); do
+for _fndir in $ZFUNCDIR(N/) $ZFUNCDIR/*(N/); do
   fpath=("$_fndir" $fpath)
   autoload -Uz $fpath[1]/*(.:t)
 done
