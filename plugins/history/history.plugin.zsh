@@ -1,12 +1,6 @@
-###
-# history - Set Zsh history options.
-###
+##? history - Set Zsh history options.
 
-
-#
-# Options
-#
-
+# Set history options.
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
 setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
 setopt NO_SHARE_HISTORY          # Don't share history between all sessions.
@@ -21,11 +15,7 @@ setopt HIST_VERIFY               # Do not execute immediately upon history expan
 setopt HIST_REDUCE_BLANKS        # Remove extra blanks from commands added to the history list.
 setopt NO_HIST_BEEP              # Do not beep when accessing non-existent history.
 
-
-#
-# Variables
-#
-
+# Set history variables.
 zstyle -s ':zephyr:plugin:history' histfile '_histfile' || _histfile="${XDG_DATA_HOME:=~/.local/share}/zsh/history"
 zstyle -s ':zephyr:plugin:history' histsize '_histsize' || _histsize=10000
 zstyle -s ':zephyr:plugin:history' savehist '_savehist' || _savehist=10000
@@ -35,23 +25,15 @@ HISTSIZE="${_histsize}"  # max history events in session
 SAVEHIST="${_savehist}"  # max history events saved to history file
 unset _hist{file,size} _savehist
 
-# Make sure the path to the history file exists
-[[ -f $HISTFILE ]] || { mkdir -p $HISTFILE:h && touch $HISTFILE }
+# Make sure the path to the history file exists.
+[[ -f $HISTFILE ]] || mkdir -p $HISTFILE:h
 
-
-#
-# Aliases
-#
-
+# Set aliases.
 if ! zstyle -t ':zephyr:plugin:history:alias' skip; then
   # Lists the ten most used commands.
   alias history-stat="command history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
   alias hist='fc -li'
 fi
 
-
-#
-# Wrap up
-#
-
+# Tell Zephyr this plugin is loaded.
 zstyle ":zephyr:plugin:history" loaded 'yes'
