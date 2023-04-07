@@ -20,7 +20,7 @@ export LESS_TERMCAP_me=$'\e[0m'
 export LESS_TERMCAP_se=$'\e[0m'
 export LESS_TERMCAP_so=$'\e[00;47;30m'
 export LESS_TERMCAP_ue=$'\e[0m'
-export LESS_TERMCAP_us=$'\e[01;35m'
+export LESS_TERMCAP_us=$'\e[04;35m'
 
 #
 # Init
