@@ -1,11 +1,6 @@
-###
-# directory - Set directory options and define directory aliases.
-###
+##? directory - Set directory options and define directory aliases.
 
-#
-# Options
-#
-
+# Set options.
 setopt AUTO_PUSHD                # Make cd push the old dir onto the dirstack.
 setopt PUSHD_IGNORE_DUPS         # Don’t push multiple copies of a dir to the dirstack.
 setopt PUSHD_SILENT              # Do not print the dirstack after pushd or popd.
@@ -16,10 +11,7 @@ setopt MULTIOS                   # Write to multiple descriptors.
 setopt EXTENDED_GLOB             # Use extended globbing syntax.
 setopt NO_CLOBBER                # Do not overwrite files with >. Use >| to bypass.
 
-#
-# Aliases
-#
-
+# Set aliases.
 if ! zstyle -t ':zephyr:plugin:directory:alias' skip; then
   alias -- -='cd -'
   alias dirh='dirs -v'
@@ -32,8 +24,5 @@ if ! zstyle -t ':zephyr:plugin:directory:alias' skip; then
   unset index dotdot
 fi
 
-#
-# Wrap up
-#
-
+# Tell Zephyr this plugin is loaded.
 zstyle ":zephyr:plugin:directory" loaded 'yes'
