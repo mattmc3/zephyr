@@ -10,7 +10,7 @@ all : build help
 
 ##?   build    run build tasks
 build:
-	./bin/build_prezto_plugins; \
+	./bin/getupstream; \
   ./bin/build_starship_completions
 
 ##?   help     show this message
