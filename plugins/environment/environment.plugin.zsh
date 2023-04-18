@@ -1,6 +1,9 @@
-###
+#
 # environment - Set general shell options and define environment variables.
-###
+#
+# THIS FILE IS GENERATED:
+# - https://github.com/sorin-ionescu/prezto/blob/master/runcoms/zprofile
+#
 
 #
 # XDG
@@ -23,23 +26,31 @@ done
 # Browser
 #
 
-if [[ "$OSTYPE" == darwin* ]]; then
-  export BROWSER="${BROWSER:-open}"
+if [[ -z "$BROWSER" && "$OSTYPE" == darwin* ]]; then
+  export BROWSER='open'
 fi
 
 #
 # Editors
 #
 
-export EDITOR="${EDITOR:-vim}"
-export VISUAL="${VISUAL:-nano}"
-export PAGER="${PAGER:-less}"
+if [[ -z "$EDITOR" ]]; then
+  export EDITOR='nano'
+fi
+if [[ -z "$VISUAL" ]]; then
+  export VISUAL='nano'
+fi
+if [[ -z "$PAGER" ]]; then
+  export PAGER='less'
+fi
 
 #
-# Regional settings
+# Language
 #
 
-export LANG="${LANG:-en_US.UTF-8}"
+if [[ -z "$LANG" ]]; then
+  export LANG='en_US.UTF-8'
+fi
 
 #
 # Paths
@@ -66,7 +77,7 @@ path=(
 #
 
 # Set the default Less options.
-# Mouse-wheel scrolling is disabled with -X (disable screen clearing).
+# Mouse-wheel scrolling can be disabled with -X (disable screen clearing).
 # Add -X to disable it.
 if [[ -z "$LESS" ]]; then
   export LESS='-g -i -M -R -S -w -z-4'
@@ -74,8 +85,8 @@ fi
 
 # Set the Less input preprocessor.
 # Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
-if (( $#commands[(i)lesspipe(|.sh)] )); then
-  export LESSOPEN="${LESSOPEN:-| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-}"
+if [[ -z "$LESSOPEN" ]] && (( $#commands[(i)lesspipe(|.sh)] )); then
+  export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
 fi
 
 #
@@ -89,4 +100,5 @@ fi
 # Wrap up
 #
 
-zstyle ":zephyr:plugin:environment" loaded 'yes'
+# Tell Zephyr this plugin is loaded.
+zstyle ':zephyr:plugin:environment' loaded 'yes'

@@ -3,6 +3,10 @@
 { print }
 
 END {
+  if ( ENVIRON["TAIL_CONTENT"] != "" ) {
+    print ""
+    print ENVIRON["TAIL_CONTENT"]
+  }
   print ""
   print "#"
   print "# Wrap up"

@@ -1,0 +1,6 @@
+#!/usr/bin/awk -f
+
+/disabled by -X/ { gsub(/has been disabled by -X/,"can be disabled with -X") }
+/Remove -X/      { gsub(/Remove -X to enable/,"Add -X to disable") }
+/export LESS/    { gsub(/ -X/,"") }
+{ print }

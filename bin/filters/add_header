@@ -8,5 +8,9 @@ BEGIN {
   print "# - "UPSTREAM_URL
   print "#"
   print ""
+  if ( ENVIRON["HEAD_CONTENT"] != "" ) {
+    print ENVIRON["HEAD_CONTENT"]
+    print ""
+  }
 }
 { print }

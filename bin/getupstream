@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 0=${(%):-%N}
-ZEPHYR_HOME=${0:A:h:h}
+ZEPHYR=${0:A:h:h}
 ZEPHYR_CACHE=${XDG_CACHE_HOME:=~/.cache}/zephyr
 mkdir -p $ZEPHYR_CACHE
 
@@ -37,7 +37,7 @@ function filter {
   awk -v PLUGIN_NAME=$PLUGIN_NAME \
       -v PLUGIN_DESC=$PLUGIN_DESC \
       -v UPSTREAM_URL=$UPSTREAM_URL \
-      -f $ZEPHYR_HOME/bin/filters/$awkfilter $@
+      -f $ZEPHYR/bin/filters/$awkfilter
 }
 
 function build_from_prezto {
@@ -45,15 +45,16 @@ function build_from_prezto {
   export PLUGIN_DESC="${2:-Set $PLUGIN_NAME options and define $PLUGIN_NAME aliases.}"
   export UPSTREAM_URL=https://github.com/sorin-ionescu/prezto/blob/master/${3:-modules/$PLUGIN_NAME/init.zsh}
   prezto_file=$ZPREZTODIR/${3:-modules/$PLUGIN_NAME/init.zsh}
-  plugin_file=$ZEPHYR_HOME/plugins/$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh
+  plugin_file=$ZEPHYR/plugins/$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh
 
   plugin_filter=$PLUGIN_NAME
-  if [[ ! -f $ZEPHYR_HOME/bin/filters/$PLUGIN_NAME ]]; then
+  if [[ ! -f $ZEPHYR/bin/filters/$PLUGIN_NAME ]]; then
     plugin_filter=pass
   fi
 
   echo "Building $PLUGIN_NAME plugin..."
-  filter scrub_prezto $prezto_file |
+  cat $prezto_file |
+  filter scrub_prezto |
   filter add_header |
   filter $plugin_filter |
   filter add_footer >| $plugin_file
@@ -71,6 +72,21 @@ function build_editor {
   build_from_prezto editor "Set editor specific key bindings, options, and variables."
 }
 
+function build_environment {
+  export HEAD_CONTENT=$(
+    awk -v SECTION="XDG" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/environment/environment.plugin.zsh
+  )
+  export TAIL_CONTENT=$(
+    awk -v SECTION="Misc" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/environment/environment.plugin.zsh
+  )
+  build_from_prezto \
+    environment \
+    "Set general shell options and define environment variables." \
+    runcoms/zprofile
+
+  unset {HEAD,TAIL}_CONTENT
+}
+
 function build_history {
   build_from_prezto history
 }
@@ -81,9 +97,8 @@ function _getupstream {
   build_editor
   build_history
   build_terminal
+  build_environment
 
-  # build_environment
-  # build_history
   # build_completion
 }
 _getupstream $@
