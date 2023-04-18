@@ -1,0 +1,14 @@
+#!/usr/bin/awk -f
+
+{ print }
+
+END {
+  print ""
+  print "#"
+  print "# Wrap up"
+  print "#"
+  print ""
+  print "# Tell Zephyr this plugin is loaded."
+  print "zstyle ':zephyr:plugin:"PLUGIN_NAME"' loaded 'yes'"
+  print ""
+}

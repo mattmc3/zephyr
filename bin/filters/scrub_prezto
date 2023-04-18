@@ -1,0 +1,11 @@
+#!/usr/bin/awk -f
+
+BEGIN          { p=1 }
+NR==1 && /^#/  { p=0 }
+!p && /^$/     { p=1; next }
+/prezto/ {
+  gsub(/:prezto:module:/,":zephyr:plugin:")
+  gsub(/prezto/,"zephyr")
+}
+/Prezto/       { gsub(/Prezto/,"Zephyr") }
+p              { print }

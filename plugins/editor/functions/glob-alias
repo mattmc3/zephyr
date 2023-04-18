@@ -1,9 +1,0 @@
-#!/bin/zsh
-
-##? glob-alias - expand aliases
-function glob-alias {
-  zle _expand_alias
-  zle expand-word
-  zle magic-space
-}
-glob-alias "$@"

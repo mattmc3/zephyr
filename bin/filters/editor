@@ -1,0 +1,4 @@
+#!/usr/bin/awk -f
+
+/setopt BEEP/ { print "setopt NO_BEEP  # Do not beep on error in line editor."; next }
+{ print }

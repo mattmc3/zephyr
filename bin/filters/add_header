@@ -1,0 +1,12 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+  print "#"
+  print "# "PLUGIN_NAME" - "PLUGIN_DESC
+  print "#"
+  print "# THIS FILE IS GENERATED:"
+  print "# - "UPSTREAM_URL
+  print "#"
+  print ""
+}
+{ print }

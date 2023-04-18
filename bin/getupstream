@@ -1,0 +1,84 @@
+#!/bin/zsh
+
+0=${(%):-%N}
+ZEPHYR_HOME=${0:A:h:h}
+ZEPHYR_CACHE=${XDG_CACHE_HOME:=~/.cache}/zephyr
+mkdir -p $ZEPHYR_CACHE
+
+ZPREZTODIR=$ZEPHYR_CACHE/plugins/prezto
+ZSH=$ZEPHYR_CACHE/plugins/ohmyzsh
+
+function get_repos {
+  local -a repos=(
+    ohmyzsh/ohmyzsh
+    sorin-ionescu/prezto
+  )
+  for repo in $repos; do
+    repodir=$ZEPHYR_CACHE/plugins/${repo:t}
+    if [[ -d $repodir ]]; then
+      echo "Refreshing $repo..."
+      git -C $repodir pull --quiet --ff --rebase --autostash
+    else
+      echo "Cloning $repo..."
+      git clone --depth 1 --quiet https://github.com/$repo $repodir
+    fi
+  done
+
+  gitdir=$ZEPHYR_CACHE/plugins/git
+  rm -rf $ZEPHYR_CACHE/plugins/git
+  mkdir -p $gitdir
+  echo "Getting git completions..."
+  curl -so $gitdir/git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+  curl -so $gitdir/git-completion.zsh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.zsh
+}
+
+function filter {
+  awkfilter=$1; shift
+  awk -v PLUGIN_NAME=$PLUGIN_NAME \
+      -v PLUGIN_DESC=$PLUGIN_DESC \
+      -v UPSTREAM_URL=$UPSTREAM_URL \
+      -f $ZEPHYR_HOME/bin/filters/$awkfilter $@
+}
+
+function build_from_prezto {
+  export PLUGIN_NAME=$1
+  export PLUGIN_DESC="${2:-Set $PLUGIN_NAME options and define $PLUGIN_NAME aliases.}"
+  export UPSTREAM_URL=https://github.com/sorin-ionescu/prezto/blob/master/${3:-modules/$PLUGIN_NAME/init.zsh}
+  prezto_file=$ZPREZTODIR/${3:-modules/$PLUGIN_NAME/init.zsh}
+  plugin_file=$ZEPHYR_HOME/plugins/$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh
+
+  plugin_filter=$PLUGIN_NAME
+  if [[ ! -f $ZEPHYR_HOME/bin/filters/$PLUGIN_NAME ]]; then
+    plugin_filter=pass
+  fi
+
+  echo "Building $PLUGIN_NAME plugin..."
+  filter scrub_prezto $prezto_file |
+  filter add_header |
+  filter $plugin_filter |
+  filter add_footer >| $plugin_file
+}
+
+function build_directory {
+  build_from_prezto directory "Set directory options and define directory aliases."
+}
+
+function build_terminal {
+  build_from_prezto terminal "Sets terminal window and tab titles."
+}
+
+function build_editor {
+  build_from_prezto editor "Set editor specific key bindings, options, and variables."
+}
+
+function _getupstream {
+  #get_repos
+  build_directory
+  build_editor
+  build_terminal
+
+  # build_environment
+  # build_history
+  # build_completion
+}
+_getupstream $@
