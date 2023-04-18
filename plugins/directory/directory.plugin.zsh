@@ -36,4 +36,3 @@ fi
 
 # Tell Zephyr this plugin is loaded.
 zstyle ':zephyr:plugin:directory' loaded 'yes'
-

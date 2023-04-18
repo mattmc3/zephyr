@@ -133,4 +133,3 @@ fi
 
 # Tell Zephyr this plugin is loaded.
 zstyle ':zephyr:plugin:terminal' loaded 'yes'
-

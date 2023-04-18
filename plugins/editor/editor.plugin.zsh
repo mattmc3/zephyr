@@ -461,4 +461,3 @@ unset key{,map,_bindings}
 
 # Tell Zephyr this plugin is loaded.
 zstyle ':zephyr:plugin:editor' loaded 'yes'
-

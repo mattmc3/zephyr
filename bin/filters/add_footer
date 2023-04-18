@@ -10,5 +10,4 @@ END {
   print ""
   print "# Tell Zephyr this plugin is loaded."
   print "zstyle ':zephyr:plugin:"PLUGIN_NAME"' loaded 'yes'"
-  print ""
 }
