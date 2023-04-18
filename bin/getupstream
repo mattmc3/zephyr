@@ -60,7 +60,7 @@ function build_from_prezto {
 }
 
 function build_directory {
-  build_from_prezto directory "Set directory options and define directory aliases."
+  build_from_prezto directory
 }
 
 function build_terminal {
@@ -71,10 +71,15 @@ function build_editor {
   build_from_prezto editor "Set editor specific key bindings, options, and variables."
 }
 
+function build_history {
+  build_from_prezto history
+}
+
 function _getupstream {
   #get_repos
   build_directory
   build_editor
+  build_history
   build_terminal
 
   # build_environment
