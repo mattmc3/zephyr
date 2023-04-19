@@ -137,6 +137,20 @@ function build_zshutils_completion {
   #      $compstyle_zephyr
 }
 
+function build_prezto_completion {
+  export REQUIREMENTS_SECTION=$(
+    awk -v SECTION="Requirements" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/completion/completion.plugin.zsh
+  )
+  export MISC_SECTION=$(
+    awk -v SECTION="Misc" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/completion/completion.plugin.zsh
+  )
+  export VARIABLES_SECTION=$(
+    awk -v SECTION="Variables" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/completion/completion.plugin.zsh
+  )
+  build_from_prezto completion "Set up zsh completions."
+  unset {REQUIREMENTS,MISC,VARIABLES}_SECTION
+}
+
 function build_compstyle {
   prezto_file=$ZPREZTODIR/${3:-modules/completion/init.zsh}
   zephyr_file=$ZEPHYR/plugins/completion/functions/compstyle_zephyr_setup
@@ -148,7 +162,7 @@ function build_compstyle {
 }
 
 function _getupstream {
-  get_repos
+  #get_repos
 
   # prezto
   build_directory
@@ -159,6 +173,7 @@ function _getupstream {
   build_compstyle
 
   # zsh-utils
-  build_zshutils_completion
+  build_prezto_completion
+  #build_zshutils_completion
 }
 _getupstream $@

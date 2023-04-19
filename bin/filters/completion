@@ -1,23 +1,48 @@
 #!/usr/bin/awk -f
 
+BEGIN { header=1; p=0 }
+
+# header until first blank line
+/^$/ {
+  header=0
+}
+
+/setopt PATH_DIRS/ { next }
+/unset _comp_path/ { next }
+
+# skip down to Options
+/^# Options$/ {
+  p=1
+  if ( ENVIRON["REQUIREMENTS_SECTION"] != "" ) {
+    print ""
+    print "#"
+    print ENVIRON["REQUIREMENTS_SECTION"]
+    print ""
+    print "#"
+  }
+}
+
+/^# Variables$/ {
+  p=0
+  if ( ENVIRON["VARIABLES_SECTION"] != "" ) {
+    print ENVIRON["VARIABLES_SECTION"]
+    print ""
+    print "#"
+  }
+}
+
+/^# Initialization$/ {
+  p=1
+  gsub(/Initialization/,"Init")
+}
+
 /^# Styles$/ {
-  if ( ENVIRON["SECTION_CONTENT"] != "" ) {
-    print ENVIRON["SECTION_CONTENT"]
-    print ""
-    print "#"
+  p=0
+  if ( ENVIRON["MISC_SECTION"] != "" ) {
+    print ENVIRON["MISC_SECTION"]
   }
 }
-/^# Cleanup$/ {
-  if ( ENVIRON["SECTION_CONTENT2"] != "" ) {
-    print ENVIRON["SECTION_CONTENT2"]
-    print ""
-    print "#"
-  }
-}
+
+# print or don't
+!p && !header { next }
 { print }
-/unsetopt FLOW_CONTROL/ { print "unsetopt CASE_GLOB         # Case-insensitive globbing." }
-/autoload -Uz compstyleinit/ {
-  print "zstyle -s ':zephyr:plugin:completion' compstyle '_compstyle' || _compstyle='zephyr'"
-  print "compstyle $_compstyle"
-  print "unset _compstyle"
-}

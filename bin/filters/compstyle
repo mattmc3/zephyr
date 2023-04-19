@@ -15,8 +15,5 @@ BEGIN { skip=99999 }
 /:completion:\*:warnings/     { gsub(/\{red\}/,"{yellow}") }
 /':completion:\*' format/     { gsub(/\{yellow\}/,"{blue}") }
 
-
-/zephyr\/zcompcache/ { gsub(/zephyr\/zcompcache/,"zsh\/compcache") }
-
 skip>0 { skip--; next }
 { print }

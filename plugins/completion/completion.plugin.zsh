@@ -2,49 +2,46 @@
 # completion - Set up zsh completions.
 #
 # THIS FILE IS GENERATED:
-# - https://github.com/belak/zsh-utils/blob/main/completion/completion.plugin.zsh
+# - https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh
 #
 
 #
 # Requirements
 #
 
+# Return if requirements are not found.
 if [[ "$TERM" == 'dumb' ]]; then
   return 1
 fi
 
-if zstyle -T ':zephyr:plugins:completion' use-xdg-basedirs; then
-  # Ensure the cache directory exists.
-  _cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
-  [[ -d "$_cache_dir" ]] || mkdir -p "$_cache_dir"
+# Autoload plugin functions.
+fpath=(${0:A:h}/functions $fpath)
+autoload -z $fpath[1]/*(.:t)
 
-  _zcompdump="$_cache_dir/compdump"
-  _zcompcache="$_cache_dir/compcache"
-else
-  _zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
-  _zcompcache="${ZDOTDIR:-$HOME}/.zcompcache"
-fi
+# Ensure the cache directory exists.
+_cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
+[[ -d "$_cache_dir" ]] || mkdir -p "$_cache_dir"
+unset _cache_dir
 
 #
 # Options
 #
 
-setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
-setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
-setopt AUTO_MENU           # Show completion menu on a successive tab press.
-setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
-setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a trailing slash.
-setopt EXTENDED_GLOB       # Needed for file modification glob modifiers with compinit
-unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
-unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
-unsetopt CASE_GLOB         # Case-insensitive globbing.
+setopt COMPLETE_IN_WORD     # Complete from both ends of a word.
+setopt ALWAYS_TO_END        # Move cursor to the end of a completed word.
+setopt AUTO_MENU            # Show completion menu on a successive tab press.
+setopt AUTO_LIST            # Automatically list choices on ambiguous completion.
+setopt AUTO_PARAM_SLASH     # If completed parameter is a directory, add a trailing slash.
+setopt EXTENDED_GLOB        # Needed for file modification glob modifiers with compinit.
+unsetopt MENU_COMPLETE      # Do not autoselect the first completion entry.
+unsetopt FLOW_CONTROL       # Disable start/stop characters in shell editor.
 
 #
-# fpath
+# Variables
 #
 
-fpath=(${0:A:h}/functions $fpath)
-autoload -z $fpath[1]/*(.:t)
+# Standard style used by default for 'list-colors'
+LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 
 fpath=(
   # Add curl completions from homebrew.
@@ -61,37 +58,23 @@ fpath=(
 )
 
 #
-# Styles
-#
-
-# Use caching to make completion for commands such as dpkg and apt usable.
-zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path "$_zcompcache"
-
-#
 # Init
 #
-
-# Initialize completion styles. Users can set their preferred completion style by
-# calling `compstyle <compstyle>` in their .zshrc, or by defining their own
-# `compstyle_<name>_setup` functions similar to the zsh prompt system.
-fpath+="${0:A:h}/functions"
-autoload -Uz compstyleinit && compstyleinit
-zstyle -s ':zephyr:plugin:completion' compstyle '_compstyle' || _compstyle='zephyr'
-compstyle $_compstyle
-unset _compstyle
 
 # Load and initialize the completion system ignoring insecure directories with a
 # cache time of 20 hours, so it should almost always regenerate the first time a
 # shell is opened each day.
 autoload -Uz compinit
-_comp_files=($_zcompdump(Nmh-20))
-if (( $#_comp_files )); then
-  compinit -i -C -d "$_zcompdump"
+_comp_path="${XDG_CACHE_HOME:-$HOME/.cache}/zephyr/zcompdump"
+# #q expands globs in conditional expressions
+if [[ $_comp_path(#qNmh-20) ]]; then
+  # -C (skip function check) implies -i (skip security check).
+  compinit -C -d "$_comp_path"
 else
-  compinit -i -d "$_zcompdump"
-  # Keep $_zcompdump younger than cache time even if it isn't regenerated.
-  touch "$_zcompdump"
+  mkdir -p "$_comp_path:h"
+  compinit -i -d "$_comp_path"
+  # Keep $_comp_path younger than cache time even if it isn't regenerated.
+  touch "$_comp_path"
 fi
 
 #
@@ -100,16 +83,13 @@ fi
 
 # Compile compdump, if modified, in background to increase startup speed.
 (
-  if [[ -s "$_zcompdump" && (! -s "${_zcompdump}.zwc" || "$_zcompdump" -nt "${_zcompdump}.zwc") ]]; then
-    zcompile "$_zcompdump"
+  if [[ -s "$_comp_path" && (! -s "${_comp_path}.zwc" || "$_comp_path" -nt "${_comp_path}.zwc") ]]; then
+    zcompile "$_comp_path"
   fi
 ) &!
 
-#
-# Cleanup
-#
-
-unset _cache_dir _comp_files _zcompdump _zcompcache
+# Clean up
+unset _comp_path
 
 #
 # Wrap up
