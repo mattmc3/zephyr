@@ -1,0 +1,22 @@
+#!/usr/bin/awk -f
+
+BEGIN { skip=99999 }
+
+/^# Styles$/ {
+  skip=3
+  print "#!/bin/zsh"
+  print ""
+}
+
+# color changes
+/:completion:\*:corrections/  { gsub(/\{green\}/,"{red}") }
+/:completion:\*:descriptions/ { gsub(/\{yellow\}/,"{purple}") }
+/:completion:\*:messages/     { gsub(/\{purple\}/,"{green}") }
+/:completion:\*:warnings/     { gsub(/\{red\}/,"{yellow}") }
+/':completion:\*' format/     { gsub(/\{yellow\}/,"{blue}") }
+
+
+/zephyr\/zcompcache/ { gsub(/zephyr\/zcompcache/,"zsh\/compcache") }
+
+skip>0 { skip--; next }
+{ print }

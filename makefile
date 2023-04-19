@@ -11,7 +11,7 @@ all : build help
 ##?   build    run build tasks
 build:
 	./bin/getupstream; \
-  ./bin/build_starship_completions
+	./bin/build_starship_completions
 
 ##?   help     show this message
 help:

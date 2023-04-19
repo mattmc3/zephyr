@@ -117,7 +117,7 @@ function build_history {
   build_from_prezto history
 }
 
-function build_completion {
+function build_zshutils_completion {
   export SECTION_CONTENT=$(
     awk -v SECTION="fpath" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/completion/completion.plugin.zsh
   )
@@ -129,12 +129,22 @@ function build_completion {
 
   cp -f $ZSH_UTILS/completion/functions/compstyleinit $ZEPHYR/plugins/completion/functions
   echo "# vim: ft=zsh sw=2 ts=2 et" >> $ZEPHYR/plugins/completion/functions/compstyleinit
-  compstyle_zephyr=$ZEPHYR/plugins/completion/functions/compstyle_zephyr_setup
-  cp -f $ZSH_UTILS/completion/functions/compstyle_zshzoo_setup $compstyle_zephyr
-  sedi -e 's/zsh-utils/zephyr/g' \
-       -e 's/zshzoo/zephyr/g' \
-       -e 's|github.com/zephyr|github.com/mattmc3/zephyr|g' \
-       $compstyle_zephyr
+  # compstyle_zephyr=$ZEPHYR/plugins/completion/functions/compstyle_zephyr_setup
+  # cp -f $ZSH_UTILS/completion/functions/compstyle_zshzoo_setup $compstyle_zephyr
+  # sedi -e 's/zsh-utils/zephyr/g' \
+  #      -e 's/zshzoo/zephyr/g' \
+  #      -e 's|github.com/zephyr|github.com/mattmc3/zephyr|g' \
+  #      $compstyle_zephyr
+}
+
+function build_compstyle {
+  prezto_file=$ZPREZTODIR/${3:-modules/completion/init.zsh}
+  zephyr_file=$ZEPHYR/plugins/completion/functions/compstyle_zephyr_setup
+
+  echo "Building $zephyr_file:t..."
+  cat $prezto_file |
+  filter scrub_prezto |
+  filter compstyle >| $zephyr_file
 }
 
 function _getupstream {
@@ -146,8 +156,9 @@ function _getupstream {
   build_history
   build_terminal
   build_environment
+  build_compstyle
 
   # zsh-utils
-  build_completion
+  build_zshutils_completion
 }
 _getupstream $@
