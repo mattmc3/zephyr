@@ -6,10 +6,16 @@ ZEPHYR_CACHE=${XDG_CACHE_HOME:=~/.cache}/zephyr
 mkdir -p $ZEPHYR_CACHE
 
 ZPREZTODIR=$ZEPHYR_CACHE/plugins/prezto
+ZSH_UTILS=$ZEPHYR_CACHE/plugins/zsh-utils
 ZSH=$ZEPHYR_CACHE/plugins/ohmyzsh
+
+function sedi {
+  sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
+}
 
 function get_repos {
   local -a repos=(
+    belak/zsh-utils
     ohmyzsh/ohmyzsh
     sorin-ionescu/prezto
   )
@@ -60,6 +66,26 @@ function build_from_prezto {
   filter add_footer >| $plugin_file
 }
 
+function build_from_zsh_utils {
+  export PLUGIN_NAME=$1
+  export PLUGIN_DESC="${2:-Set $PLUGIN_NAME options and define $PLUGIN_NAME aliases.}"
+  export UPSTREAM_URL=https://github.com/belak/zsh-utils/blob/main/${3:-$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh}
+  zshutils_file=$ZSH_UTILS/${3:-$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh}
+  plugin_file=$ZEPHYR/plugins/$PLUGIN_NAME/$PLUGIN_NAME.plugin.zsh
+
+  plugin_filter=$PLUGIN_NAME
+  if [[ ! -f $ZEPHYR/bin/filters/$PLUGIN_NAME ]]; then
+    plugin_filter=pass
+  fi
+
+  echo "Building $PLUGIN_NAME plugin..."
+  cat $zshutils_file |
+  filter scrub_zshutils |
+  filter add_header |
+  filter $plugin_filter |
+  filter add_footer >| $plugin_file
+}
+
 function build_directory {
   build_from_prezto directory
 }
@@ -91,14 +117,37 @@ function build_history {
   build_from_prezto history
 }
 
+function build_completion {
+  export SECTION_CONTENT=$(
+    awk -v SECTION="fpath" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/completion/completion.plugin.zsh
+  )
+  export SECTION_CONTENT2=$(
+    awk -v SECTION="Misc" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/completion/completion.plugin.zsh
+  )
+  build_from_zsh_utils completion "Set up zsh completions."
+  unset SECTION_CONTENT{,2}
+
+  cp -f $ZSH_UTILS/completion/functions/compstyleinit $ZEPHYR/plugins/completion/functions
+  echo "# vim: ft=zsh sw=2 ts=2 et" >> $ZEPHYR/plugins/completion/functions/compstyleinit
+  compstyle_zephyr=$ZEPHYR/plugins/completion/functions/compstyle_zephyr_setup
+  cp -f $ZSH_UTILS/completion/functions/compstyle_zshzoo_setup $compstyle_zephyr
+  sedi -e 's/zsh-utils/zephyr/g' \
+       -e 's/zshzoo/zephyr/g' \
+       -e 's|github.com/zephyr|github.com/mattmc3/zephyr|g' \
+       $compstyle_zephyr
+}
+
 function _getupstream {
-  #get_repos
+  get_repos
+
+  # prezto
   build_directory
   build_editor
   build_history
   build_terminal
   build_environment
 
-  # build_completion
+  # zsh-utils
+  build_completion
 }
 _getupstream $@

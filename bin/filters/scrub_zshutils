@@ -1,0 +1,4 @@
+#!/usr/bin/awk -f
+
+/zsh-utils/ { gsub(/zsh-utils/,"zephyr") }
+{ print }

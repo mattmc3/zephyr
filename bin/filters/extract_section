@@ -1,6 +1,6 @@
 #!/usr/bin/awk -f
 
 BEGIN { c=0; regex="# "SECTION }
-$0 ~ regex { c=1; print "#" }
+$0 ~ regex { c=1 }
 c>0 && /^\#$/ { c+=1 }
 c>0 && c<3 { print }

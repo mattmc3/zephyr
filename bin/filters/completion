@@ -1,0 +1,23 @@
+#!/usr/bin/awk -f
+
+/^# Styles$/ {
+  if ( ENVIRON["SECTION_CONTENT"] != "" ) {
+    print ENVIRON["SECTION_CONTENT"]
+    print ""
+    print "#"
+  }
+}
+/^# Cleanup$/ {
+  if ( ENVIRON["SECTION_CONTENT2"] != "" ) {
+    print ENVIRON["SECTION_CONTENT2"]
+    print ""
+    print "#"
+  }
+}
+{ print }
+/unsetopt FLOW_CONTROL/ { print "unsetopt CASE_GLOB         # Case-insensitive globbing." }
+/autoload -Uz compstyleinit/ {
+  print "zstyle -s ':zephyr:plugin:completion' compstyle '_compstyle' || _compstyle='zephyr'"
+  print "compstyle $_compstyle"
+  print "unset _compstyle"
+}
