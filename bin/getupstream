@@ -46,6 +46,12 @@ function filter {
       -f $ZEPHYR/bin/filters/$awkfilter
 }
 
+function extract_section {
+  section=$1
+  plugin=$2
+  awk -v SECTION="$section" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/$plugin/$plugin.plugin.zsh
+}
+
 function build_from_prezto {
   export PLUGIN_NAME=$1
   export PLUGIN_DESC="${2:-Set $PLUGIN_NAME options and define $PLUGIN_NAME aliases.}"
@@ -99,17 +105,12 @@ function build_editor {
 }
 
 function build_environment {
-  export HEAD_CONTENT=$(
-    awk -v SECTION="XDG" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/environment/environment.plugin.zsh
-  )
-  export TAIL_CONTENT=$(
-    awk -v SECTION="Misc" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/environment/environment.plugin.zsh
-  )
+  export HEAD_CONTENT=$(extract_section 'XDG' 'environment')
+  export TAIL_CONTENT=$(extract_section 'Misc' 'environment')
   build_from_prezto \
     environment \
     "Set general shell options and define environment variables." \
     runcoms/zprofile
-
   unset {HEAD,TAIL}_CONTENT
 }
 
@@ -117,36 +118,10 @@ function build_history {
   build_from_prezto history
 }
 
-function build_zshutils_completion {
-  export SECTION_CONTENT=$(
-    awk -v SECTION="fpath" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/completion/completion.plugin.zsh
-  )
-  export SECTION_CONTENT2=$(
-    awk -v SECTION="Misc" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/completion/completion.plugin.zsh
-  )
-  build_from_zsh_utils completion "Set up zsh completions."
-  unset SECTION_CONTENT{,2}
-
-  cp -f $ZSH_UTILS/completion/functions/compstyleinit $ZEPHYR/plugins/completion/functions
-  echo "# vim: ft=zsh sw=2 ts=2 et" >> $ZEPHYR/plugins/completion/functions/compstyleinit
-  # compstyle_zephyr=$ZEPHYR/plugins/completion/functions/compstyle_zephyr_setup
-  # cp -f $ZSH_UTILS/completion/functions/compstyle_zshzoo_setup $compstyle_zephyr
-  # sedi -e 's/zsh-utils/zephyr/g' \
-  #      -e 's/zshzoo/zephyr/g' \
-  #      -e 's|github.com/zephyr|github.com/mattmc3/zephyr|g' \
-  #      $compstyle_zephyr
-}
-
-function build_prezto_completion {
-  export REQUIREMENTS_SECTION=$(
-    awk -v SECTION="Requirements" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/completion/completion.plugin.zsh
-  )
-  export MISC_SECTION=$(
-    awk -v SECTION="Misc" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/completion/completion.plugin.zsh
-  )
-  export VARIABLES_SECTION=$(
-    awk -v SECTION="Variables" -f $ZEPHYR/bin/filters/extract_section $ZEPHYR/plugins/completion/completion.plugin.zsh
-  )
+function build_completion {
+  export REQUIREMENTS_SECTION=$(extract_section 'Requirements' 'completion')
+  export MISC_SECTION=$(extract_section 'Misc' 'completion')
+  export VARIABLES_SECTION=$(extract_section 'Variables' 'completion')
   build_from_prezto completion "Set up zsh completions."
   unset {REQUIREMENTS,MISC,VARIABLES}_SECTION
 }
@@ -162,7 +137,7 @@ function build_compstyle {
 }
 
 function _getupstream {
-  #get_repos
+  get_repos
 
   # prezto
   build_directory
@@ -171,9 +146,6 @@ function _getupstream {
   build_terminal
   build_environment
   build_compstyle
-
-  # zsh-utils
-  build_prezto_completion
-  #build_zshutils_completion
+  build_completion
 }
 _getupstream $@
