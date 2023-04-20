@@ -1,12 +1,14 @@
-###
-# brew - Functions for brew users.
+#
+# homebrew - Environment variables and functions for homebrew users.
 #
 # References:
 # - https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/brew
 # - https://github.com/sorin-ionescu/prezto/tree/master/modules/homebrew
-###
+#
 
-#region: Requirements
+#
+# Requirements
+#
 
 (( $+commands[brew] )) || return 1
 
@@ -14,17 +16,17 @@
 _cache_dir=${XDG_CACHE_HOME:=$HOME/.cache}/zephyr
 [[ -d $_cache_dir ]] || mkdir -p $_cache_dir
 
-#endregion
-
-#region: Functions
+#
+# Functions
+#
 
 # Load plugin functions.
 fpath=(${0:A:h}/functions $fpath)
 autoload -U $fpath[1]/*(.:t)
 
-#endregion
-
-#region: Init
+#
+# Init
+#
 
 # Generate a new cache file daily of just the 'HOMEBREW_' vars.
 typeset -a _cache_files=($_cache_dir/brew_shellenv.zsh(Nmh-20))
@@ -42,12 +44,11 @@ if ! zstyle -t ':zephyr:plugin:homebrew:shellenv' skip; then
   fi
 fi
 
-#endregion
-
-#region: Wrap up
-
+# Clean up.
 unset _cache_{dir,files}
 
-zstyle ":zephyr:plugin:homebrew" loaded 'yes'
+#
+# Wrap up
+#
 
-#endregion
+zstyle ":zephyr:plugin:homebrew" loaded 'yes'
