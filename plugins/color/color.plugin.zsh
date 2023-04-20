@@ -1,7 +1,24 @@
-##? color - Make terminal things more colorful.
+#
+# color - Make terminal things more colorful.
+#
 
-# Check requirements.
+#
+# Requirements
+#
+
 [[ "$TERM" != 'dumb' ]] || return 1
+
+#
+# Functions
+#
+
+# Load plugin functions.
+fpath=(${0:A:h}/functions $fpath)
+autoload -U $fpath[1]/*(.:t)
+
+#
+# Variables
+#
 
 # Colorize man pages.
 # start/end - md/me:bold; us/ue:underline; so/se:standout;
@@ -14,9 +31,9 @@ export LESS_TERMCAP_so=$'\e[00;47;30m'
 export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[04;35m'
 
-# Load plugin functions.
-fpath=(${0:A:h}/functions $fpath)
-autoload -U $fpath[1]/*(.:t)
+#
+# Init
+#
 
 # Colorize ls and grep.
 () {
@@ -48,6 +65,10 @@ autoload -U $fpath[1]/*(.:t)
 
   alias grep="${aliases[grep]:-grep} --color=auto"
 }
+
+#
+# Wrap up
+#
 
 # Tell Zephyr this plugin is loaded.
 zstyle ":zephyr:plugin:color" loaded 'yes'
