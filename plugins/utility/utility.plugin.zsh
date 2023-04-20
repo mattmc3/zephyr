@@ -1,4 +1,10 @@
-##? utility - Misc Zsh shell options and utilities.
+#
+# utility - Misc Zsh shell options and utilities.
+#
+
+#
+# Options
+#
 
 # Glob options.
 setopt EXTENDED_GLOB         # Use more awesome globbing features.
@@ -20,6 +26,10 @@ setopt NO_BG_NICE            # Don't run all background jobs at a lower priority
 setopt NO_HUP                # Don't kill jobs on shell exit.
 setopt NO_CHECK_JOBS         # Don't report on jobs when shell exit.
 
+#
+# Functions
+#
+
 # Autoload functions.
 fpath=(${0:A:h}/functions $fpath)
 autoload -Uz $fpath[1]/*(.:t)
@@ -30,9 +40,57 @@ zle -N bracketed-paste bracketed-paste-url-magic
 autoload -Uz url-quote-magic
 zle -N self-insert url-quote-magic
 
+#
+# Aliases
+#
+
+# Common utils everywhere.
+
+# envsubst
+if ! (( $+commands[envsubst] )); then
+  alias envsubst="python -c 'import os,sys;[sys.stdout.write(os.path.expandvars(l)) for l in sys.stdin]'"
+fi
+
+# open
+if ! (( $+commands[open] )); then
+  if [[ "$OSTYPE" == cygwin* ]]; then
+    alias open='cygstart'
+  elif [[ "$OSTYPE" == linux-android ]]; then
+    alias open='termux-open'
+  elif (( $+commands[xdg-open] )); then
+    alias open='xdg-open'
+  fi
+fi
+
+# pbcopy/pbpaste
+if ! (( $+commands[pbcopy] )); then
+  if [[ "$OSTYPE" == cygwin* ]]; then
+    alias pbcopy='tee > /dev/clipboard'
+    alias pbpaste='cat /dev/clipboard'
+  elif [[ "$OSTYPE" == linux-android ]]; then
+    alias pbcopy='termux-clipboard-set'
+    alias pbpaste='termux-clipboard-get'
+  elif (( $+commands[wl-copy] && $+commands[wl-paste] )); then
+    alias pbcopy='wl-copy'
+    alias pbpaste='wl-paste'
+  elif [[ -n $DISPLAY ]]; then
+    if (( $+commands[xclip] )); then
+      alias pbcopy='xclip -selection clipboard -in'
+      alias pbpaste='xclip -selection clipboard -out'
+    elif (( $+commands[xsel] )); then
+      alias pbcopy='xsel --clipboard --input'
+      alias pbpaste='xsel --clipboard --output'
+    fi
+  fi
+fi
+
 # Load more specific 'run-help' function from $fpath.
 (( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
 alias help=run-help
+
+#
+# Wrap up
+#
 
 # Tell Zephyr this plugin is loaded.
 zstyle ":zephyr:plugin:utility" loaded 'yes'

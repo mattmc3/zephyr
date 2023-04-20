@@ -1,0 +1,9 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+  print "#!/bin/zsh"
+  p=0
+}
+/^extract\(/ { p=1 }
+p{ print }
+END { print "extract \"$@\"" }

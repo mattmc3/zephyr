@@ -2,12 +2,7 @@
 
 ##? sedi - cross platform `sed -i` syntax
 function sedi {
-  if sed --version &>/dev/null; then
-    # GNU
-    sed -i -- "$@"
-  else
-    # macOS/BSD
-    sed -i "" "$@"
-  fi
+  # GNU/BSD
+  sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
 }
 sedi "$@"

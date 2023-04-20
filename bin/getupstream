@@ -136,8 +136,17 @@ function build_compstyle {
   filter compstyle >| $zephyr_file
 }
 
+function build_utility {
+  echo "Building utility..."
+  util_plugin=$ZEPHYR/plugins/utility
+  cat $ZSH/plugins/extract/extract.plugin.zsh |
+    filter extract >| $util_plugin/functions/extract
+  cp -f $ZSH/plugins/extract/_extract $util_plugin/functions/_extract
+  echo "# vim: ft=zsh sw=2 ts=2 et" >> $util_plugin/functions/_extract
+}
+
 function _getupstream {
-  get_repos
+  #get_repos
 
   # prezto
   build_directory
@@ -147,5 +156,9 @@ function _getupstream {
   build_environment
   build_compstyle
   build_completion
+
+  # utils
+  build_utility
+
 }
 _getupstream $@
