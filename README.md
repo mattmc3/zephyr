@@ -50,27 +50,10 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 - **history** - Load and initilize the built-in zsh history system
 - **homebrew** - Functionality for users of Homebrew
 - **macos** - Functionality for macOS users
-- **terminal** - Set terminal window and tab titles
 - **prompt** - Load and initialize the build-in zsh prompt system
+- **terminal** - Set terminal window and tab titles
 - **utility** - Common shell utilities, aimed at making cross platform work less painful
 - **zfunctions** - Lazy load functions dir like Fish
-
-## Configuration
-
-XDG base directory locations are used for `$HISTFILE` in the history plugin, and `$ZSH_COMPDUMP` in the completion plugin.
-
-To **NOT** use XDG base directory locations, set the following zstyle:
-
-```zsh
-zstyle ':zephyr:*:*' use-xdg-basedirs 'no'
-```
-
-Or, you can set it for each individual plugin:
-
-```zsh
-zstyle ':zephyr:plugin:history' use-xdg-basedirs 'no'
-zstyle ':zephyr:plugin:completion' use-xdg-basedirs 'yes'
-```
 
 ## Why don't you include...
 

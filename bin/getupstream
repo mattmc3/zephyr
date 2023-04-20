@@ -70,6 +70,7 @@ function build_from_prezto {
   filter add_header |
   filter $plugin_filter |
   filter add_footer >| $plugin_file
+  unset PLUGIN_{NAME,DESC} UPSTREAM_URL
 }
 
 function build_from_zsh_utils {
@@ -138,11 +139,24 @@ function build_compstyle {
 
 function build_utility {
   echo "Building utility..."
-  util_plugin=$ZEPHYR/plugins/utility
+  zephyr_plugin=$ZEPHYR/plugins/utility
   cat $ZSH/plugins/extract/extract.plugin.zsh |
-    filter extract >| $util_plugin/functions/extract
-  cp -f $ZSH/plugins/extract/_extract $util_plugin/functions/_extract
-  echo "# vim: ft=zsh sw=2 ts=2 et" >> $util_plugin/functions/_extract
+    filter extract >| $zephyr_plugin/functions/extract
+  cp -f $ZSH/plugins/extract/_extract $zephyr_plugin/functions/_extract
+  echo "# vim: ft=zsh sw=2 ts=2 et" >> $zephyr_plugin/functions/_extract
+}
+
+function build_clipboard {
+  export PLUGIN_NAME=clipboard
+  export PLUGIN_DESC="OMZ clipboard utilities"
+  export UPSTREAM_URL=https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/clipboard.zsh
+  echo "Building clipboard plugin..."
+  zephyr_plugin=$ZEPHYR/plugins/clipboard/clipboard.plugin.zsh
+  cat $ZSH/lib/clipboard.zsh | filter add_header > $zephyr_plugin && echo "" >> $zephyr_plugin
+  cat $ZSH/plugins/copyfile/copyfile.plugin.zsh >> $zephyr_plugin && echo "" >> $zephyr_plugin
+  cat $ZSH/plugins/copypath/copypath.plugin.zsh >> $zephyr_plugin && echo "" >> $zephyr_plugin
+  cat $ZSH/plugins/copybuffer/copybuffer.plugin.zsh >> $zephyr_plugin
+  unset PLUGIN_{NAME,DESC} UPSTREAM_URL
 }
 
 function _getupstream {
@@ -159,6 +173,6 @@ function _getupstream {
 
   # utils
   build_utility
-
+  build_clipboard
 }
 _getupstream $@
