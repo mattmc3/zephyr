@@ -89,6 +89,13 @@ fi
 alias help=run-help
 
 #
+# Misc
+#
+
+# Allow mapping Ctrl+S and Ctrl+Q shortcuts
+[[ -r ${TTY:-} && -w ${TTY:-} && $+commands[stty] == 1 ]] && stty -ixon <$TTY >$TTY
+
+#
 # Wrap up
 #
 
