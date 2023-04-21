@@ -27,7 +27,7 @@ unsetopt SHARE_HISTORY           # Don't share history between all sessions.
 # Variables
 #
 
-zstyle -s ':zephyr:plugin:history' histfile '_histfile' || _histfile="${XDG_DATA_HOME:-~/.local/share}/zsh/history"
+zstyle -s ':zephyr:plugin:history' histfile '_histfile' || _histfile="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history"
 zstyle -s ':zephyr:plugin:history' histsize '_histsize' || _histsize=10000
 zstyle -s ':zephyr:plugin:history' savehist '_savehist' || _savehist=10000
 HISTFILE="${_histfile}"  # The path to the history file.

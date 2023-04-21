@@ -2,7 +2,7 @@
 
 BEGIN                  { p=1 }
 /_pmh_/                { gsub(/_pmh_/,"_") }
-/_histfile=/           { gsub(/_histfile=.+$/,"_histfile=\"${XDG_DATA_HOME:-~/.local/share}/zsh/history\"") }
+/_histfile=/           { gsub(/_histfile=.+$/,"_histfile=\"${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history\"") }
 /_savehist=/           { gsub(/_savehist=\$\{_histsize\}/,"_savehist=10000") }
 /history-stat=/        { gsub(/history-stat=.history/,"history-stat=\"command history") }
 /OLD_HISTFILE/         { p=0 }
