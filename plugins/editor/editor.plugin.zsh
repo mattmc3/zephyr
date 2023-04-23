@@ -456,6 +456,14 @@ fi
 unset key{,map,_bindings}
 
 #
+# Misc
+#
+
+# https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/completion.zsh
+zmodload -i zsh/complist
+bindkey -M menuselect '^o' accept-and-infer-next-history
+
+#
 # Wrap up
 #
 

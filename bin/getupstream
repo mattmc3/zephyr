@@ -102,7 +102,9 @@ function build_terminal {
 }
 
 function build_editor {
+  export TAIL_CONTENT=$(extract_section 'Misc' 'editor')
   build_from_prezto editor "Set editor specific key bindings, options, and variables."
+  unset TAIL_CONTENT
 }
 
 function build_environment {
