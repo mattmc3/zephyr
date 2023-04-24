@@ -41,6 +41,7 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 ## Plugins
 
+- **clipboard** - System clipboard integration
 - **color** - Make terminal things more colorful
 - **completion** - Load and initialize the built-in zsh completion system
 - **confd** - Source conf.d like Fish
