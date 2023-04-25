@@ -6,7 +6,10 @@
 # Requirements
 #
 
-[[ "$TERM" != 'dumb' ]] || return 1
+setopt EXTENDED_GLOB # Needed for file modification glob modifiers with coreutils setup
+
+_cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
+[[ -d "$_cache_dir" ]] || mkdir -p "$_cache_dir"
 
 #
 # Functions
@@ -32,39 +35,45 @@ export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[04;35m'
 
 #
-# Init
+# Aliases
 #
 
-# Colorize ls and grep.
-() {
-  local prefix cache zsh_cache
-
-  zsh_cache=${XDG_CACHE_HOME:=$HOME/.cache}/zsh
-  [[ -d $zsh_cache ]] || mkdir -p $zsh_cache
+function -coreutils-alias-setup {
+  # Prefix will either be g or empty. This is to account for GNU Coreutils being
+  # installed alongside BSD Coreutils
+  local prefix=$1
 
   # Cache results of running dircolors for 20 hours, so it should almost
   # always regenerate the first time a shell is opened each day.
-  for prefix in '' g; do
-    if (( $+commands[${prefix}dircolors] )); then
-      local dircolors_file=$zsh_cache/${prefix}dircolors.zsh
-      local cache=($dircolors_file(Nmh-20))
-      (( $#cache )) || ${prefix}dircolors --sh >| $dircolors_file
-
-      source $dircolors_file
-      alias ${prefix}ls="${aliases[${prefix}ls]:-${prefix}ls} --color=auto"
-    fi
-  done
-
-  # if LS_COLORS was not set from dircolors, set it to a reasonable default.
-  export LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
-  export LSCOLORS=${LSCOLORS:-exfxcxdxbxGxDxabagacad}
-
-  if [[ "$OSTYPE" == darwin* ]]; then
-    alias ls="${aliases[ls]:-ls} -G"
+  local dircolors_cache=$_cache_dir/${prefix}dircolors.zsh
+  local cache_files=($dircolors_cache(Nmh-20))
+  if ! (( $#cache_files )); then
+    ${prefix}dircolors --sh >| $dircolors_cache
   fi
+  source "${dircolors_cache}"
 
-  alias grep="${aliases[grep]:-grep} --color=auto"
+  alias ${prefix}ls="${aliases[${prefix}ls]:-${prefix}ls} --group-directories-first --color=auto"
 }
+
+# dircolors is a surprisingly good way to detect GNU vs BSD coreutils
+if (( $+commands[gdircolors] )); then
+  -coreutils-alias-setup g
+fi
+
+if (( $+commands[dircolors] )); then
+  -coreutils-alias-setup
+else
+  alias ls="${aliases[ls]:-ls} -G"
+fi
+
+alias grep="${aliases[grep]:-grep} --color=auto"
+
+#
+# Cleanup
+#
+
+unfunction -- -coreutils-alias-setup
+unset _cache_dir
 
 #
 # Wrap up
