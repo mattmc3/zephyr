@@ -10,6 +10,6 @@ Sets `brew` environment variables from `brew shellenv`.
 
 | Function    | Description                        |
 | ----------- | -----------------------------------|
-| `brew-desc` | Show descriptions of brew installs |
+| `brewinfo`  | Show descriptions of brew installs |
 | `brews`     | Show brewed formulae               |
 | `brewup`    | brew update/upgrade/cleanup        |
