@@ -113,8 +113,9 @@ zstyle ':zephyr:plugin:editor' key-bindings 'emacs'
 #
 
 # Set the prompt theme to load.
-# Values: zephyr, starship
-zstyle ':zephyr:plugin:prompt' theme 'zephyr'
+zstyle ':zephyr:plugin:prompt' theme 'starship'
+# Values: zephyr, hydro, prezto
+zstyle ':zephyr:plugin:prompt:starship' config 'zephyr'
 
 # Set the working directory prompt display length.
 # By default, it is set to 'short'. Set it to 'long' (without '~' expansion)

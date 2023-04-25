@@ -1,4 +1,34 @@
-check-starship-exists || return 1
+#
+# prompt_starship_setup
+#
+
+0=${(%):-%x}
+
+if ! (( $+commands[starship] )); then
+  # We could install, but running a remotely hosted shell script is not a risk
+  # Zephyr should assume. Let's let the user decide whether to install it.
+  echo >&2 "Starship prompt not installed. See https://starship.rs to install."
+  return 1
+fi
+
+# Set the config. The logic is:
+# - Favor the function argument
+# - Then favor custom themes dir, starship dir, and finally Zephyr
+if [[ -n "$1" ]]; then
+  export STARSHIP_CONFIG=${0:A:h:h}/themes/${1}.toml
+else
+  zstyle -s ':zephyr:plugin:prompt:starship' config prompt_config
+  if [[ -n "$prompt_config" ]]; then
+    local -a starship_cfgs=(
+      ${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/themes/${prompt_config}.toml(N)
+      ${XDG_CONFIG_HOME:-$HOME/.config}/starship/${prompt_config}.toml(N)
+      ${0:A:h:h}/themes/${prompt_config}.toml(N)
+    )
+    (( ! $#starship_cfgs )) || export STARSHIP_CONFIG=$starship_cfgs[1]
+  else
+    unset STARSHIP_CONFIG
+  fi
+fi
 
 #eval "$(starship init zsh)"
 source <(starship init zsh --print-full-init)

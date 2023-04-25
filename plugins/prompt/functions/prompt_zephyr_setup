@@ -1,8 +1,7 @@
-0=${(%):-%x}
-check-starship-exists || return 1
+#
+# prompt_zephyr_setup
+#
 
-export STARSHIP_CONFIG="${0:A:h:h}/themes/zephyr.toml"
-#eval "$(starship init zsh)"
-source <(starship init zsh --print-full-init)
+prompt_starship_setup zephyr
 
 # vim: ft=zsh sw=2 ts=2 et

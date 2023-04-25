@@ -1,6 +1,6 @@
-####
+#
 # prompt - Set zsh prompt.
-###
+#
 
 #
 # Requirements
@@ -26,36 +26,20 @@ PS2='${${${(%):-%_}//[^ ]}// /  }    '
 # Init
 #
 
-# Autoload functions.
+# Add Zephyr's prompt functions to fpath.
 fpath=(${0:A:h}/functions $fpath)
-autoload -Uz $fpath[1]/*(.:t)
 
-# Use zstyle for the prompt theme.
-zstyle -s ':zephyr:plugin:prompt' theme theme_name ||
-  theme_name=${ZSH_THEME:-zephyr}
+# Initialize Zsh's prompt system
+autoload -Uz promptinit && promptinit
 
-# See if we need to set STARSHIP_CONFIG
-zstyle -s ':zephyr:plugin:prompt:starship' config starshipcfg ||
-  starshipcfg=
-
-# Use zstyle to set the preferred starship prompt theme.
-if [[ -e "${XDG_CONFIG_HOME:=$HOME/.config}/starship/${starshipcfg}.toml" ]]; then
-  STARSHIP_CONFIG="${XDG_CONFIG_HOME:=$HOME/.config}/starship/${starshipcfg}.toml"
-elif [[ -n "$starshipcfg" ]]; then
-  STARSHIP_CONFIG="$starshipcfg"
-fi
-
-# Run the prompt setup function directly, or use the promptinit system.
-if (( $+functions[prompt_${theme_name}_setup] )); then
-  prompt_${theme_name}_setup
-else
-  autoload -Uz promptinit && promptinit
-  [[ -z "$theme_name" ]] || prompt $theme_name
-fi
+# Set the prompt if specified
+local -a prompt_theme
+zstyle -a ':zephyr:plugin:prompt' theme prompt_theme || prompt_theme=zephyr
+prompt $prompt_theme
+unset prompt_theme
 
 #
 # Wrap up
 #
 
-unset theme_name starshipcfg
 zstyle ":zephyr:plugin:prompt" loaded 'yes'
