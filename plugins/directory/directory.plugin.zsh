@@ -1,38 +1,56 @@
 #
 # directory - Set directory options and define directory aliases.
 #
-# THIS FILE IS GENERATED:
-# - https://github.com/sorin-ionescu/prezto/blob/master/modules/directory/init.zsh
-#
 
-#
-# Options
-#
+() {
+  #
+  # Options
+  #
 
-setopt AUTO_PUSHD           # Push the old directory onto the stack on cd.
-setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.
-setopt PUSHD_SILENT         # Do not print the directory stack after pushd or popd.
-setopt PUSHD_MINUS          # Exchange meanings of +/- when navigating the dirstack.
-setopt PUSHD_TO_HOME        # Push to home directory when no argument is given.
-setopt CDABLE_VARS          # Change directory to a path stored in a variable.
-setopt MULTIOS              # Write to multiple descriptors.
-setopt EXTENDED_GLOB        # Use extended globbing syntax.
-unsetopt CLOBBER            # Do not overwrite files with >. Use >| to bypass.
+  local diropts=(
+    # 16.2.1 Changing Directories
+    auto_cd                 # If a command isn't valid, but is a directory, cd to that dir.
+    auto_pushd              # Make cd push the old directory onto the dirstack.
+    cdable_vars             # Change directory to a path stored in a variable.
+    pushd_ignore_dups       # Don’t push multiple copies of the same directory onto the dirstack.
+    pushd_minus             # Exchanges meanings of +/- when navigating the dirstack.
+    pushd_silent            # Do not print the directory stack after pushd or popd.
+    pushd_to_home           # Push to home directory when no argument is given.
 
-#
-# Aliases
-#
+    # 16.2.3 Expansion and Globbing
+    extended_glob           # Use extended globbing syntax.
+    glob_dots               # Don't hide dotfiles from glob patterns.
 
-if ! zstyle -t ':zephyr:plugin:directory:alias' skip; then
-  alias -- -='cd -'
-  alias dirh='dirs -v'
-  for index ({1..9}) alias "$index"="cd +${index}"; unset index
-  for dotdot ({1..9}) alias -g "..$dotdot"=$(printf '../%.0s' {1..$dotdot}); unset dotdot
-fi
+    # 16.2.6 Input/Output
+    NO_clobber              # Don't overwrite files with >. Use >| to bypass.
 
-#
-# Wrap up
-#
+    # 16.2.9 Scripts and Functions
+    multios                 # Write to multiple descriptors.
+  )
+  setopt $diropts
 
-# Tell Zephyr this plugin is loaded.
-zstyle ':zephyr:plugin:directory' loaded 'yes'
+  #
+  # Aliases
+  #
+
+  if ! zstyle -t ':zephyr:directory:alias' skip; then
+    alias -- -='cd -'
+    alias dirh='dirs -v'
+
+    local dotdots=".."
+    for index in {1..9}; do
+      # dirstack aliases (eg: "2"="cd 2")
+      alias "$index"="cd +${index}"
+      # backref aliases (eg: "..3"="../../..")
+      alias -g "..$index"="$dotdots"
+      dotdots+='/..'
+    done
+  fi
+
+  #
+  # Wrap up
+  #
+
+  # Tell Zephyr this plugin is loaded.
+  zstyle ':zephyr:plugin:directory' loaded 'yes'
+}
