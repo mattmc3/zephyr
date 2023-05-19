@@ -26,6 +26,13 @@
     HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/zsh_history"
   [[ -d $HISTFILE:h ]] || mkdir -p $HISTFILE:h
 
+  # remove in the future
+  if [[ -f ${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history ]] &&
+     [[ ! -f ${XDG_DATA_HOME:-$HOME/.local/share}/zsh/zsh_history ]]
+  then
+    cp ${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history ${XDG_DATA_HOME:-$HOME/.local/share}/zsh/zsh_history
+  fi
+
   # Session history items, and history file items
   zstyle -s ':zephyr:plugin:history' histsize 'HISTSIZE' ||
     HISTSIZE=10000
