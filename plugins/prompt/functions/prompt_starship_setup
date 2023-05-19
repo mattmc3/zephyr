@@ -14,27 +14,22 @@ fi
 # Set the config. The logic is:
 # - Favor the function argument
 # - Then favor custom themes dir, starship dir, and finally Zephyr
-if [[ -n "$1" ]]; then
+local prompt_config="$1"
+[[ -n "$prompt_config" ]] ||
+  zstyle -s ':zephyr:plugin:prompt:starship' config prompt_config
+
+if [[ -n "$prompt_config" ]]; then
   local -a configs=(
-    ${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/themes/$1.toml(N)
-    ${XDG_CONFIG_HOME:-$HOME/.config}/starship/$1.toml(N)
+    ${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/themes/${prompt_config}.toml(N)
+    ${XDG_CONFIG_HOME:-$HOME/.config}/starship/${prompt_config}.toml(N)
+    ${0:A:h:h}/themes/${prompt_config}.toml(N)
   )
   (( $#configs )) && export STARSHIP_CONFIG=$configs[1]
 else
-  zstyle -s ':zephyr:plugin:prompt:starship' config prompt_config
-  if [[ -n "$prompt_config" ]]; then
-    local -a starship_cfgs=(
-      ${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/themes/${prompt_config}.toml(N)
-      ${XDG_CONFIG_HOME:-$HOME/.config}/starship/${prompt_config}.toml(N)
-      ${0:A:h:h}/themes/${prompt_config}.toml(N)
-    )
-    (( ! $#starship_cfgs )) || export STARSHIP_CONFIG=$starship_cfgs[1]
-  else
-    unset STARSHIP_CONFIG
-  fi
+  unset STARSHIP_CONFIG
 fi
 
-local starship_init=${XDG_CACHE_HOME:=~/.cache}/zephyr/starship_init.zsh
+local starship_init=${XDG_CACHE_HOME:-~/.cache}/zephyr/starship_init.zsh
 [[ -d $starship_init:h ]] || mkdir -p $starship_init:h
 
 local cache=($starship_init(Nmh-20))
