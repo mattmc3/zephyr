@@ -1,10 +1,15 @@
+#
+# zephyr.toml - Zephyr default prompt theme
+#
+
 add_newline = false
 
 # A minimal left prompt
 format = """$python$directory$character"""
 
 # move the rest of the prompt to the right
-right_format = """$status$git_branch$git_status"""
+#right_format = """$status$git_branch${custom.git_status_dirty}$git_status"""
+right_format = """$status$cmd_duration$git_branch${custom.git_status_dirty}$git_status"""
 
 [character]
 success_symbol = "[❯](purple)[❯](cyan)"
@@ -26,21 +31,21 @@ fish_style_pwd_dir_length = 1
 # right prompt uses left space padding
 [git_branch]
 format = ' [$branch]($style)'
-style = 'bold green'
+style = 'green'
 
 [git_status]
-format = '$all_status$ahead_behind'
-ahead = ' [⬆](bold purple)'
-behind = ' [⬇](bold purple)'
-staged = ' [✚](green)'
-deleted = ' [✖](red)'
-renamed = ' [➜](purple)'
-stashed = ' [✭](cyan)'
-untracked = ' [◼](white)'
-modified = ' [✱](blue)'
-conflicted = ' [═](yellow)'
-diverged = ' ⇕'
-up_to_date = ''
+format = '( [\[$ahead_behind$stashed\]]($style))'
+style = "cyan"
+stashed = "≡"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+
+[custom.git_status_dirty]
+when = 'test -n "$(git status --porcelain 2>/dev/null)"'
+symbol = "•"
+style = "white"
+format="[$symbol]($style)"
+shell = ["sh"]
 
 [cmd_duration]
 format = ' [$duration]($style)'
