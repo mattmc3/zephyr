@@ -93,10 +93,6 @@ function build_from_zsh_utils {
   filter add_footer >| $plugin_file
 }
 
-function build_directory {
-  build_from_prezto directory
-}
-
 function build_terminal {
   build_from_prezto terminal "Sets terminal window and tab titles."
 }
@@ -115,10 +111,6 @@ function build_environment {
     "Set general shell options and define environment variables." \
     runcoms/zprofile
   unset {HEAD,TAIL}_CONTENT
-}
-
-function build_history {
-  build_from_prezto history
 }
 
 function build_completion {
@@ -162,12 +154,10 @@ function build_clipboard {
 }
 
 function _getupstream {
-  #get_repos
+  get_repos
 
   # prezto
-  build_directory
   build_editor
-  build_history
   build_terminal
   build_environment
   build_compstyle
