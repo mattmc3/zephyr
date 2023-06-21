@@ -60,3 +60,10 @@ function copypath {
 
   echo ${(%):-"%B${file:a}%b copied to clipboard."}
 }
+
+#
+# Wrap up
+#
+
+# Tell Zephyr this plugin is loaded.
+zstyle ":zephyr:plugin:clipboard" loaded 'yes'
