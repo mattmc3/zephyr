@@ -6,7 +6,7 @@
 # Requirements
 #
 
-setopt EXTENDED_GLOB # Needed for file modification glob modifiers with coreutils setup
+[[ "$TERM" != 'dumb' ]] || return 1
 
 _cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
 [[ -d "$_cache_dir" ]] || mkdir -p "$_cache_dir"
@@ -16,8 +16,9 @@ _cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
 #
 
 # Load plugin functions.
+0=${(%):-%N}
 fpath=(${0:A:h}/functions $fpath)
-autoload -U $fpath[1]/*(.:t)
+autoload -Uz ${0:A:h}/functions/*(.:t)
 
 #
 # Variables
@@ -39,6 +40,8 @@ export LESS_TERMCAP_us=$'\e[04;35m'
 #
 
 function -coreutils-alias-setup {
+  emulate -L zsh; setopt local_options extended_glob
+
   # Prefix will either be g or empty. This is to account for GNU Coreutils being
   # installed alongside BSD Coreutils
   local prefix=$1
@@ -48,7 +51,7 @@ function -coreutils-alias-setup {
   local dircolors_cache=$_cache_dir/${prefix}dircolors.zsh
   local cache_files=($dircolors_cache(Nmh-20))
   if ! (( $#cache_files )); then
-    ${prefix}dircolors --sh >| $dircolors_cache
+    ${prefix}dircolors --sh > $dircolors_cache
   fi
   source "${dircolors_cache}"
 
