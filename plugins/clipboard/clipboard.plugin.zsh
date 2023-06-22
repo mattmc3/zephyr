@@ -3,82 +3,38 @@
 #
 
 #
+# References
+#
+
+# https://github.com/neovim/neovim/blob/e682d799fa3cf2e80a02d00c6ea874599d58f0e7/runtime/autoload/provider/clipboard.vim#L55-L121
+# https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/clipboard.zsh
+# https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/copybuffer
+# https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/copyfile
+# https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/copypath
+
+#
 # Requirements
 #
 
 [[ "$TERM" != 'dumb' ]] || return 1
 
 #
-# Aliases
-#
-
-# macOS pbcopy/pbpaste everywhere
-if ! (( $+commands[pbcopy] )); then
-  if [[ "$OSTYPE" == cygwin* ]]; then
-    alias pbcopy='tee > /dev/clipboard'
-    alias pbpaste='cat /dev/clipboard'
-  elif [[ "$OSTYPE" == linux-android ]]; then
-    alias pbcopy='termux-clipboard-set'
-    alias pbpaste='termux-clipboard-get'
-  elif (( $+commands[wl-copy] && $+commands[wl-paste] )); then
-    alias pbcopy='wl-copy'
-    alias pbpaste='wl-paste'
-  elif [[ -n $DISPLAY ]]; then
-    if (( $+commands[xclip] )); then
-      alias pbcopy='xclip -selection clipboard -in'
-      alias pbpaste='xclip -selection clipboard -out'
-    elif (( $+commands[xsel] )); then
-      alias pbcopy='xsel --clipboard --input'
-      alias pbpaste='xsel --clipboard --output'
-    fi
-  fi
-fi
-
-#
 # Functions
 #
 
-# Copy the active line from the command line buffer.
-function copybuffer {
-  printf "%s" "$BUFFER" | pbcopy
-}
-zle -N copybuffer
+# Load plugin functions.
+0=${(%):-%N}
+fpath=(${0:A:h}/functions $fpath)
+autoload -Uz ${0:A:h}/functions/*(.:t)
 
+#
+# Keybindings
+#
+
+zle -N copybuffer
 bindkey -M emacs "^O" copybuffer
 bindkey -M viins "^O" copybuffer
 bindkey -M vicmd "^O" copybuffer
-
-# Copy file contents
-function copyfile {
-  emulate -L zsh
-  [[ -e $1 ]] || return 1
-  cat $1 | pbcopy
-}
-
-# Copy the path to clipboard or current directory if no parameter.
-function copypath {
-  # If no argument passed, use current directory.
-  local file="${1:-.}"
-
-  # If argument is not an absolute path, prepend $PWD.
-  [[ $file = /* ]] || file="$PWD/$file"
-
-  # Copy the absolute path without resolving symlinks
-  # If clipcopy fails, exit the function with an error
-  print -n "${file:a}" | pbcopy || return 1
-
-  echo ${(%):-"%B${file:a}%b copied to clipboard."}
-}
-
-#
-# Misc
-#
-
-# Use built-in paste magic.
-autoload -Uz bracketed-paste-url-magic
-zle -N bracketed-paste bracketed-paste-url-magic
-autoload -Uz url-quote-magic
-zle -N self-insert url-quote-magic
 
 #
 # Wrap up
