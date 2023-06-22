@@ -3,18 +3,6 @@
 #
 
 #
-# Requirements
-#
-
-[[ "$TERM" != 'dumb' ]] || return 1
-
-#
-# Options
-#
-
-setopt PROMPT_SUBST  # Expand parameters in prompt.
-
-#
 # Variables
 #
 
@@ -23,20 +11,29 @@ setopt PROMPT_SUBST  # Expand parameters in prompt.
 PS2='${${${(%):-%_}//[^ ]}// /  }    '
 
 #
-# Init
+# Functions
 #
 
 # Add Zephyr's prompt functions to fpath.
+0=${(%):-%N}
 fpath=(${0:A:h}/functions $fpath)
 
 # Initialize Zsh's prompt system
 autoload -Uz promptinit && promptinit
 
+#
+# Init
+#
+
 # Set the prompt if specified
 local -a prompt_theme
-zstyle -a ':zephyr:plugin:prompt' theme prompt_theme || prompt_theme=zephyr
-prompt $prompt_theme
-unset prompt_theme
+zstyle -a ':zephyr:plugin:prompt' theme 'prompt_argv'
+if [[ $TERM == (dumb|linux|*bsd*) ]]; then
+  prompt 'off'
+elif (( $#prompt_argv > 0 ))
+  prompt "$prompt_argv[@]"
+fi
+unset prompt_argv
 
 #
 # Wrap up
