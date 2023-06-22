@@ -1,10 +1,13 @@
 #
 # homebrew - Environment variables and functions for homebrew users.
 #
-# References:
-# - https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/brew
-# - https://github.com/sorin-ionescu/prezto/tree/master/modules/homebrew
+
 #
+# References
+#
+
+# https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/brew
+# https://github.com/sorin-ionescu/prezto/tree/master/modules/homebrew
 
 #
 # Requirements
@@ -45,7 +48,10 @@ if ! zstyle -t ':zephyr:plugin:homebrew:shellenv' skip; then
   fi
 fi
 
-# Clean up.
+#
+# Clean up
+#
+
 unset _cache_{dir,files}
 
 #
