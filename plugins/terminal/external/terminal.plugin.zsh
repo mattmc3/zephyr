@@ -1,8 +1,10 @@
+# Generated from https://github.com/sorin-ionescu/prezto/blob/master/modules/terminal/init.zsh
 #
-# terminal - Sets terminal window and tab titles.
+# Sets terminal window and tab titles.
 #
-# THIS FILE IS GENERATED:
-# - https://github.com/sorin-ionescu/prezto/blob/master/modules/terminal/init.zsh
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#   Olaf Conradi <olaf@conradi.org>
 #
 
 # Return if requirements are not found.
@@ -126,10 +128,3 @@ then
   # Sets titles before command execution.
   add-zsh-hook preexec _terminal-set-titles-with-command
 fi
-
-#
-# Wrap up
-#
-
-# Tell Zephyr this plugin is loaded.
-zstyle ':zephyr:plugin:terminal' loaded 'yes'
