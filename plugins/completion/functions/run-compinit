@@ -13,7 +13,7 @@
     shift
   fi
 
-  local zcompdump=${1:-${ZSH_COMPDUMP:-${XDG_CACHE_HOME:-$HOME/.cache}/zephyr/zcompdump}}
+  local zcompdump=${1:-${ZSH_COMPDUMP:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump}}
   [[ -d "$zcompdump:h" ]] || mkdir -p "$zcompdump:h"
   autoload -Uz compinit
 
@@ -24,7 +24,7 @@
   #   #q expands globs in conditional expressions
   #   N - sets null_glob option (no error on 0 results)
   #   mh-20 - modified less than 20 hours ago
-  if [[ "$1" != "-f" ]] && [[ $zcompdump(#qNmh-20) ]]; then
+  if [[ $force -ne 1 ]] && [[ $zcompdump(#qNmh-20) ]]; then
     # -C (skip function check) implies -i (skip security check).
     compinit -C -d "$zcompdump"
   else
