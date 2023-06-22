@@ -21,8 +21,9 @@ _cache_dir=${XDG_CACHE_HOME:=$HOME/.cache}/zephyr
 #
 
 # Load plugin functions.
+0=${(%):-%N}
 fpath=(${0:A:h}/functions $fpath)
-autoload -U $fpath[1]/*(.:t)
+autoload -Uz ${0:A:h}/functions/*(.:t)
 
 #
 # Init
