@@ -52,6 +52,11 @@ if ! (( $+commands[envsubst] )); then
   alias envsubst="python -c 'import os,sys;[sys.stdout.write(os.path.expandvars(l)) for l in sys.stdin]'"
 fi
 
+# canonical hex dump; some systems have this symlinked
+if ! (( $+commands[hd] )) && (( $+commands[hexdump] )); then
+  alias hd="hexdump -C"
+fi
+
 # macOS-like open command
 if ! (( $+commands[open] )); then
   if [[ "$OSTYPE" == cygwin* ]]; then
