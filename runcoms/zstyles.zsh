@@ -95,18 +95,8 @@ zstyle ':zephyr:plugin:editor' key-bindings 'emacs'
 #
 
 # Set the prompt theme to load.
-zstyle ':zephyr:plugin:prompt' theme 'starship'
-# Values: zephyr, hydro, prezto
-zstyle ':zephyr:plugin:prompt:starship' config 'zephyr'
-
-# Set the working directory prompt display length.
-# By default, it is set to 'short'. Set it to 'long' (without '~' expansion)
-# for longer or 'full' (with '~' expansion) for even longer prompt display.
-# zstyle ':zephyr:plugin:prompt' pwd-length 'short'
-
-# Set the prompt to display the return code along with an indicator for non-zero
-# return codes. This is not supported by all prompts.
-# zstyle ':zephyr:plugin:prompt' show-return-val 'yes'
+# starship themes: zephyr, hydro, prezto
+zstyle ':zephyr:plugin:prompt' theme starship zephyr
 
 #
 # Terminal
