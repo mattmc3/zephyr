@@ -10,10 +10,10 @@ zstyle ':completion::complete:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zep
 # Case-insensitive (all), partial-word, and then substring completion.
 if zstyle -t ':zephyr:plugin:completion:*' case-sensitive; then
   zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-  setopt CASE_GLOB
+  setopt case_glob
 else
   zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-  unsetopt CASE_GLOB
+  unsetopt case_glob
 fi
 
 # Group matches and describe.
