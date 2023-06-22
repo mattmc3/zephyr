@@ -9,9 +9,6 @@
 # Return if requirements are not found.
 [[ "$TERM" != 'dumb' ]] || return 1
 
-# Set zero.
-0=${(%):-%N}
-
 #
 # Zstyles
 #
