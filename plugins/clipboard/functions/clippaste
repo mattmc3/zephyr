@@ -1,8 +1,6 @@
 #!/bin/zsh
-#
-# clippaste - Paste data from clipboard to stdout
-#
-#
+##? clippaste - Paste data from clipboard to stdout
+
 # Usage:
 #   clippaste               - writes clipboard's contents to stdout
 #   clippaste | <command>   - pastes contents and pipes it to another process
@@ -16,12 +14,11 @@
 #   clippaste > file.txt
 #
 
-function clippaste {
+#function clippaste {
   if detect-clipboard; then
     clippaste "$@"
   else
     print "clippaste: Platform $OSTYPE not supported or xclip/xsel not installed" >&2
     return 1
   fi
-}
-clippaste "$@"
+#}

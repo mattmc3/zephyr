@@ -1,13 +1,11 @@
 #!/bin/zsh
-#
-# copyfile - Copy file contents.
-#
-function copyfile {
+##? copyfile - Copy file contents.
+
+#function copyfile {
   emulate -L zsh
   if [[ ! -e $1 ]]; then
     print "File not found '$1'." >&2
     return 1
   fi
   clipcopy $1
-}
-copyfile "$@"
+#}

@@ -1,8 +1,7 @@
 #!/bin/zsh
-#
-# copypath - Copy the path to clipboard or current directory if no parameter.
-#
-function copypath {
+##? copypath - Copy the path to clipboard or current directory if no parameter.
+
+#function copypath {
   # If no argument passed, use current directory.
   local file="${1:-.}"
 
@@ -14,5 +13,4 @@ function copypath {
   print -n "${file:a}" | clipcopy || return 1
 
   echo ${(%):-"%B${file:a}%b copied to clipboard."}
-}
-copypath "$@"
+#}

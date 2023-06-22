@@ -1,7 +1,6 @@
 #!/bin/zsh
-#
-# detect-clipboard
-#
+##? detect-clipboard - determine the system clipboard and populate clipcopy/clippaste functions
+
 # This function enables system clipboard copy and paste operations
 # from the command line in a generic cross-platform fashion.
 #
@@ -19,8 +18,8 @@
 # - tmux (if $TMUX is set)
 #
 # Defines two functions, clipcopy and clippaste, based on the detected platform.
-#
-function detect-clipboard {
+
+#function detect-clipboard {
   emulate -L zsh
 
   if [[ "${OSTYPE}" == darwin* ]] && (( ${+commands[pbcopy]} )) && (( ${+commands[pbpaste]} )); then
@@ -59,10 +58,4 @@ function detect-clipboard {
   else
     return 1
   fi
-}
-
-# Detect at startup. A non-zero exit here indicates that the dummy clipboards were set,
-# which is not really an error. If the user calls them, they will attempt to redetect
-# (for example, perhaps the user has now installed xclip) and then either print an error
-# or proceed successfully.
-detect-clipboard "$@"
+#}

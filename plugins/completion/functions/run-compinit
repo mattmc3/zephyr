@@ -1,7 +1,9 @@
 #!/bin/zsh
+#
+# run-compinit - run compinit in a smarter, faster way
+#
 
-function run-compinit {
-  # run compinit in a smarter, faster way
+#function run-compinit {
   emulate -L zsh
   setopt localoptions extendedglob
 
@@ -39,5 +41,4 @@ function run-compinit {
       fi
     fi
   } &!
-}
-run-compinit "$@"
+#}

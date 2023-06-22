@@ -1,8 +1,6 @@
 #!/bin/zsh
-#
-# copybuffer - Copy the active line from the command line buffer.
-#
-function copybuffer {
+##? copybuffer - Copy the active line from the command line buffer.
+
+#function copybuffer {
   printf "%s" "$BUFFER" | clipcopy
-}
-copybuffer "$@"
+#}
