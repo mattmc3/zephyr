@@ -20,6 +20,12 @@ _cache_dir=${XDG_CACHE_HOME:=$HOME/.cache}/zephyr
 [[ -d $_cache_dir ]] || mkdir -p $_cache_dir
 
 #
+# Variables
+#
+
+HOMEBREW_NO_ANALYTICS=${HOMEBREW_NO_ANALYTICS:-1}
+
+#
 # Functions
 #
 
