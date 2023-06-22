@@ -1,8 +1,9 @@
+# Generated from https://github.com/sorin-ionescu/prezto/blob/master/modules/editor/init.zsh
 #
-# editor - Set editor specific key bindings, options, and variables.
+# Sets key bindings.
 #
-# THIS FILE IS GENERATED:
-# - https://github.com/sorin-ionescu/prezto/blob/master/modules/editor/init.zsh
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
 # Return if requirements are not found.
@@ -14,7 +15,7 @@ fi
 # Options
 #
 
-setopt NO_BEEP  # Do not beep on error in line editor.
+setopt BEEP                     # Beep on error in line editor.
 
 #
 # Variables
@@ -454,18 +455,3 @@ else
 fi
 
 unset key{,map,_bindings}
-
-#
-# Misc
-#
-
-# https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/completion.zsh
-zmodload -i zsh/complist
-bindkey -M menuselect '^o' accept-and-infer-next-history
-
-#
-# Wrap up
-#
-
-# Tell Zephyr this plugin is loaded.
-zstyle ':zephyr:plugin:editor' loaded 'yes'
