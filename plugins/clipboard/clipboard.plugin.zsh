@@ -2,13 +2,17 @@
 # clipboard - clipboard utilities
 #
 
-# Use built-in paste magic.
-autoload -Uz bracketed-paste-url-magic
-zle -N bracketed-paste bracketed-paste-url-magic
-autoload -Uz url-quote-magic
-zle -N self-insert url-quote-magic
+#
+# Requirements
+#
 
-# pbcopy/pbpaste
+[[ "$TERM" != 'dumb' ]] || return 1
+
+#
+# Aliases
+#
+
+# macOS pbcopy/pbpaste everywhere
 if ! (( $+commands[pbcopy] )); then
   if [[ "$OSTYPE" == cygwin* ]]; then
     alias pbcopy='tee > /dev/clipboard'
@@ -30,7 +34,11 @@ if ! (( $+commands[pbcopy] )); then
   fi
 fi
 
-# copy the active line from the command line buffer
+#
+# Functions
+#
+
+# Copy the active line from the command line buffer.
 function copybuffer {
   printf "%s" "$BUFFER" | pbcopy
 }
@@ -40,6 +48,7 @@ bindkey -M emacs "^O" copybuffer
 bindkey -M viins "^O" copybuffer
 bindkey -M vicmd "^O" copybuffer
 
+# Copy file contents
 function copyfile {
   emulate -L zsh
   [[ -e $1 ]] || return 1
@@ -60,6 +69,16 @@ function copypath {
 
   echo ${(%):-"%B${file:a}%b copied to clipboard."}
 }
+
+#
+# Misc
+#
+
+# Use built-in paste magic.
+autoload -Uz bracketed-paste-url-magic
+zle -N bracketed-paste bracketed-paste-url-magic
+autoload -Uz url-quote-magic
+zle -N self-insert url-quote-magic
 
 #
 # Wrap up

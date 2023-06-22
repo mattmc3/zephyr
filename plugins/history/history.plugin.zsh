@@ -43,7 +43,7 @@
   # Aliases
   #
 
-  if ! zstyle -t ':zshzoo:history:alias' skip; then
+  if ! zstyle -t ':zephyr:history:alias' skip; then
     alias hist='fc -li'
     alias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
   fi

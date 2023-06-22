@@ -1,0 +1,43 @@
+#!/bin/zsh
+
+function run-compinit {
+  # run compinit in a smarter, faster way
+  emulate -L zsh
+  setopt localoptions extendedglob
+
+  local force=0
+  if [[ "$1" == "-f" ]]; then
+    force=1
+    shift
+  fi
+
+  local zcompdump=${1:-${ZSH_COMPDUMP:-${XDG_CACHE_HOME:-$HOME/.cache}/zephyr/zcompdump}}
+  [[ -d "$zcompdump:h" ]] || mkdir -p "$zcompdump:h"
+  autoload -Uz compinit
+
+  # if compdump is less than 20 hours old,
+  # consider it fresh and shortcut it with `compinit -C`
+  #
+  # Glob magic explained:
+  #   #q expands globs in conditional expressions
+  #   N - sets null_glob option (no error on 0 results)
+  #   mh-20 - modified less than 20 hours ago
+  if [[ "$1" != "-f" ]] && [[ $zcompdump(#qNmh-20) ]]; then
+    # -C (skip function check) implies -i (skip security check).
+    compinit -C -d "$zcompdump"
+  else
+    compinit -i -d "$zcompdump"
+    touch "$zcompdump"
+  fi
+
+  # Compile zcompdump, if modified, in background to increase startup speed.
+  {
+    if [[ -s "$zcompdump" && (! -s "${zcompdump}.zwc" || "$zcompdump" -nt "${zcompdump}.zwc") ]]; then
+      if command mkdir "${zcompdump}.zwc.lock" 2>/dev/null; then
+        zcompile "$zcompdump"
+        command rmdir  "${zcompdump}.zwc.lock" 2>/dev/null
+      fi
+    fi
+  } &!
+}
+run-compinit "$@"
