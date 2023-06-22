@@ -1,6 +1,7 @@
-###
+#!/bin/zsh
+#
 # .zstyles - Set zstyle options for Zephyr and other plugins/features.
-###
+#
 
 #
 # General
@@ -11,18 +12,6 @@
 
 # Color output (auto set to 'no' on dumb terminals).
 zstyle ':zephyr:*:*' color 'yes'
-
-# Add additional directories to load Zephyr plugins from
-# zstyle ':zephyr:load' plugin-dirs $HOME/.zephyr-contrib
-
-# Allow module overrides when plugin-dirs causes module name collisions
-# zstyle ':zephyr:load' plugin-allow-overrides 'yes'
-
-# Set the Zsh plugins to load (man zshplugins).
-# zstyle ':zephyr:load' zmodule 'attr' 'stat'
-
-# Set the Zsh functions to load (man zshcontrib).
-# zstyle ':zephyr:load' zfunction 'zargs' 'zmv'
 
 # Set the Zephyr plugins to load (browse plugins).
 # The order matters.
@@ -36,13 +25,6 @@ zstyle ':zephyr:load' plugins \
   'utility' \
   'completion' \
   'prompt'
-
-#
-# Autosuggestions
-#
-
-# Set the highlight style.
-# zstyle ':zephyr:plugin:autosuggestions:highlight' style 'fg=8'
 
 #
 # Completions
@@ -127,30 +109,6 @@ zstyle ':zephyr:plugin:prompt:starship' config 'zephyr'
 # zstyle ':zephyr:plugin:prompt' show-return-val 'yes'
 
 #
-# Syntax Highlighting
-#
-
-# Set syntax highlighters.
-# By default, only the main highlighter is enabled.
-# zstyle ':zephyr:plugin:syntax-highlighting' highlighters \
-#   'main' \
-#   'brackets' \
-#   'pattern' \
-#   'line' \
-#   'cursor' \
-#   'root'
-#
-# Set syntax highlighting styles.
-# zstyle ':zephyr:plugin:syntax-highlighting' styles \
-#   'builtin' 'bg=blue' \
-#   'command' 'bg=blue' \
-#   'function' 'bg=blue'
-#
-# Set syntax pattern styles.
-# zstyle ':zephyr:plugin:syntax-highlighting' pattern \
-#   'rm*-rf*' 'fg=white,bold,bg=red'
-
-#
 # Terminal
 #
 
@@ -165,14 +123,3 @@ zstyle ':zephyr:plugin:prompt:starship' config 'zephyr'
 
 # Set the terminal multiplexer title format.
 # zstyle ':zephyr:plugin:terminal:multiplexer-title' format '%s'
-
-#
-# Utility
-#
-
-# Enabled safe options. This aliases cp, ln, mv and rm so that they prompt
-# before deleting or overwriting files. Set to 'no' to disable this safer
-# behavior.
-# zstyle ':zephyr:plugin:utility' safe-ops 'yes'
-
-# vim: ft=zsh sw=2 ts=2 et
