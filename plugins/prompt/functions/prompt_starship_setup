@@ -1,5 +1,5 @@
 #!/bin/zsh
-function prompt_starship_setup {
+#function prompt_starship_setup {
   0=${(%):-%x}
 
   if ! (( $+commands[starship] )); then
@@ -33,5 +33,4 @@ function prompt_starship_setup {
   local cache=($starship_init(Nmh-20))
   (( $#cache )) || starship init zsh --print-full-init >| $starship_init
   source $starship_init
-}
-prompt_starship_setup "$@"
+#}
