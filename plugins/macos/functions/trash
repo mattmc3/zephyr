@@ -1,0 +1,22 @@
+#!/bin/zsh
+##? trash - add files to trash
+function trash {
+
+local -a files=()
+local file
+for file in $@; do
+  if [[ -e $file ]]; then
+    files+=("the POSIX file \"${file:A}\"")
+  else
+    print -u 2 "trash: No such file or directory '$files'."
+    return 1
+  fi
+done
+
+if (( $#files == 0 )); then
+  print -u 2 'usage: trash <files...>'
+  return 64  # match rm's return code
+fi
+
+osascript 2>&1 >/dev/null -e "tell app \"Finder\" to move { ${(j., .)files} } to trash"
+}
