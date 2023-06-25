@@ -35,6 +35,12 @@ fpath=(${0:A:h}/functions $fpath)
 autoload -Uz ${0:A:h}/functions/*(.:t)
 
 #
+# Aliases
+#
+
+alias brewup="brew update && brew upgrade && brew cleanup"
+
+#
 # Init
 #
 
