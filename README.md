@@ -71,10 +71,10 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 ## Why don't you include...
 
-_Q: Why don't you include programming language plugins (eg: Python, Ruby)?_
+_Q: Why don't you include programming language plugins (eg: Python, Ruby)?_  
 A: These kinds of plugins can be very opinionated, and are in need of lots of upkeep from maintainers that use those languages. Language plugins are already available via Oh-My-Zsh and Prezto, and can always be installed with [a plugin manager that supports subplugins][antidote].
 
-_Q: Why don't you also include popular plugins the way Prezto does (eg: zsh-autosuggestions, zsh-completions)?_
+_Q: Why don't you also include popular plugins the way Prezto does (eg: zsh-autosuggestions, zsh-completions)?_  
 A: These kinds of utilities are already available as standalone plugins. Zephyr aims to include only core Zsh functionality that you can't already easily get via a [plugin manager][antidote], with a few exceptions for convenience. I have experimented with including submodules similar to Prezto, but was not happy with the result. Simpler is better.
 
 ## Credits
