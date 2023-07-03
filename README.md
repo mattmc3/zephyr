@@ -81,12 +81,15 @@ A: These kinds of utilities are already available as standalone plugins. Zephyr 
 
 Zephyr is a derivative work of the following great projects:
 
-- [Oh-My-Zsh][ohmyzsh]
-- [Prezto][prezto]
-- [zsh-utils][zsh-utils]
+- [Oh-My-Zsh][ohmyzsh] - [MIT License][ohmyzsh-license]
+- [Prezto][prezto] - [MIT License][prezto-license]
+- [zsh-utils][zsh-utils] - [MIT License][zsh-utils-license]
 
 
 [antidote]: https://getantidote.github.io
 [ohmyzsh]: https://github.com/ohmyzsh/ohmyzsh
+[ohmyzsh-license]: https://github.com/ohmyzsh/ohmyzsh/blob/master/LICENSE.txt
 [prezto]: https://github.com/sorin-ionescu/prezto
+[prezto-license]: https://github.com/sorin-ionescu/prezto/blob/master/LICENSE
 [zsh-utils]: https://github.com/belak/zsh-utils
+[zsh-utils-license]: https://github.com/belak/zsh-utils/blob/main/LICENSE
