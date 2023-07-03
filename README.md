@@ -35,11 +35,20 @@ mattmc3/zephyr path:plugins/completion
 Add the following snippet to your `.zshrc`:
 
 ```zsh
-# clone zephyr
+# Clone Zephyr.
 [[ -d ${ZDOTDIR:-~}/.zephyr ]] ||
-  git clone --recursive https://github.com/mattmc3/zephyr ${ZDOTDIR:-~}/.zephyr
+  git clone --depth=1 https://github.com/mattmc3/zephyr ${ZDOTDIR:-~}/.zephyr
 
-# source zephyr
+# Use zstyle to specify which plugins you want. Order matters.
+zephyr_plugins=(
+  zfunctions
+  directory
+  editor
+  history
+)
+zstyle ':zephyr:load' plugins $zephyr_plugins
+
+# Source Zephyr.
 source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 ```
 
