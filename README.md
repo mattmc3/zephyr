@@ -6,7 +6,7 @@ Zsh is a wonderful shell, but out-of-the-box it needs a bit of a boost. That's w
 
 Zephyr combines some of the best functionality from [Prezto][prezto], sprinkles in a bit from [Oh-My-Zsh][ohmyzsh], and removes bloat and prioritizes speed and simplicity.
 
-Zephyr can be thought of as a fast, lightweight set of essential Zsh plugins.
+Zephyr can be thought of as a fast, lightweight set of essential, independent Zsh plugins.
 
 Combine Zephyr with a [plugin manager][antidote] and some [awesome plugins](https://github.com/unixorn/awesome-zsh-plugins) and you'll have a powerful Zsh setup that rivals anything out there.
 
