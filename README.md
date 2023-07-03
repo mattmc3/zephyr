@@ -1,4 +1,4 @@
-# :wind_face: Zsh Zephyr
+# :wind_face: Zephyr
 
 > A Zsh framework as nice as a cool summer breeze
 
@@ -12,7 +12,7 @@ Combine Zephyr with a [plugin manager][antidote] and some [awesome plugins](http
 
 ## Project goals
 
-Zephyr allows you to take an _a la carte_ approach to building your ideal Zsh configuration. Other Zsh frameworks are meant to be used wholesale and are not truly modular. Zephyr is different - each of its plugins works completely independently. Zephyr can be used in whole or in part, and works well with other popular plugins. Zephyr brings together core Zsh functionality not available as standalones, while favoring a build-your-own composable Zsh config through plugins.
+Zephyr allows you to take an _a la carte_ approach to building your ideal Zsh configuration. Other Zsh frameworks are meant to be used wholesale and are not truly modular. Zephyr is different - each of its plugins works completely independently, and works well with modern Zsh plugin managers. Zephyr can be used in whole or in part, and works well with other popular plugins. Zephyr brings together core Zsh functionality not available as standalones, while favoring a build-your-own composable Zsh config through plugins.
 
 ## Install
 
