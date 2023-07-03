@@ -10,6 +10,10 @@ Zephyr can be thought of as a fast, lightweight set of essential Zsh plugins.
 
 Combine Zephyr with a [plugin manager][antidote] and some [awesome plugins](https://github.com/unixorn/awesome-zsh-plugins) and you'll have a powerful Zsh setup that rivals anything out there.
 
+## Project goals
+
+Zephyr allows you to take an _a la carte_ approach to building your ideal Zsh configuration. Other Zsh frameworks are meant to be used wholesale and are not truly modular. Zephyr is different - each of its plugins works completely independently. Zephyr can be used in whole or in part, and works well with other popular plugins. Zephyr brings together core Zsh functionality not available as standalones, while favoring a build-your-own composable Zsh config through plugins.
+
 ## Install
 
 ### Using a Plugin manager
@@ -62,7 +66,7 @@ _Q: Why don't you include programming language plugins (eg: Python, Ruby)?_
 A: These kinds of plugins can be very opinionated, and are in need of lots of upkeep from maintainers that use those languages. Language plugins are already available via Oh-My-Zsh and Prezto, and can always be installed with [a plugin manager that supports subplugins][antidote].
 
 _Q: Why don't you also include popular plugins the way Prezto does (eg: zsh-autosuggestions, zsh-completions)?_
-A: These kinds of utilities are already available as stand-alone plugins. Zephyr aims to include only core Zsh functionality that you can't already easily get via a [plugin manager][antidote], with a few exceptions for convenience. I have experimented with including submodules like Prezto, but was not happy with the result. Simpler is better.
+A: These kinds of utilities are already available as standalone plugins. Zephyr aims to include only core Zsh functionality that you can't already easily get via a [plugin manager][antidote], with a few exceptions for convenience. I have experimented with including submodules similar to Prezto, but was not happy with the result. Simpler is better.
 
 ## Credits
 
