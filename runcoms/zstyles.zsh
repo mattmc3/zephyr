@@ -78,19 +78,6 @@ zstyle ':zephyr:plugin:editor' key-bindings 'emacs'
 # zstyle ':zephyr:plugin:history:alias' skip 'yes'
 
 #
-# History Substring Search
-#
-
-# Set the query found color.
-# zstyle ':zephyr:plugin:history-substring-search:color' found ''
-
-# Set the query not found color.
-# zstyle ':zephyr:plugin:history-substring-search:color' not-found ''
-
-# Set the search globbing flags.
-# zstyle ':zephyr:plugin:history-substring-search' globbing-flags ''
-
-#
 # Prompt
 #
 
