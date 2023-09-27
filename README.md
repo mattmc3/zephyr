@@ -14,6 +14,12 @@ Combine Zephyr with a [plugin manager][antidote] and some [awesome plugins](http
 
 Zephyr allows you to take an _a la carte_ approach to building your ideal Zsh configuration. Other Zsh frameworks are meant to be used wholesale and are not truly modular. Zephyr is different - each of its plugins works completely independently, and works well with modern Zsh plugin managers. Zephyr can be used in whole or in part, and works well with other popular plugins. Zephyr brings together core Zsh functionality not available as standalones, while favoring a build-your-own composable Zsh config through plugins.
 
+## Prompt
+
+Zephyr comes with an (optional) [Starship][starship] prompt config.
+
+![Zephyr Prompt][terminal-img]
+
 ## Install
 
 ### Using a Plugin manager
@@ -97,10 +103,12 @@ Zephyr is a derivative work of the following great projects:
 - [zsh-utils][zsh-utils] - [MIT License][zsh-utils-license]
 
 
-[antidote]: https://getantidote.github.io
-[ohmyzsh]: https://github.com/ohmyzsh/ohmyzsh
-[ohmyzsh-license]: https://github.com/ohmyzsh/ohmyzsh/blob/master/LICENSE.txt
-[prezto]: https://github.com/sorin-ionescu/prezto
-[prezto-license]: https://github.com/sorin-ionescu/prezto/blob/master/LICENSE
-[zsh-utils]: https://github.com/belak/zsh-utils
-[zsh-utils-license]: https://github.com/belak/zsh-utils/blob/main/LICENSE
+[antidote]:           https://getantidote.github.io
+[ohmyzsh]:            https://github.com/ohmyzsh/ohmyzsh
+[ohmyzsh-license]:    https://github.com/ohmyzsh/ohmyzsh/blob/master/LICENSE.txt
+[prezto]:             https://github.com/sorin-ionescu/prezto
+[prezto-license]:     https://github.com/sorin-ionescu/prezto/blob/master/LICENSE
+[zsh-utils]:          https://github.com/belak/zsh-utils
+[zsh-utils-license]:  https://github.com/belak/zsh-utils/blob/main/LICENSE
+[terminal-img]:       https://raw.githubusercontent.com/mattmc3/zephyr/resources/img/terminal.png
+[starship]:           https://starship.rs
