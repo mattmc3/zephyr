@@ -1,0 +1,7 @@
+#!/usr/bin/awk -f
+
+{
+  gsub(/Oh My Zsh/,"Zephyr")
+  gsub(/ohmyzsh/,"zephyr")
+}
+{ print }

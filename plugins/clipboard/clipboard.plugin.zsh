@@ -17,24 +17,16 @@
 #
 
 [[ "$TERM" != 'dumb' ]] || return 1
-
-#
-# Functions
-#
-
-# Load plugin functions.
 0=${(%):-%N}
-fpath=(${0:A:h}/functions $fpath)
-autoload -Uz ${0:A:h}/functions/*(.:t)
 
 #
-# Keybindings
+# External
 #
 
-zle -N copybuffer
-bindkey -M emacs "^O" copybuffer
-bindkey -M viins "^O" copybuffer
-bindkey -M vicmd "^O" copybuffer
+source ${0:A:h}/external/clipboard.zsh
+source ${0:A:h}/external/copybuffer.plugin.zsh
+source ${0:A:h}/external/copyfile.plugin.zsh
+source ${0:A:h}/external/copypath.plugin.zsh
 
 #
 # Wrap up
