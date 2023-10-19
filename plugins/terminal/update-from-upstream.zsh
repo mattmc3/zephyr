@@ -13,10 +13,9 @@
 
 0=${(%):-%N}
 ZEPHYR=${0:A:h:h:h}
-PLUGIN=${0:A:h}
 ZEPHYR_CACHE=${XDG_CACHE_HOME:=~/.cache}/zephyr
 repo=sorin-ionescu/prezto
-mkdir -p $ZEPHYR_CACHE
+plugin=terminal
 
 ZPREZTODIR=$ZEPHYR_CACHE/plugins/$repo
 if [[ -d $ZPREZTODIR ]]; then
@@ -25,7 +24,8 @@ else
   git clone --depth 1 --quiet https://github.com/$repo $ZPREZTODIR
 fi
 
-mkdir -p $PLUGIN/external
-awk -v FILE_PATH="modules/terminal/init.zsh" -f $ZEPHYR/bin/filters/scrub_prezto \
-  $ZPREZTODIR/modules/terminal/init.zsh >| \
-  $PLUGIN/external/prezto_terminal.zsh
+PLUGINDIR=$ZEPHYR/plugins/$plugin
+mkdir -p $PLUGINDIR/external
+awk -v FILE_PATH="modules/$plugin/init.zsh" -f $ZEPHYR/bin/filters/scrub_prezto \
+  $ZPREZTODIR/modules/$plugin/init.zsh >| \
+  $PLUGINDIR/external/prezto_${plugin}.zsh
