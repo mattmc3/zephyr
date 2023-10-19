@@ -1,5 +1,6 @@
 # Generated from https://github.com/sorin-ionescu/prezto/blob/master/modules/editor/init.zsh
 #
+#
 # Sets key bindings.
 #
 # Authors:

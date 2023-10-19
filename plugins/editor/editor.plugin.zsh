@@ -8,6 +8,7 @@
 
 # Return if requirements are not found.
 [[ "$TERM" != 'dumb' ]] || return 1
+0=${(%):-%N}
 
 #
 # Zstyles
@@ -23,7 +24,6 @@ fi
 #
 
 # Use Prezto's editor module.
-0=${(%):-%N}
 source ${0:A:h}/external/prezto_editor.zsh
 
 #
