@@ -1,11 +1,8 @@
 #!/usr/bin/awk -f
 
-BEGIN          { p=1 }
-NR==1 && /^#/  { p=0 }
-!p && /^$/     { p=1; next }
-/prezto/ {
+NR==1 { print "# Generated from https://github.com/sorin-ionescu/prezto/blob/master/"FILE_PATH }
+{
   gsub(/:prezto:module:/,":zephyr:plugin:")
   gsub(/prezto/,"zephyr")
 }
-/Prezto/       { gsub(/Prezto/,"Zephyr") }
-p              { print }
+{ print }
