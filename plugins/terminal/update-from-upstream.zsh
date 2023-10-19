@@ -26,6 +26,6 @@ else
 fi
 
 mkdir -p $PLUGIN/external
-cat $ZPREZTODIR/modules/terminal/init.zsh | \
-  awk -v FILE_PATH="modules/terminal/init.zsh" -f $ZEPHYR/bin/filters/scrub_prezto >| \
+awk -v FILE_PATH="modules/terminal/init.zsh" -f $ZEPHYR/bin/filters/scrub_prezto \
+  $ZPREZTODIR/modules/terminal/init.zsh >| \
   $PLUGIN/external/prezto_terminal.zsh

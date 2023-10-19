@@ -1,5 +1,6 @@
 # Generated from https://github.com/sorin-ionescu/prezto/blob/master/modules/terminal/init.zsh
 #
+#
 # Sets terminal window and tab titles.
 #
 # Authors:
