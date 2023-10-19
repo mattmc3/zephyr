@@ -1,5 +1,9 @@
 #!/usr/bin/awk -f
 
+NR==1 && FILE_PATH!="" {
+  print "# Generated from https://github.com/ohmyzsh/ohmyzsh/blob/master/"FILE_PATH
+  print "#"
+}
 {
   gsub(/Oh My Zsh/,"Zephyr")
   gsub(/ohmyzsh/,"zephyr")

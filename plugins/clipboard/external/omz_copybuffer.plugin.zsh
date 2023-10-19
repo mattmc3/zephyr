@@ -1,3 +1,5 @@
+# Generated from https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/copybuffer/copybuffer.plugin.zsh
+#
 # copy the active line from the command line buffer 
 # onto the system clipboard
 

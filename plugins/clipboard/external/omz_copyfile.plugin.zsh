@@ -1,3 +1,5 @@
+# Generated from https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/copyfile/copyfile.plugin.zsh
+#
 # Copies the contents of a given file to the system or X Windows clipboard
 #
 # copyfile <file>

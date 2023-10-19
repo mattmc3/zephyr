@@ -1,3 +1,5 @@
+# Generated from https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/copypath/copypath.plugin.zsh
+#
 # Copies the path of given directory or file to the system or X Windows clipboard.
 # Copy current directory if no parameter.
 function copypath {

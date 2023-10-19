@@ -23,10 +23,10 @@
 # External
 #
 
-source ${0:A:h}/external/clipboard.zsh
-source ${0:A:h}/external/copybuffer.plugin.zsh
-source ${0:A:h}/external/copyfile.plugin.zsh
-source ${0:A:h}/external/copypath.plugin.zsh
+source ${0:A:h}/external/omz_clipboard.zsh
+source ${0:A:h}/external/omz_copybuffer.plugin.zsh
+source ${0:A:h}/external/omz_copyfile.plugin.zsh
+source ${0:A:h}/external/omz_copypath.plugin.zsh
 
 #
 # Wrap up

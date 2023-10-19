@@ -25,7 +25,11 @@ else
 fi
 
 mkdir -p $PLUGIN/external
-cat $ZSH/lib/clipboard.zsh | awk -f $ZEPHYR/bin/filters/scrub_ohmyzsh >| $PLUGIN/external/clipboard.zsh
-for plugin in $ZSH/plugins/copy{buffer,file,path}; do
-  cat $plugin/${plugin:t}.plugin.zsh | awk -f $ZEPHYR/bin/filters/scrub_ohmyzsh >| $PLUGIN/external/${plugin:t}.plugin.zsh
+cat $ZSH/lib/clipboard.zsh | awk -f $ZEPHYR/bin/filters/scrub_ohmyzsh >| $PLUGIN/external/omz_clipboard.zsh
+for plugin in lib/clipboard.zsh plugins/copy{buffer,file,path}; do
+  if [[ -d $ZSH/$plugin ]]; then
+    plugin=$plugin/${plugin:t}.plugin.zsh
+  fi
+  awk -v FILE_PATH="$plugin" -f $ZEPHYR/bin/filters/scrub_ohmyzsh $ZSH/$plugin >| \
+    $PLUGIN/external/omz_${plugin:t}
 done
