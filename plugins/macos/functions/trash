@@ -1,11 +1,12 @@
 #!/bin/zsh
-##? trash - add files to trash
+##? trash - Move files to macOS trash
+
 #function trash {
 
 emulate -L zsh
 setopt local_options extended_glob
 
-if (( $# == 0 ))
+if (( $# == 0 )); then
   echo >&2 "Usage: trash <files>"
   return 1
 fi
@@ -17,14 +18,14 @@ fi
 
 local file
 local -a files
-for file in $@
+for file in $@; do
   if [[ -e $file ]]; then
     files+=("the POSIX file \"${file:A}\"")
   else
     print -ru2 -- "trash: No such file or directory '$file'."
     return 1
   fi
-fi
+done
 
 if (( $#files == 0 )); then
   print -ru2 -- 'usage: trash <files...>'
