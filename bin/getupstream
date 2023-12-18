@@ -2,7 +2,7 @@
 
 0=${(%):-%N}
 ZEPHYR=${0:A:h:h}
-ZEPHYR_CACHE=${XDG_CACHE_HOME:=~/.cache}/zephyr
+ZEPHYR_CACHE=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
 mkdir -p $ZEPHYR_CACHE
 
 ZPREZTODIR=$ZEPHYR_CACHE/plugins/prezto

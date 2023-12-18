@@ -6,7 +6,7 @@
 ZEPHYR_HOME=${0:A:h}
 
 # Determine plugin locations.
-_zhome=${ZDOTDIR:-${XDG_CONFIG_HOME:=$HOME/.config}/zsh}
+_zhome=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}
 _zcust="${ZSH_CUSTOM:-$_zhome}"
 
 # Load plugins.
