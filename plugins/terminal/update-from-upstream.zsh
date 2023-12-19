@@ -12,7 +12,7 @@
 #
 
 0=${(%):-%N}
-ZEPHYR=${0:A:h:h:h}
+ZEPHYR=${0:a:h:h:h}
 ZEPHYR_CACHE=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
 repo=sorin-ionescu/prezto
 plugin=terminal

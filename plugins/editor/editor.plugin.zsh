@@ -24,7 +24,7 @@ fi
 #
 
 # Use Prezto's editor module.
-source ${0:A:h}/external/prezto_editor.zsh
+source ${0:a:h}/external/prezto_editor.zsh
 
 #
 # Options

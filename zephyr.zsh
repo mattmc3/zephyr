@@ -3,7 +3,7 @@
 
 # Initialize Zephyr.
 0=${(%):-%x}
-ZEPHYR_HOME=${0:A:h}
+ZEPHYR_HOME=${0:a:h}
 
 # Determine plugin locations.
 _zhome=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}

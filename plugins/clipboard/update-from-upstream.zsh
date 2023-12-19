@@ -12,8 +12,8 @@
 #
 
 0=${(%):-%N}
-ZEPHYR=${0:A:h:h:h}
-PLUGIN=${0:A:h}
+ZEPHYR=${0:a:h:h:h}
+PLUGIN=${0:a:h}
 ZEPHYR_CACHE=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
 mkdir -p $ZEPHYR_CACHE
 

@@ -16,7 +16,7 @@ fi
 #
 
 # Use Prezto's terminal module.
-source ${0:A:h}/external/prezto_terminal.zsh
+source ${0:a:h}/external/prezto_terminal.zsh
 
 #
 # Wrap up

@@ -1,7 +1,7 @@
 ##? zfunctions - Use a Fish-like functions directory for zsh functions.
 
 # Load plugins functions.
-fpath=("${0:A:h}/functions" $fpath)
+fpath=("${0:a:h}/functions" $fpath)
 autoload -Uz $fpath[1]/*(.:t)
 
 # Load zfunctions.

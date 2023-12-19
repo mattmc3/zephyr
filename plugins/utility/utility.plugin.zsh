@@ -32,8 +32,8 @@ setopt NO_check_jobs         # Don't report on jobs when shell exit.
 
 # Load plugin functions.
 0=${(%):-%N}
-fpath=(${0:A:h}/functions $fpath)
-autoload -Uz ${0:A:h}/functions/*(.:t)
+fpath=(${0:a:h}/functions $fpath)
+autoload -Uz ${0:a:h}/functions/*(.:t)
 
 # Use built-in paste magic.
 autoload -Uz bracketed-paste-url-magic

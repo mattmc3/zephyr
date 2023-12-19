@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 0=${(%):-%N}
 setopt extended_glob
-cd $0:A:h:h
+cd $0:a:h:h
 
 # generate string.zsh
 awk '

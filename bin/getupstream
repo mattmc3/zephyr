@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 0=${(%):-%N}
-ZEPHYR=${0:A:h:h}
+ZEPHYR=${0:a:h:h}
 ZEPHYR_CACHE=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
 mkdir -p $ZEPHYR_CACHE
 

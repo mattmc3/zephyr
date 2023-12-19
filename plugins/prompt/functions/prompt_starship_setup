@@ -18,7 +18,7 @@
     local -a configs=(
       ${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/themes/${prompt_config}.toml(N)
       ${XDG_CONFIG_HOME:-$HOME/.config}/starship/${prompt_config}.toml(N)
-      ${0:A:h:h}/themes/${prompt_config}.toml(N)
+      ${0:a:h:h}/themes/${prompt_config}.toml(N)
     )
     if (( $#configs )); then
       export STARSHIP_CONFIG=$configs[1]
