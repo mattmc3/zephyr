@@ -2,6 +2,9 @@
 # directory - Set directory options and define directory aliases.
 #
 
+# References:
+# - https://github.com/sorin-ionescu/prezto/tree/master/modules/directory
+
 # Return if requirements are not found.
 [[ "$TERM" != 'dumb' ]] || return 1
 
