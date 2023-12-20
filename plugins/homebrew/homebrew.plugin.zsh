@@ -20,21 +20,13 @@ typeset -aU brewcmd=(
 )
 (( $#brewcmd )) || return 1
 
-# Default to no tracking.
-HOMEBREW_NO_ANALYTICS=${HOMEBREW_NO_ANALYTICS:-1}
-
-# Set aliases.
-if ! zstyle -t ':zephyr:plugin:homebrew:alias' skip; then
-  alias brewup="brew update && brew upgrade && brew cleanup"
-  alias brewinfo="brew leaves | xargs brew desc --eval-all"
-fi
-
-# Generate a new cache file daily of just the 'HOMEBREW_' vars.
+# Cache 'brew shellenv'.
 typeset _brew_shellenv=$__zephyr_cache_dir/brew_shellenv.zsh
 typeset _brew_shellenv_exclpaths=$__zephyr_cache_dir/brew_shellenv_exclpaths.zsh
 typeset -a _brew_cache=($brew_shellenv(Nmh-20))
 if ! (( $#_brew_cache )); then
-  brew shellenv 2> /dev/null >| $_brew_shellenv
+  ${brewcmd} shellenv 2> /dev/null >| $_brew_shellenv
+  # Generate a new cache file daily of just the 'HOMEBREW_' vars part.
   grep "export HOMEBREW_" $_brew_shellenv >| $_brew_shellenv_exclpaths
 fi
 
@@ -45,6 +37,15 @@ if ! zstyle -t ':zephyr:plugin:homebrew:shellenv' skip; then
   else
     source $_brew_shellenv_exclpaths
   fi
+fi
+
+# Default to no tracking.
+HOMEBREW_NO_ANALYTICS=${HOMEBREW_NO_ANALYTICS:-1}
+
+# Set aliases.
+if ! zstyle -t ':zephyr:plugin:homebrew:alias' skip; then
+  alias brewup="brew update && brew upgrade && brew cleanup"
+  alias brewinfo="brew leaves | xargs brew desc --eval-all"
 fi
 
 # Clean up.
