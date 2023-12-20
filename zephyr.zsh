@@ -1,20 +1,15 @@
-# This file should contain the bare minimum to bootstrap Zephyr so that plugins can
-# remain independent.
+# Zephyr - Nice as a summer breeze.
 
-# Initialize Zephyr.
-0=${(%):-%x}
-ZEPHYR_HOME=${0:a:h}
-
-# Determine plugin locations.
-_zhome=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}
-_zcust="${ZSH_CUSTOM:-$_zhome}"
+# Bootstrap Zephyr.
+0=${(%):-%N}
+source ${0:a:h}/lib/bootstrap.zsh
 
 # Load plugins.
 zstyle -a ':zephyr:load' plugins '_zephyr_plugins'
 for _zephyr_plugin in $_zephyr_plugins; do
   # Allow overriding plugins.
   _initfiles=(
-    $_zcust/plugins/${_zephyr_plugin}/${_zephyr_plugin}.plugin.zsh(N)
+    ${ZSH_CUSTOM:-$__zsh_config_dir}/plugins/${_zephyr_plugin}/${_zephyr_plugin}.plugin.zsh(N)
     $ZEPHYR_HOME/plugins/${_zephyr_plugin}/${_zephyr_plugin}.plugin.zsh(N)
   )
   if (( $#_initfiles )); then
@@ -29,5 +24,5 @@ for _zephyr_plugin in $_zephyr_plugins; do
   fi
 done
 
-# Wrap up
-unset _z{home,cust} _zephyr_plugin{s,} _initfiles
+# Clean up.
+unset _zephyr_plugin{s,} _initfiles
