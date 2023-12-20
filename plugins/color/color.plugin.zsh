@@ -9,7 +9,7 @@
 [[ "$TERM" != 'dumb' ]] || return 1
 
 # Setup cache dir.
-_cache_dir=${XDG_CACHE_HOME:=$HOME/.cache}/zephyr
+_cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
 [[ -d $_cache_dir ]] || mkdir -p $_cache_dir
 
 #

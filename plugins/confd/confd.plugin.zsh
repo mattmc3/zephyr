@@ -6,7 +6,7 @@
 # Variables
 #
 
-: ${__zsh_config_dir:=${ZDOTDIR:-${XDG_CONFIG_HOME:=HOME/.config}/zsh}}
+: ${__zsh_config_dir:=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}}
 
 zstyle -a ':zephyr:plugin:confd' directory '_confd' ||
   _confd=(
