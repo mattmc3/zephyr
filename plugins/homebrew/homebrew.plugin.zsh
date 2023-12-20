@@ -25,7 +25,7 @@ typeset _brew_shellenv=$__zephyr_cache_dir/brew_shellenv.zsh
 typeset _brew_shellenv_exclpaths=$__zephyr_cache_dir/brew_shellenv_exclpaths.zsh
 typeset -a _brew_cache=($brew_shellenv(Nmh-20))
 if ! (( $#_brew_cache )); then
-  ${brewcmd} shellenv 2> /dev/null >| $_brew_shellenv
+  ${brewcmd[1]} shellenv 2> /dev/null >| $_brew_shellenv
   # Generate a new cache file daily of just the 'HOMEBREW_' vars part.
   grep "export HOMEBREW_" $_brew_shellenv >| $_brew_shellenv_exclpaths
 fi
