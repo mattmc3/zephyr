@@ -32,7 +32,7 @@ fi
 
 # Allow a user to do their own shellenv setup.
 if ! zstyle -t ':zephyr:plugin:homebrew:shellenv' skip; then
-  if zstyle -t ':zephyr:plugin:homebrew:shellenv' 'include-paths'; then
+  if zstyle -T ':zephyr:plugin:homebrew:shellenv' 'include-paths'; then
     source $_brew_shellenv
   else
     source $_brew_shellenv_exclpaths
