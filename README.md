@@ -4,15 +4,15 @@
 
 Zsh is a wonderful shell, but out-of-the-box it needs a bit of a boost. That's where Zephyr comes in.
 
-Zephyr combines some of the best functionality from [Prezto][prezto], sprinkles in a bit from [Oh-My-Zsh][ohmyzsh], and removes bloat and prioritizes speed and simplicity.
+Zephyr combines some of the best functionality from [Prezto][prezto], sprinkles in a bit from [Oh-My-Zsh][ohmyzsh], and removes bloat, extra dependencies, and prioritizes speed and simplicity.
 
-Zephyr can be thought of as a fast, lightweight set of essential, independent Zsh plugins.
+Zephyr can be thought of as a fast, lightweight set of independent Zsh plugins.
 
 Combine Zephyr with a [plugin manager][antidote] and some [awesome plugins](https://github.com/unixorn/awesome-zsh-plugins) and you'll have a powerful Zsh setup that rivals anything out there.
 
 ## Project goals
 
-Zephyr allows you to take an _a la carte_ approach to building your ideal Zsh configuration. Other Zsh frameworks are meant to be used wholesale and are not truly modular. Zephyr is different - each of its plugins works completely independently, and works well with modern Zsh plugin managers. Zephyr can be used in whole or in part, and works well with other popular plugins. Zephyr brings together core Zsh functionality not available as standalones, while favoring a build-your-own composable Zsh config through plugins.
+Zephyr allows you to take an _a la carte_ approach to building your ideal Zsh configuration. Other Zsh frameworks are meant to be used wholesale and are not truly modular. Zephyr is different - each of its plugins works completely independently, and works well with modern Zsh plugin managers. Zephyr can be used in whole or in part, and works well with other popular plugins. Zephyr brings together core Zsh functionality - many not available elsewhere as standalone plugins - while favoring a build-your-own composable Zsh config through plugins.
 
 ## Prompt
 
