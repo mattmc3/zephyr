@@ -2,28 +2,13 @@
 # color - Make terminal things more colorful
 #
 
-#
-# Requirements
-#
-
+# Return if requirements are not found.
 [[ "$TERM" != 'dumb' ]] || return 1
 
-# Setup cache dir.
-_cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
-[[ -d $_cache_dir ]] || mkdir -p $_cache_dir
-
-#
-# Functions
-#
-
-# Load plugin functions.
+# Bootstrap.
 0=${(%):-%N}
-fpath=(${0:a:h}/functions $fpath)
-autoload -Uz ${0:a:h}/functions/*(.:t)
-
-#
-# Variables
-#
+zstyle -t ':zephyr:lib:boostrap' loaded || source ${0:a:h:h:h}/lib/boostrap.zsh
+-zephyr-autoload-dir ${0:a:h}/functions
 
 # Colorize man pages.
 # start/end - md/me:bold; us/ue:underline; so/se:standout;
@@ -36,10 +21,7 @@ export LESS_TERMCAP_so=$'\e[00;47;30m'
 export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[04;35m'
 
-#
-# Aliases
-#
-
+# Set ls colors and alias via dircolors.
 function -coreutils-alias-setup {
   emulate -L zsh; setopt local_options extended_glob
 
@@ -49,7 +31,7 @@ function -coreutils-alias-setup {
 
   # Cache results of running dircolors for 20 hours, so it should almost
   # always regenerate the first time a shell is opened each day.
-  local dircolors_cache=$_cache_dir/${prefix}dircolors.zsh
+  local dircolors_cache=$__zephyr_cache_dir/${prefix}dircolors.zsh
   local cache_files=($dircolors_cache(Nmh-20))
   if ! (( $#cache_files )); then
     ${prefix}dircolors --sh > $dircolors_cache
@@ -70,26 +52,18 @@ else
   alias ls="${aliases[ls]:-ls} -G"
 fi
 
+# Colorize grep.
 alias grep="${aliases[grep]:-grep} --color=auto"
 
-#
-# Zstyles
-#
+# Colorize utils.
+alias colormap='for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+"\n"}; done'
 
-# Standard style used by default for 'list-colors'
+# Colorize completions.
 LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
-#
-# Cleanup
-#
-
+# Clean up.
 unfunction -- -coreutils-alias-setup
-unset _cache_dir
-
-#
-# Wrap up
-#
 
 # Tell Zephyr this plugin is loaded.
 zstyle ":zephyr:plugin:color" loaded 'yes'
