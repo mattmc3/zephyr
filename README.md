@@ -31,7 +31,6 @@ If your plugin manager supports using sub-plugins, you can load Zephyr that way 
 ```shell
 # .zsh_plugins.txt
 # pick only the plugins you want and remove the rest
-mattmc3/zephyr path:plugins/clipboard
 mattmc3/zephyr path:plugins/color
 mattmc3/zephyr path:plugins/completion
 mattmc3/zephyr path:plugins/confd
@@ -42,7 +41,6 @@ mattmc3/zephyr path:plugins/history
 mattmc3/zephyr path:plugins/homebrew
 mattmc3/zephyr path:plugins/macos
 mattmc3/zephyr path:plugins/prompt
-mattmc3/zephyr path:plugins/terminal
 mattmc3/zephyr path:plugins/utility
 mattmc3/zephyr path:plugins/zfunctions
 ```
@@ -71,7 +69,6 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 ## Plugins
 
-- **clipboard** - System clipboard integration
 - **color** - Make terminal things more colorful
 - **completion** - Load and initialize the built-in zsh completion system
 - **confd** - Source conf.d like Fish
@@ -82,7 +79,6 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 - **homebrew** - Functionality for users of Homebrew
 - **macos** - Functionality for macOS users
 - **prompt** - Load and initialize the build-in zsh prompt system
-- **terminal** - Set terminal window and tab titles
 - **utility** - Common shell utilities, aimed at making cross platform work less painful
 - **zfunctions** - Lazy load functions dir like Fish
 
