@@ -1,11 +1,15 @@
 #!/bin/zsh
 
+# Pre-reqs.
+: ${__zsh_cache_dir:=${XDG_CACHE_HOME:-$HOME/.cache}/zsh}
+[[ -d $__zsh_cache_dir/zephyr ]] || mkdir -p $__zsh_cache_dir/zephyr
+
 # Defaults.
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 
 # Use caching to make completion for commands such as dpkg and apt usable.
 zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zephyr/zcompcache"
+zstyle ':completion::complete:*' cache-path "$__zsh_cache_dir/zephyr/zcompcache"
 
 # Case-insensitive (all), partial-word, and then substring completion.
 if zstyle -t ':zephyr:plugin:completion:*' case-sensitive; then
