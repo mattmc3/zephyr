@@ -33,5 +33,45 @@ function -zephyr-autoload-dir {
   autoload -Uz "${1}"/*(.:t)
 }
 
+# Checks if a file can be autoloaded by trying to load it in a subshell.
+function is-autoloadable {
+  ( unfunction $1 ; autoload -U +X $1 ) &> /dev/null
+}
+
+# Checks if a name is a command, function, or alias.
+function is-callable {
+  (( $+commands[$1] || $+functions[$1] || $+aliases[$1] || $+builtins[$1] ))
+}
+
+# Checks a string for case-insensitive "true" value (1,y,yes,t,true,o,on).
+function is-true {
+  [[ -n "$1" && "$1:l" == (1|y(es|)|t(rue|)|o(n|)) ]]
+}
+
+# Checks if running on macOS.
+function is-macos {
+  [[ "$OSTYPE" == darwin* ]]
+}
+
+# Checks if running on Linux.
+function is-linux {
+  [[ "$OSTYPE" == linux* ]]
+}
+
+# Checks if running on BSD.
+function is-bsd {
+  [[ "$OSTYPE" == *bsd* ]]
+}
+
+# Checks if running on Cygwin (Windows).
+function is-cygwin {
+  [[ "$OSTYPE" == cygwin* ]]
+}
+
+# Checks if running on termux (Android).
+function is-termux {
+  [[ "$OSTYPE" == linux-android ]]
+}
+
 # Tell Zephyr this lib is loaded.
 zstyle ":zephyr:lib:bootstrap" loaded 'yes'
