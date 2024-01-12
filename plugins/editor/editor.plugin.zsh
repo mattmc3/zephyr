@@ -45,5 +45,5 @@ bindkey -M menuselect '^o' accept-and-infer-next-history
 # Wrap up
 #
 
-# Tell Zephyr this plugin is loaded.
+# Mark this plugin as loaded.
 zstyle ':zephyr:plugin:editor' loaded 'yes'

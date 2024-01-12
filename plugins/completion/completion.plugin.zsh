@@ -63,5 +63,5 @@ if (( $+functions[compstyle_${zcompstyle}_setup] )); then
 fi
 unset zcompstyle
 
-# Tell Zephyr this plugin is loaded.
+# Mark this plugin as loaded.
 zstyle ':zephyr:plugin:completion' loaded 'yes'

@@ -65,5 +65,5 @@ zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 # Clean up.
 unfunction -- -coreutils-alias-setup
 
-# Tell Zephyr this plugin is loaded.
+# Mark this plugin as loaded.
 zstyle ":zephyr:plugin:color" loaded 'yes'

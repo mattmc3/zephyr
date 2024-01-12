@@ -85,5 +85,5 @@ fi
 (( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
 alias help=run-help
 
-# Tell Zephyr this plugin is loaded.
+# Mark this plugin as loaded.
 zstyle ":zephyr:plugin:utility" loaded 'yes'

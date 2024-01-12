@@ -51,5 +51,5 @@ fi
 # Clean up.
 unset _brew_{cache,shellenv,shellenv_exclpaths}
 
-# Tell Zephyr this plugin is loaded.
+# Mark this plugin as loaded.
 zstyle ":zephyr:plugin:homebrew" loaded 'yes'

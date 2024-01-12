@@ -40,5 +40,5 @@ if ! zstyle -t ':zephyr:plugin:history:alias' skip; then
   alias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
 fi
 
-# Tell Zephyr this plugin is loaded.
+# Mark this plugin as loaded.
 zstyle ':zephyr:plugin:history' loaded 'yes'

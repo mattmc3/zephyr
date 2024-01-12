@@ -26,5 +26,5 @@ done
 # Clean up.
 unset _rcfile _confd
 
-# Tell Zephyr this plugin is loaded.
+# Mark this plugin as loaded.
 zstyle ':zephyr:plugin:confd' loaded 'yes'

@@ -69,5 +69,5 @@ fi
 # Use `< file` to quickly view the contents of any file.
 [[ -z "$READNULLCMD" ]] || READNULLCMD=$PAGER
 
-# Tell Zephyr this plugin is loaded.
+# Mark this plugin as loaded.
 zstyle ':zephyr:plugin:environment' loaded 'yes'

@@ -19,5 +19,5 @@ for _fndir in $ZFUNCDIR(N/) $ZFUNCDIR/*(N/); do
 done
 unset _fndir
 
-# Tell Zephyr this plugin is loaded.
+# Mark this plugin as loaded.
 zstyle ":zephyr:plugin:zfunctions" loaded 'yes'
