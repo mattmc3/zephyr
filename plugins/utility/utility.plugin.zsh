@@ -40,10 +40,17 @@ zle -N self-insert url-quote-magic
 
 # Ensure envsubst command exists.
 if ! (( $+commands[envsubst] )); then
-  alias envsubst="python -c 'import os,sys;[sys.stdout.write(os.path.expandvars(l)) for l in sys.stdin]'"
+  typeset -a pycmd=(
+    $commands[python3](N)
+    $commands[python](N)
+  )
+  if (( $#pycmd )); then
+    alias envsubst="${pycmd[1]:t} -c 'import os,sys;[sys.stdout.write(os.path.expandvars(l)) for l in sys.stdin]'"
+  fi
+  unset pycmd
 fi
 
-# Ensure hd (hex dump) exists.
+# Ensure hex dump (hd) command exists.
 if ! (( $+commands[hd] )) && (( $+commands[hexdump] )); then
   alias hd="hexdump -C"
 fi
