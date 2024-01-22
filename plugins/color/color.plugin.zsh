@@ -8,7 +8,7 @@
 # Bootstrap.
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
--zephyr-autoload-dir ${0:a:h}/functions
+autoload-dir ${0:a:h}/functions
 
 # Colorize man pages.
 # start/end - md/me:bold; us/ue:underline; so/se:standout;

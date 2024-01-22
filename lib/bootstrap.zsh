@@ -26,52 +26,55 @@ zstyle -s ':zephyr:cache' dir '__zephyr_cache_dir' \
   || __zephyr_cache_dir=$__zsh_cache_dir/zephyr
 [[ -d $__zephyr_cache_dir ]] || mkdir -p $__zephyr_cache_dir
 
-# Function for autoload dir.
-function -zephyr-autoload-dir {
-  [[ -d "${1}" ]] || return 1
-  fpath=("${1}" $fpath)
-  autoload -Uz "${1}"/*(.:t)
+##? Autoload a user functions directory.
+function autoload-dir {
+  local fndir
+  for fndir in $@; do
+    [[ -d $fndir ]] || return 1
+    fpath=($fndir $fpath)
+    autoload -Uz $fndir/*~*/_*(N.:t)
+  done
 }
 
-# Checks if a file can be autoloaded by trying to load it in a subshell.
+##? Check if a file can be autoloaded by trying to load it in a subshell.
 function is-autoloadable {
   ( unfunction $1 ; autoload -U +X $1 ) &> /dev/null
 }
 
-# Checks if a name is a command, function, or alias.
+##? Check if a name is a command, function, or alias.
 function is-callable {
   (( $+commands[$1] || $+functions[$1] || $+aliases[$1] || $+builtins[$1] ))
 }
 
-# Checks a string for case-insensitive "true" value (1,y,yes,t,true,o,on).
+##? Check a string for case-insensitive "true" value (1,y,yes,t,true,o,on).
 function is-true {
   [[ -n "$1" && "$1:l" == (1|y(es|)|t(rue|)|o(n|)) ]]
 }
 
-# Checks if running on macOS.
+##? Check if running on macOS.
 function is-macos {
   [[ "$OSTYPE" == darwin* ]]
 }
 
-# Checks if running on Linux.
+##? Check if running on Linux.
 function is-linux {
   [[ "$OSTYPE" == linux* ]]
 }
 
-# Checks if running on BSD.
+##? Check if running on BSD.
 function is-bsd {
   [[ "$OSTYPE" == *bsd* ]]
 }
 
-# Checks if running on Cygwin (Windows).
+##? Check if running on Cygwin (Windows).
 function is-cygwin {
   [[ "$OSTYPE" == cygwin* ]]
 }
 
-# Checks if running on termux (Android).
+##? Check if running on termux (Android).
 function is-termux {
   [[ "$OSTYPE" == linux-android ]]
 }
 
-# Tell Zephyr this lib is loaded.
+# Tell Zephyr this lib was loaded.
 zstyle ":zephyr:lib:bootstrap" loaded 'yes'

@@ -10,7 +10,7 @@
 # Bootstrap.
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
--zephyr-autoload-dir ${0:a:h}/functions
+autoload-dir ${0:a:h}/functions
 
 # Set Zsh options related to globbing.
 setopt extended_glob         # Use more awesome globbing features.
