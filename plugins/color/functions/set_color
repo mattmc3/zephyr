@@ -1,0 +1,111 @@
+#!/bin/zsh
+# https://fishshell.com/docs/current/cmds/set_color.html
+
+##? set the terminal color
+# function set_color {
+emulate -L zsh; setopt extendedglob
+
+# set_color requires arguments
+(( $# > 0 )) || return 1
+
+# tput is used to do the heavy lifting here
+if ! is-callable tput &>/dev/null; then
+  print -ru2 "set_color: tput expected and not found."
+  return 2
+fi
+
+# parse flags
+local -a o_background o_print_colors o_help \
+         o_bold o_dim o_italics o_reverse o_standout o_underline
+
+zmodload zsh/zutil
+zparseopts -D -F -K -- \
+    {b,-background}:=o_background \
+    {c,-print-colors}=o_print_colors \
+    {h,-help}=o_help \
+    {o,-bold}=o_bold \
+    {d,-dim}=o_dim \
+    {i,-italics}=o_italics \
+    {r,-reverse}=o_reverse \
+    {s,-standout}=o_standout \
+    {u,-underline}=o_underline || return 1
+
+if (( $#o_help )); then
+  if is-callable open &>/dev/null; then
+    open https://fishshell.com/docs/current/cmds/set_color.html
+  else
+    local usage=(
+      "usage: set_color [OPTIONS] VALUE"
+      "options:"
+      "  -h, --help          Displays help about using this command."
+      "  -b, --background    Sets the background color."
+      "  -c, --print-colors  Prints the given color codes, or a colorized list"
+      "                      of named colors."
+      "  -o, --bold          Sets bold mode."
+      "  -d, --dim           Sets dim mode."
+      "  -i, --italics       Sets italics mode."
+      "  -r, --reverse       Sets reverse mode."
+      "  -u, --underline     Sets underline mode."
+    )
+    print -rl -- $usage
+  fi
+  return
+fi
+
+if (( $#o_print_colors )); then
+  local color_name br tput_code=1
+  for br in '' 'br'; do
+    for color_name in black red green yellow blue magenta cyan white; do
+      print -r -- "$(tput setaf $tput_code)${br}${color_name}$(tput sgr0)"
+      tput_code=$(( tput_code + 1 ))
+    done
+  done
+  print "normal"
+  return
+fi
+
+local -a result=()
+(( $#o_bold ))      && result+=$(tput bold)
+(( $#o_dim ))       && result+=$(tput dim)
+(( $#o_italics ))   && result+=$(tput sitm)
+(( $#o_reverse ))   && result+=$(tput rev)
+(( $#o_standout ))  && result+=$(tput smso)
+(( $#o_underline )) && result+=$(tput smul)
+
+local -A tput_named_colors=(
+  black   0   brblack    8
+              brgrey     8
+  red     1   brred      9
+  green   2   brgreen   10
+  brown   3   brbrown   11
+  yellow  3   bryellow  11
+  blue    4   brblue    12
+  magenta 5   brmagenta 13
+  purple  5   purple    13
+  cyan    6   brcyan    14
+  white   7   brwhite   15
+  grey    7
+)
+
+local -A colors=()
+if (( $#o_background )); then
+  colors[setab]=$o_background[-1]
+fi
+if [[ -n "$1" ]]; then
+  colors[setaf]=$1
+fi
+
+local cmd color
+for cmd in ${(ko)colors}; do
+  color=${colors[$cmd]:l}
+  if [[ $color == (normal|reset) ]]; then
+    result+=$(tput sgr0)
+  elif [[ -v tput_named_colors[$color] ]]; then
+    result+=$(tput $cmd $tput_named_colors[$color])
+  else
+    result+=$(tput $cmd $color)
+  fi
+done
+
+printf '%s' $result
+# }

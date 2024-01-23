@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-##? showcolors - show ANSI terminal color codes and effects.
+##? show ANSI terminal color codes and effects.
 
 # tput cmds - setaf:fgcolor; smul:underline; smso:standout; sgr0:clear;
 local normal=$(tput sgr0)
