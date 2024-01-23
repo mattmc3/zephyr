@@ -76,5 +76,18 @@ function is-termux {
   [[ "$OSTYPE" == linux-android ]]
 }
 
+##? Memoize a command
+function cached-command {
+  emulate -L zsh; setopt local_options extended_glob
+  (( $# >= 2 )) || return 1
+  local memofile=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr/memoized/$1; shift
+  local -a cached=($memofile(Nmh-20))
+  if ! (( ${#cached} )); then
+    mkdir -p ${memofile:h}
+    "$@" >| $memofile
+  fi
+  source $memofile
+}
+
 # Tell Zephyr this lib was loaded.
 zstyle ":zephyr:lib:bootstrap" loaded 'yes'
