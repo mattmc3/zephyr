@@ -57,20 +57,20 @@ if ! zstyle -t ':zephyr:plugin:completion' manual; then
 else
   # Define compinit placeholder functions (compdef) so that when the real compinit
   # is called, we can execute any queued up calls.
-  typeset -gHa __zephyr_compdef_calls
+  typeset -gHa __zephyr_compdef_queue
   function compdef {
     (( $# )) || return
-    __zephyr_compdef_calls+=("$@")
+    __zephyr_compdef_queue+=("$@")
   }
 
   function compinit {
     unfunction compinit compdef &>/dev/null
     autoload -Uz compinit && compinit "$@"
-    local def
-    for def in $__zephyr_compdef_calls; do
-      compdef $def
+    local item
+    for item in $__zephyr_compdef_queue; do
+      compdef $item
     done
-    unset __zephyr_compdef_calls
+    unset __zephyr_compdef_queue
   }
 fi
 
