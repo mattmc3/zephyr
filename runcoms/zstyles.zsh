@@ -17,7 +17,6 @@ zstyle ':zephyr:*:*' color 'yes'
 # The order matters.
 zstyle ':zephyr:load' plugins \
   'environment' \
-  'terminal' \
   'editor' \
   'history' \
   'directory' \
