@@ -8,7 +8,11 @@
 # Bootstrap.
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
-autoload-dir ${0:a:h}/functions
+
+# Set functions.
+if ! zstyle -t ':zephyr:plugin:color:function' skip; then
+  autoload-dir ${0:a:h}/functions
+fi
 
 # Colorize man pages.
 # mb/me := start/end blink mode      md/me := start/end bold mode
