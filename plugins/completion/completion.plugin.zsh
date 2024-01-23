@@ -54,6 +54,24 @@ fpath=(${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN) $fpat
 # Initialize completions.
 if ! zstyle -t ':zephyr:plugin:completion' manual; then
   run-compinit
+else
+  # Define compinit placeholder functions (compdef) so that when the real compinit
+  # is called, we can execute any queued up calls.
+  typeset -gHa __zephyr_compdef_calls
+  function compdef {
+    (( $# )) || return
+    __zephyr_compdef_calls+=("$@")
+  }
+
+  function compinit {
+    unfunction compinit compdef &>/dev/null
+    autoload -Uz compinit && compinit "$@"
+    local def
+    for def in $__zephyr_compdef_calls; do
+      compdef $def
+    done
+    unset __zephyr_compdef_calls
+  }
 fi
 
 # Set the completion style
