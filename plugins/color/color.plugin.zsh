@@ -11,8 +11,9 @@ zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zs
 autoload-dir ${0:a:h}/functions
 
 # Colorize man pages.
-# start/end - md/me:bold; us/ue:underline; so/se:standout;
-# colors    - 0-black; 1-red; 2-green; 3-yellow; 4-blue; 5-magenta; 6-cyan; 7-white;
+# mb/me := start/end blink mode      md/me := start/end bold mode
+# so/se := start/end standout mode   us/ue := start/end underline mode
+# 0-black, 1-red, 2-green, 3-yellow, 4-blue, 5-magenta, 6-cyan, 7-white
 export LESS_TERMCAP_mb=$'\e[01;36m'
 export LESS_TERMCAP_md=$'\e[01;36m'
 export LESS_TERMCAP_me=$'\e[0m'
@@ -21,49 +22,43 @@ export LESS_TERMCAP_so=$'\e[00;47;30m'
 export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[04;35m'
 
-# Set ls colors and alias via dircolors.
-function -coreutils-alias-setup {
-  emulate -L zsh; setopt local_options extended_glob
+# Set LS_COLORS using (g)dircolors if found.
+local dircolors_cmds=(
+  $commands[dircolors](N) $commands[gdircolors](N)
+)
+if [[ -z "$LS_COLORS" ]] && (( $#dircolors_cmds )); then
+  cached-command "${dircolors_cmds[1]:t}.zsh" $dircolors_cmds[1] --sh
+fi
 
-  # Prefix will either be g or empty. This is to account for GNU Coreutils being
-  # installed alongside BSD Coreutils
-  local prefix=$1
+# Missing dircolors is a good indicator of a BSD system.
+if (( ! $+commands[dircolors] )) || [[ "$OSTYPE" == darwin* ]]; then
+  # For BSD systems, set LSCOLORS
+  export CLICOLOR=1
+  export LSCOLORS="${LSCOLORS:-exfxcxdxbxGxDxabagacad}"
+  # Also set LS_COLORS for good measure when gdircolors from coreutils is not installed.
+  export LS_COLORS="${LS_COLORS:-di=34:ln=35:so=32:pi=33:ex=31:bd=1;36:cd=1;33:su=30;41:sg=30;46:tw=30;42:ow=30;43}"
+fi
 
-  # Cache results of running dircolors for 20 hours, so it should almost
-  # always regenerate the first time a shell is opened each day.
-  local dircolors_cache=$__zephyr_cache_dir/${prefix}dircolors.zsh
-  local cache_files=($dircolors_cache(Nmh-20))
-  if ! (( $#cache_files )); then
-    ${prefix}dircolors --sh > $dircolors_cache
+# Set aliases.
+if ! zstyle -t ':zephyr:plugin:color:alias' skip; then
+  # Set colors for grep.
+  alias grep="${aliases[grep]:-grep} --color=auto"
+
+  # Set colors for coreutils ls.
+  if (( $+commands[gls] )); then
+    alias gls="${aliases[gls]:-gls} --group-directories-first --color=auto"
   fi
-  source "${dircolors_cache}"
 
-  alias ${prefix}ls="${aliases[${prefix}ls]:-${prefix}ls} --group-directories-first --color=auto"
-}
-
-# dircolors is a surprisingly good way to detect GNU vs BSD coreutils
-if (( $+commands[gdircolors] )); then
-  -coreutils-alias-setup g
+  # Set colors for ls.
+  if (( ! $+commands[dircolors] )) || [[ "$OSTYPE" == darwin* ]]; then
+    alias ls="${aliases[ls]:-ls} -G"
+  else
+    alias ls="${aliases[ls]:-ls} --group-directories-first --color=auto"
+  fi
 fi
-
-if (( $+commands[dircolors] )); then
-  -coreutils-alias-setup
-else
-  alias ls="${aliases[ls]:-ls} -G"
-fi
-
-# Colorize grep.
-alias grep="${aliases[grep]:-grep} --color=auto"
-
-# Colorize utils.
-alias colormap='for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+"\n"}; done'
 
 # Colorize completions.
-LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-
-# Clean up.
-unfunction -- -coreutils-alias-setup
 
 # Mark this plugin as loaded.
 zstyle ":zephyr:plugin:color" loaded 'yes'
