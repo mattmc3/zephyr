@@ -9,8 +9,8 @@ emulate -L zsh; setopt extendedglob
 (( $# > 0 )) || return 1
 
 # tput is used to do the heavy lifting here
-if ! is-callable tput &>/dev/null; then
-  print -ru2 "set_color: tput expected and not found."
+if ! command -v tput &>/dev/null; then
+  print -ru2 "set_color: tput command expected and not found."
   return 2
 fi
 
@@ -65,12 +65,13 @@ if (( $#o_print_colors )); then
 fi
 
 local -a result=()
+# Match Fish's order here
 (( $#o_bold ))      && result+=$(tput bold)
-(( $#o_dim ))       && result+=$(tput dim)
+(( $#o_underline )) && result+=$(tput smul)
 (( $#o_italics ))   && result+=$(tput sitm)
+(( $#o_dim ))       && result+=$(tput dim)
 (( $#o_reverse ))   && result+=$(tput rev)
 (( $#o_standout ))  && result+=$(tput smso)
-(( $#o_underline )) && result+=$(tput smul)
 
 local -A tput_named_colors=(
   black   0   brblack    8
@@ -81,7 +82,7 @@ local -A tput_named_colors=(
   yellow  3   bryellow  11
   blue    4   brblue    12
   magenta 5   brmagenta 13
-  purple  5   purple    13
+  purple  5   brpurple  13
   cyan    6   brcyan    14
   white   7   brwhite   15
   grey    7
@@ -96,7 +97,7 @@ if [[ -n "$1" ]]; then
 fi
 
 local cmd color
-for cmd in ${(ko)colors}; do
+for cmd in ${(kO)colors}; do
   color=${colors[$cmd]:l}
   if [[ $color == (normal|reset) ]]; then
     result+=$(tput sgr0)

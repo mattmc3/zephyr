@@ -13,6 +13,10 @@ build:
 	./bin/getupstream; \
 	./bin/build_starship_completions
 
+##?   test     run cli tests
+test:
+	./tests/runtests
+
 ##?   help     show this message
 help:
 	@grep "^##?" makefile | cut -c 5-

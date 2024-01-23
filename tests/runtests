@@ -1,0 +1,31 @@
+#!/usr/bin/env zsh
+0=${(%):-%N}
+
+setopt extended_glob
+
+ZEPHYR_HOME=${0:A:h:h}
+cd $ZEPHYR_HOME
+
+local o_unit
+zparseopts -D -M -- -unit=o_unit || return 1
+
+testfiles=()
+if (( $# > 0 )); then
+  testfiles=($@)
+elif (( $#o_unit )); then
+  testfiles=($PWD/tests/*.md~test_real*.md)
+else
+  testfiles=($PWD/tests/*.md)
+fi
+
+# foo example test command
+# env -i PATH=$PATH FPATH=$FPATH \
+#  zsh -f -- =clitest --list-run --progress dot --prompt '%' --color always $PWD/tests/foo.md
+
+env -i PATH=$PATH FPATH=$FPATH PAGER=cat ZEPHYR_HOME=$ZEPHYR_HOME TERM=xterm-256color \
+    zsh -f -- \
+    =clitest \
+        --list-run --progress dot --prompt '%' \
+        --color always \
+        --pre-flight 'git --version; print $PWD $VENDOR $OSTYPE =zsh $ZSH_VERSION $ZSH_PATCHLEVEL' \
+        -- $testfiles
