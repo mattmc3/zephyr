@@ -1,0 +1,26 @@
+#!/usr/bin/env zsh
+
+0=${(%):-%N}
+ZEPHYR_HOME=${0:A:h:h}
+
+function build_completions {
+  local destdir=$ZEPHYR_HOME/plugins/completion/completions
+  mkdir -p $destdir
+
+  echo "Getting git completions..."
+  curl -fsSL -o $destdir/git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+  curl -fsSL -o $destdir/_git https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.zsh
+
+  echo "Generating starship completions..."
+  local _starship=$destdir/_starship
+  starship completions zsh >| $_starship
+  echo "" >> $_starship
+  echo "# vim: ft=zsh sw=2 ts=2 et" >> $_starship
+}
+
+function main {
+  cd $ZEPHYR_HOME
+  git submodule update --recursive --remote
+  build_completions
+}
+main $@

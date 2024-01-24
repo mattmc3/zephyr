@@ -10,8 +10,7 @@ all : build help test submodules
 
 ##?   build       run build tasks
 build:
-	./bin/getupstream; \
-	./bin/build_starship_completions
+	./bin/build_external
 
 ##?   test        run cli tests
 test:
