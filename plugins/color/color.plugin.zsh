@@ -31,7 +31,7 @@ local dircolors_cmds=(
   $commands[dircolors](N) $commands[gdircolors](N)
 )
 if [[ -z "$LS_COLORS" ]] && (( $#dircolors_cmds )); then
-  cached-command "${dircolors_cmds[1]:t}.zsh" $dircolors_cmds[1] --sh
+  cached-command "${dircolors_cmds[1]:t}" $dircolors_cmds[1] --sh
 fi
 
 # Missing dircolors is a good indicator of a BSD system.

@@ -80,7 +80,14 @@ function is-termux {
 function cached-command {
   emulate -L zsh; setopt local_options extended_glob
   (( $# >= 2 )) || return 1
-  local memofile=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr/memoized/$1; shift
+
+  # make the command name safer as a file path
+  local cmdname="${1}"; shift
+  cmdname=${cmdname:gs/\@/-AT-}
+	cmdname=${cmdname:gs/\:/-COLON-}
+	cmdname=${cmdname:gs/\//-SLASH-}
+
+  local memofile=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr/memoized/${cmdname}.zsh
   local -a cached=($memofile(Nmh-20))
   if ! (( ${#cached} )); then
     mkdir -p ${memofile:h}
