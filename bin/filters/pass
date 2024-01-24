@@ -1,4 +1,0 @@
-#!/usr/bin/awk -f
-
-# print everything pass thru
-{ print }
