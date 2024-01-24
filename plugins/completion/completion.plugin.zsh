@@ -27,6 +27,9 @@ setopt extended_glob        # Needed for file modification glob modifiers with c
 setopt NO_menu_complete     # Do not autoselect the first completion entry.
 setopt NO_flow_control      # Disable start/stop characters in shell editor.
 
+# Add zsh-completions to $fpath.
+fpath=(${0:a:h}/external/src $fpath)
+
 # Add completions for keg-only brews when available.
 if (( $+commands[brew] )); then
   brew_prefix=${HOMEBREW_PREFIX:-${HOMEBREW_REPOSITORY:-$commands[brew]:A:h:h}}
