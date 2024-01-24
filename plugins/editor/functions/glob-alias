@@ -1,0 +1,7 @@
+#!/bin/zsh
+##? Expand aliases
+# function glob-alias {
+zle _expand_alias
+zle expand-word
+zle magic-space
+# }
