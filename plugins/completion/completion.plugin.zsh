@@ -27,8 +27,12 @@ setopt extended_glob        # Needed for file modification glob modifiers with c
 setopt NO_menu_complete     # Do not autoselect the first completion entry.
 setopt NO_flow_control      # Disable start/stop characters in shell editor.
 
-# Add zsh-completions to $fpath.
-fpath=(${0:a:h}/external/src $fpath)
+# Add other upstream completions to $fpath.
+fpath=(
+  ${0:a:h}/external/src  # zsh-users/zsh-completions
+  ${0:a:h}/completions   # starship, git contrib
+  $fpath
+)
 
 # Add completions for keg-only brews when available.
 if (( $+commands[brew] )); then
