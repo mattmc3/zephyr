@@ -23,7 +23,7 @@ zstyle -s ':zephyr:zsh:cache' dir '__zsh_cache_dir' \
 
 typeset -gx __zephyr_cache_dir
 zstyle -s ':zephyr:cache' dir '__zephyr_cache_dir' \
-  || __zephyr_cache_dir=$__zsh_cache_dir/zephyr
+  || __zephyr_cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
 [[ -d $__zephyr_cache_dir ]] || mkdir -p $__zephyr_cache_dir
 
 ##? Autoload a user functions directory.
