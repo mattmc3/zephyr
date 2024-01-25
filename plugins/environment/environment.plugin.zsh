@@ -65,6 +65,14 @@ if [[ -z "$LESSOPEN" ]] && (( $#commands[(i)lesspipe(|.sh)] )); then
   export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
 fi
 
+# Reduce key delay
+export KEYTIMEOUT=${KEYTIMEOUT:-1}
+
+# Make Apple Terminal behave.
+if [[ "$OSTYPE" == darwin* ]]; then
+  export SHELL_SESSIONS_DISABLE=${SHELL_SESSIONS_DISABLE:-1}
+fi
+
 # Use `< file` to quickly view the contents of any file.
 [[ -z "$READNULLCMD" ]] || READNULLCMD=$PAGER
 
