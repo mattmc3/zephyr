@@ -9,32 +9,31 @@ export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
 export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
 export XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 
-# Ensure XDG dirs exist.
-for _xdg_home in XDG_{CONFIG,CACHE,DATA,STATE}_HOME; do
-  [[ -e ${(P)_xdg_home} ]] || mkdir -p ${(P)_xdg_home}
-done
-unset _xdg_home
+# Fish-like Zsh vars
+export __zsh_config_dir=${__zsh_config_dir:-${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}}
+export __zsh_user_data_dir=${__zsh_user_data_dir:-$XDG_DATA_HOME/zsh}
+export __zsh_cache_dir=${__zsh_cache_dir:-$XDG_CACHE_HOME/zsh}
+
+# Ensure dirs exist.
+() {
+  local _d
+  for _d in $@; do
+    [[ -d ${(P)_d} ]] || mkdir -p ${(P)_d}
+  done
+} XDG_{CONFIG,CACHE,DATA,STATE}_HOME __zsh_{config,user_data,cache}_dir
+
+# Editors
+export EDITOR=${EDITOR:-nano}
+export VISUAL=${VISUAL:-nano}
+export PAGER=${PAGER:-less}
 
 # Set browser.
-if [[ -z "$BROWSER" && "$OSTYPE" == darwin* ]]; then
-  export BROWSER='open'
-fi
-
-# Set editors.
-if [[ -z "$EDITOR" ]]; then
-  export EDITOR='nano'
-fi
-if [[ -z "$VISUAL" ]]; then
-  export VISUAL='nano'
-fi
-if [[ -z "$PAGER" ]]; then
-  export PAGER='less'
+if [[ "$OSTYPE" == darwin* ]]; then
+  export BROWSER=${BROWSER:-open}
 fi
 
 # Set language.
-if [[ -z "$LANG" ]]; then
-  export LANG='en_US.UTF-8'
-fi
+export LANG=${LANG:-en_US.UTF-8}
 
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
