@@ -2,29 +2,24 @@
 # bootstrap: Ensure Zephyr is properly boostrapped.
 #
 
-# Set Zephyr vars.
+# Set common vars.
 0=${(%):-%N}
 ZEPHYR_HOME=${0:a:h:h}
 
 # Set Zsh locations.
 typeset -gx __zsh_config_dir
-zstyle -s ':zephyr:zsh:config' dir '__zsh_config_dir' \
+zstyle -s ':zephyr:xdg:config' dir '__zsh_config_dir' \
   || __zsh_config_dir=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}
 [[ -d $__zsh_config_dir ]] || mkdir -p $__zsh_config_dir
 
 typeset -gx __zsh_user_data_dir
-zstyle -s ':zephyr:zsh:user_data' dir '__zsh_user_data_dir' \
+zstyle -s ':zephyr:xdg:user_data' dir '__zsh_user_data_dir' \
   || __zsh_user_data_dir=${XDG_DATA_HOME:-$HOME/.local/share}/zsh
 [[ -d $__zsh_user_data_dir ]] || mkdir -p $__zsh_user_data_dir
 
 typeset -gx __zsh_cache_dir
-zstyle -s ':zephyr:zsh:cache' dir '__zsh_cache_dir' \
+zstyle -s ':zephyr:xdg:cache' dir '__zsh_cache_dir' \
   || __zsh_cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
-
-typeset -gx __zephyr_cache_dir
-zstyle -s ':zephyr:cache' dir '__zephyr_cache_dir' \
-  || __zephyr_cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr
-[[ -d $__zephyr_cache_dir ]] || mkdir -p $__zephyr_cache_dir
 
 ##? Autoload a user functions directory.
 function autoload-dir {
@@ -34,6 +29,26 @@ function autoload-dir {
     fpath=($fndir $fpath)
     autoload -Uz $fndir/*~*/_*(N.:t)
   done
+}
+
+##? Memoize a command
+function cached-command {
+  emulate -L zsh; setopt local_options extended_glob
+  (( $# >= 2 )) || return 1
+
+  # make the command name safer as a file path
+  local cmdname="${1}"; shift
+  cmdname=${cmdname:gs/\@/-AT-}
+	cmdname=${cmdname:gs/\:/-COLON-}
+	cmdname=${cmdname:gs/\//-SLASH-}
+
+  local memofile=$__zsh_cache_dir/memoized/${cmdname}.zsh
+  local -a cached=($memofile(Nmh-20))
+  if ! (( ${#cached} )); then
+    mkdir -p ${memofile:h}
+    "$@" >| $memofile
+  fi
+  source $memofile
 }
 
 ##? Check if a file can be autoloaded by trying to load it in a subshell.
@@ -76,25 +91,5 @@ function is-termux {
   [[ "$OSTYPE" == linux-android ]]
 }
 
-##? Memoize a command
-function cached-command {
-  emulate -L zsh; setopt local_options extended_glob
-  (( $# >= 2 )) || return 1
-
-  # make the command name safer as a file path
-  local cmdname="${1}"; shift
-  cmdname=${cmdname:gs/\@/-AT-}
-	cmdname=${cmdname:gs/\:/-COLON-}
-	cmdname=${cmdname:gs/\//-SLASH-}
-
-  local memofile=${XDG_CACHE_HOME:-$HOME/.cache}/zephyr/memoized/${cmdname}.zsh
-  local -a cached=($memofile(Nmh-20))
-  if ! (( ${#cached} )); then
-    mkdir -p ${memofile:h}
-    "$@" >| $memofile
-  fi
-  source $memofile
-}
-
-# Tell Zephyr this lib was loaded.
+# Mark this lib as loaded.
 zstyle ":zephyr:lib:bootstrap" loaded 'yes'
