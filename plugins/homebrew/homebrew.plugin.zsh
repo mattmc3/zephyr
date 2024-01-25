@@ -21,8 +21,8 @@ typeset -aU brewcmd=(
 (( $#brewcmd )) || return 1
 
 # Cache 'brew shellenv'.
-typeset _brew_shellenv=$__zephyr_cache_dir/brew_shellenv.zsh
-typeset _brew_shellenv_exclpaths=$__zephyr_cache_dir/brew_shellenv_exclpaths.zsh
+typeset _brew_shellenv=$__zsh_cache_dir/brew_shellenv.zsh
+typeset _brew_shellenv_exclpaths=$__zsh_cache_dir/brew_shellenv_exclpaths.zsh
 typeset -a _brew_cache=($brew_shellenv(Nmh-20))
 if ! (( $#_brew_cache )); then
   ${brewcmd[1]} shellenv 2> /dev/null >| $_brew_shellenv
