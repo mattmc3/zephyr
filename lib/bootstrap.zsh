@@ -39,8 +39,8 @@ function cached-command {
   # make the command name safer as a file path
   local cmdname="${1}"; shift
   cmdname=${cmdname:gs/\@/-AT-}
-	cmdname=${cmdname:gs/\:/-COLON-}
-	cmdname=${cmdname:gs/\//-SLASH-}
+  cmdname=${cmdname:gs/\:/-COLON-}
+  cmdname=${cmdname:gs/\//-SLASH-}
 
   local memofile=$__zsh_cache_dir/memoized/${cmdname}.zsh
   local -a cached=($memofile(Nmh-20))
