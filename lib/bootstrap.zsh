@@ -6,6 +6,9 @@
 0=${(%):-%N}
 ZEPHYR_HOME=${0:a:h:h}
 
+# Critical Zsh options
+setopt extended_glob interactive_comments
+
 # Set Zsh locations.
 typeset -gx __zsh_config_dir
 zstyle -s ':zephyr:xdg:config' dir '__zsh_config_dir' \
