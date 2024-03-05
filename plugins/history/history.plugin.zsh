@@ -4,10 +4,10 @@
 
 # References:
 # - https://github.com/sorin-ionescu/prezto/tree/master/modules/history
+# - https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/history.zsh
 # - https://zsh.sourceforge.io/Doc/Release/Options.html#History
 
-# Set Zsh history options.
-# 16.2.4: https://zsh.sourceforge.io/Doc/Release/Options.html#History
+# 16.2.4 History
 setopt bang_hist               # Treat the '!' character specially during expansion.
 setopt extended_history        # Write the history file in the ':start:elapsed;command' format.
 setopt hist_expire_dups_first  # Expire a duplicate event first when trimming history.
@@ -37,12 +37,12 @@ HISTFILE=$_zhistfile
 unset _zhistfile
 
 # Set history file size (default 1000).
-zstyle -s ':zephyr:plugin:history' savehist 'SAVEHIST' ||
-  SAVEHIST=100000
+zstyle -s ':zephyr:plugin:history' savehist 'SAVEHIST' \
+  || SAVEHIST=100000
 
 # Set session history size (default: 2000).
-zstyle -s ':zephyr:plugin:history' histsize 'HISTSIZE' ||
-  HISTSIZE=20000
+zstyle -s ':zephyr:plugin:history' histsize 'HISTSIZE' \
+  || HISTSIZE=20000
 
 # Set Zsh aliases related to history.
 if ! zstyle -t ':zephyr:plugin:history:alias' skip; then
