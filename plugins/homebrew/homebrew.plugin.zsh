@@ -17,6 +17,8 @@ typeset -aU brewcmd=(
   $commands[brew]
   /opt/homebrew/bin/brew(N)
   /usr/local/bin/brew(N)
+  /home/linuxbrew/.linuxbrew/bin/brew(N)
+  $HOME/.linuxbrew/bin/brew(N)
 )
 (( $#brewcmd )) || return 1
 
@@ -46,6 +48,22 @@ HOMEBREW_NO_ANALYTICS=${HOMEBREW_NO_ANALYTICS:-1}
 if ! zstyle -t ':zephyr:plugin:homebrew:alias' skip; then
   alias brewup="brew update && brew upgrade && brew cleanup"
   alias brewinfo="brew leaves | xargs brew desc --eval-all"
+fi
+
+if ! zstyle -t ':zephyr:plugin:homebrew:function' skip; then
+  ##? Show brewed apps.
+  function brews {
+    local formulae="$(brew leaves | xargs brew deps --installed --for-each)"
+    local casks="$(brew list --cask 2>/dev/null)"
+
+    local blue="$(tput setaf 4)"
+    local bold="$(tput bold)"
+    local off="$(tput sgr0)"
+
+    echo "${blue}==>${off} ${bold}Formulae${off}"
+    echo "${formulae}" | sed "s/^\(.*\):\(.*\)$/\1${blue}\2${off}/"
+    echo "\n${blue}==>${off} ${bold}Casks${off}\n${casks}"
+  }
 fi
 
 # Clean up.
