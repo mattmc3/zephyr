@@ -2,25 +2,19 @@
 # environment - Set general shell options and define environment variables.
 #
 
+# Bootstrap.
+0=${(%):-%N}
+zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
+
 # Set XDG base dirs.
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
-export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
-export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
-export XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
-
-# Fish-like Zsh vars
-export __zsh_config_dir=${__zsh_config_dir:-${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}}
-export __zsh_user_data_dir=${__zsh_user_data_dir:-$XDG_DATA_HOME/zsh}
-export __zsh_cache_dir=${__zsh_cache_dir:-$XDG_CACHE_HOME/zsh}
-
-# Ensure dirs exist.
-() {
-  local _d
-  for _d in $@; do
-    [[ -d ${(P)_d} ]] || mkdir -p ${(P)_d}
-  done
-} XDG_{CONFIG,CACHE,DATA,STATE}_HOME __zsh_{config,user_data,cache}_dir
+if zstyle -T ':zephyr:plugin:environment' use-xdg-basedirs; then
+  export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+  export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
+  export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+  export XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
+  mkdir-fromvar XDG_{CONFIG,CACHE,DATA,STATE}_HOME
+fi
 
 # Editors
 export EDITOR=${EDITOR:-nano}
