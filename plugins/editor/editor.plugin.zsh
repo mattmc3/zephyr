@@ -38,8 +38,10 @@ setopt NO_beep
 #
 
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/completion.zsh
-zmodload -i zsh/complist
-bindkey -M menuselect '^o' accept-and-infer-next-history
+# https://github.com/mattmc3/zephyr/issues/11
+# https://github.com/mattmc3/zephyr/issues/19
+# zmodload -i zsh/complist
+# bindkey -M menuselect '^o' accept-and-infer-next-history
 
 #
 # Wrap up
