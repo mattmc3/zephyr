@@ -11,12 +11,21 @@ setopt extended_glob interactive_comments
 
 # Set Zsh locations.
 typeset -gx __zsh_{config,cache,user_data}_dir
-zstyle -s ':zephyr:xdg:config' dir '__zsh_config_dir' \
-  || __zsh_config_dir=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}
-zstyle -s ':zephyr:xdg:user_data' dir '__zsh_user_data_dir' \
-  || __zsh_user_data_dir=${XDG_DATA_HOME:-$HOME/.local/share}/zsh
-zstyle -s ':zephyr:xdg:cache' dir '__zsh_cache_dir' \
-  || __zsh_cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
+if [[ -z "$__zsh_config_dir" ]]; then
+  zstyle -s ':zephyr:xdg:config' dir '__zsh_config_dir' \
+    || __zsh_config_dir=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}
+  __zsh_config_dir=${~__zsh_config_dir}
+fi
+if [[ -z "$__zsh_user_data_dir" ]]; then
+  zstyle -s ':zephyr:xdg:user_data' dir '__zsh_user_data_dir' \
+    || __zsh_user_data_dir=${XDG_DATA_HOME:-$HOME/.local/share}/zsh
+  __zsh_user_data_dir=${~__zsh_user_data_dir}
+fi
+if [[ -z "$__zsh_cache_dir" ]]; then
+  zstyle -s ':zephyr:xdg:cache' dir '__zsh_cache_dir' \
+    || __zsh_cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
+  __zsh_cache_dir=${~__zsh_cache_dir}
+fi
 
 ##? Make directories from vars
 function mkdir-fromvar {
