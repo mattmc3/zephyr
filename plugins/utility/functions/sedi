@@ -1,8 +1,0 @@
-#!/bin/zsh
-
-##? sedi - cross platform `sed -i` syntax
-function sedi {
-  # GNU/BSD
-  sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
-}
-sedi "$@"

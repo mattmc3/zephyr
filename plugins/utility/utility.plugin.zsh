@@ -38,6 +38,10 @@ zle -N bracketed-paste bracketed-paste-url-magic
 autoload -Uz url-quote-magic
 zle -N self-insert url-quote-magic
 
+# Load more specific 'run-help' function from $fpath.
+(( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
+alias help=run-help
+
 # Ensure envsubst command exists.
 if ! (( $+commands[envsubst] )); then
   typeset -a pycmd=(
@@ -88,9 +92,11 @@ if ! (( $+commands[pbcopy] )); then
   fi
 fi
 
-# Load more specific 'run-help' function from $fpath.
-(( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
-alias help=run-help
+##? Cross platform `sed -i` syntax
+function sedi {
+  # GNU/BSD
+  sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
+}
 
 # Mark this plugin as loaded.
 zstyle ":zephyr:plugin:utility" loaded 'yes'
