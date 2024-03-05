@@ -17,9 +17,9 @@ zstyle -a ':zephyr:plugin:confd' directory '_confd' ||
 (( $#_confd )) || return 1
 
 # Source all scripts in conf.d.
-for _rcfile in $_confd[1]/*.{z,}sh(N); do
+for _rcfile in ${~_confd[1]}/*.{z,}sh(N); do
   # ignore files that begin with ~
-  [[ ${_rcfile:t} == '~'* ]] && continue
+  [[ ${_rcfile:t} != '~'* ]] || continue
   source $_rcfile
 done
 
