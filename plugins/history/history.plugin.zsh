@@ -31,6 +31,7 @@ if [[ -z "$_zhistfile" ]]; then
     _zhistfile=${ZDOTDIR:-$HOME}/.zsh_history
   fi
 fi
+_zhistfile=${~_zhistfile}
 [[ -d $_zhistfile:h ]] || mkdir -p $_zhistfile:h
 HISTFILE=$_zhistfile
 unset _zhistfile
