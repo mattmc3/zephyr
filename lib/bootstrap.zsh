@@ -10,19 +10,22 @@ ZEPHYR_HOME=${0:a:h:h}
 setopt extended_glob interactive_comments
 
 # Set Zsh locations.
-typeset -gx __zsh_config_dir
+typeset -gx __zsh_{config,cache,user_data}_dir
 zstyle -s ':zephyr:xdg:config' dir '__zsh_config_dir' \
   || __zsh_config_dir=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}
-[[ -d $__zsh_config_dir ]] || mkdir -p $__zsh_config_dir
-
-typeset -gx __zsh_user_data_dir
 zstyle -s ':zephyr:xdg:user_data' dir '__zsh_user_data_dir' \
   || __zsh_user_data_dir=${XDG_DATA_HOME:-$HOME/.local/share}/zsh
-[[ -d $__zsh_user_data_dir ]] || mkdir -p $__zsh_user_data_dir
-
-typeset -gx __zsh_cache_dir
 zstyle -s ':zephyr:xdg:cache' dir '__zsh_cache_dir' \
   || __zsh_cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
+
+##? Make directories from vars
+function mkdir-fromvar {
+  local zdirvar
+  for zdirvar in $@; do
+    [[ -d ${(P)zdirvar} ]] || mkdir -p ${(P)zdirvar}
+  done
+}
+mkdir-fromvar __zsh_{config,cache,user_data}_dir
 
 ##? Autoload a user functions directory.
 function autoload-dir {
