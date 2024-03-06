@@ -1,9 +1,8 @@
 #
-# utility - Misc Zsh shell options and utilities.
+# Utility: Misc Zsh shell options, utilities, and attempt at cross-platform conformity.
 #
 
 # References:
-# - https://github.com/sorin-ionescu/prezto/blob/master/modules/environment/init.zsh
 # - https://github.com/sorin-ionescu/prezto/blob/master/modules/utility/init.zsh
 # - https://github.com/belak/zsh-utils/blob/main/utility/utility.plugin.zsh
 
@@ -12,25 +11,16 @@
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 autoload-dir ${0:a:h}/functions
 
-# Set Zsh options related to globbing.
-setopt extended_glob         # Use more awesome globbing features.
-setopt glob_dots             # Include dotfiles when globbing.
-setopt no_rm_star_silent     # Ask for confirmation for `rm *' or `rm path/*'
-
-# Set general Zsh options.
-setopt combining_chars       # Combine 0-len chars with the base character (eg: accents).
-setopt interactive_comments  # Enable comments in interactive shell.
-setopt rc_quotes             # Allow 'Hitchhikers''s Guide' instead of 'Hitchhikers'\''s Guide'.
-setopt NO_mail_warning       # Don't print a warning message if a mail file has been accessed.
-setopt NO_beep               # Don't beep on error in line editor.
-
-# Set Zsh job options.
-setopt long_list_jobs        # List jobs in the long format by default.
-setopt auto_resume           # Attempt to resume existing job before creating a new process.
-setopt notify                # Report status of background jobs immediately.
-setopt NO_bg_nice            # Don't run all background jobs at a lower priority.
-setopt NO_hup                # Don't kill jobs on shell exit.
-setopt NO_check_jobs         # Don't report on jobs when shell exit.
+#region zephyr_plugin_utility
+if ! zstyle -t ':zephyr:plugin:utility:setopt' skip; then
+  # 16.2.7 Job Control
+  setopt auto_resume             # Attempt to resume existing job before creating a new process.
+  setopt long_list_jobs          # List jobs in the long format by default.
+  setopt notify                  # Report status of background jobs immediately.
+  setopt NO_bg_nice              # Don't run all background jobs at a lower priority.
+  setopt NO_check_jobs           # Don't report on jobs when shell exit.
+  setopt NO_hup                  # Don't kill jobs on shell exit.
+fi
 
 # Use built-in paste magic.
 autoload -Uz bracketed-paste-url-magic
@@ -92,11 +82,14 @@ if ! (( $+commands[pbcopy] )); then
   fi
 fi
 
-##? Cross platform `sed -i` syntax
-function sedi {
-  # GNU/BSD
-  sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
-}
+if ! zstyle -t ':zephyr:plugin:utility:function' skip; then
+  ##? Cross platform `sed -i` syntax
+  function sedi {
+    # GNU/BSD
+    sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
+  }
+fi
 
 # Mark this plugin as loaded.
-zstyle ":zephyr:plugin:utility" loaded 'yes'
+zstyle ':zephyr:plugin:utility' loaded 'yes'
+#endregion
