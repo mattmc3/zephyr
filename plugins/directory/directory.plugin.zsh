@@ -1,14 +1,16 @@
 #
-# directory - Set directory options and define directory aliases.
+# Directory: Set directory options and define directory aliases.
 #
 
 # References:
 # - https://github.com/sorin-ionescu/prezto/tree/master/modules/directory
 # - https://zsh.sourceforge.io/Doc/Release/Options.html#Changing-Directories
 
-# Return if requirements are not found.
-[[ "$TERM" != 'dumb' ]] || return 1
+# Bootstrap.
+0=${(%):-%N}
+zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 
+#region zephyr_plugin_directory
 # 16.2.3 Expansion and Globbing
 setopt extended_glob           # Use more awesome globbing features.
 setopt glob_dots               # Include dotfiles when globbing.
@@ -56,3 +58,4 @@ fi
 
 # Mark this plugin as loaded.
 zstyle ':zephyr:plugin:directory' loaded 'yes'
+#endregion
