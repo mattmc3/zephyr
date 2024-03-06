@@ -1,6 +1,10 @@
 #
-# Environment: Set general shell options and define environment variables.
+# Environment: Set common environment variables.
 #
+
+# References:
+# - https://github.com/sorin-ionescu/prezto/blob/master/modules/environment/init.zsh
+# - https://github.com/sorin-ionescu/prezto/blob/master/runcoms/zprofile
 
 # Bootstrap.
 0=${(%):-%N}
