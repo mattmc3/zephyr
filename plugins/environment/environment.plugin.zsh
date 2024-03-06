@@ -1,11 +1,12 @@
 #
-# environment - Set general shell options and define environment variables.
+# Environment: Set general shell options and define environment variables.
 #
 
 # Bootstrap.
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 
+#region zephyr_plugin_environment
 # Set XDG base dirs.
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 if zstyle -T ':zephyr:plugin:environment' use-xdg-basedirs; then
@@ -72,3 +73,4 @@ fi
 
 # Mark this plugin as loaded.
 zstyle ':zephyr:plugin:environment' loaded 'yes'
+#endregion
