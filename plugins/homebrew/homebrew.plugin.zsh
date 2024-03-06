@@ -9,7 +9,6 @@
 # Bootstrap.
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
-autoload-dir ${0:a:h}/functions
 
 #region zephyr_plugin_homebrew
 # Where is brew?
@@ -24,23 +23,7 @@ typeset -aU brewcmd=(
 (( $#brewcmd )) || return 1
 
 # Cache 'brew shellenv'.
-typeset _brew_shellenv=$__zsh_cache_dir/brew_shellenv.zsh
-typeset _brew_shellenv_exclpaths=$__zsh_cache_dir/brew_shellenv_exclpaths.zsh
-typeset -a _brew_cache=($brew_shellenv(Nmh-20))
-if ! (( $#_brew_cache )); then
-  ${brewcmd[1]} shellenv 2> /dev/null >| $_brew_shellenv
-  # Generate a new cache file daily of just the 'HOMEBREW_' vars part.
-  grep "export HOMEBREW_" $_brew_shellenv >| $_brew_shellenv_exclpaths
-fi
-
-# Allow a user to do their own shellenv setup.
-if ! zstyle -t ':zephyr:plugin:homebrew:shellenv' skip; then
-  if zstyle -T ':zephyr:plugin:homebrew:shellenv' 'include-paths'; then
-    source $_brew_shellenv
-  else
-    source $_brew_shellenv_exclpaths
-  fi
-fi
+cached-command 'brew-shellenv' ${brewcmd[1]} shellenv
 
 # Default to no tracking.
 HOMEBREW_NO_ANALYTICS=${HOMEBREW_NO_ANALYTICS:-1}
@@ -66,9 +49,6 @@ if ! zstyle -t ':zephyr:plugin:homebrew:function' skip; then
     echo "\n${blue}==>${off} ${bold}Casks${off}\n${casks}"
   }
 fi
-
-# Clean up.
-unset _brew_{cache,shellenv,shellenv_exclpaths}
 
 # Mark this plugin as loaded.
 zstyle ':zephyr:plugin:homebrew' loaded 'yes'
