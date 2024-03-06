@@ -1,5 +1,5 @@
 #
-# homebrew - Environment variables and functions for homebrew users.
+# Homebrew: Environment variables and functions for homebrew users.
 #
 
 # References:
@@ -11,6 +11,7 @@
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 autoload-dir ${0:a:h}/functions
 
+#region zephyr_plugin_homebrew
 # Where is brew?
 typeset -aU brewcmd=(
   $HOME/brew/bin/brew(N)
@@ -70,4 +71,5 @@ fi
 unset _brew_{cache,shellenv,shellenv_exclpaths}
 
 # Mark this plugin as loaded.
-zstyle ":zephyr:plugin:homebrew" loaded 'yes'
+zstyle ':zephyr:plugin:homebrew' loaded 'yes'
+#endregion
