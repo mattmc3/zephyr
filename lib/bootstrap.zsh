@@ -27,6 +27,9 @@ if [[ -z "$__zsh_cache_dir" ]]; then
   __zsh_cache_dir=${~__zsh_cache_dir}
 fi
 
+# Support for hooks.
+autoload -Uz add-zsh-hook
+
 ##? Make directories from vars
 function mkdir-fromvar {
   local zdirvar
@@ -38,11 +41,12 @@ mkdir-fromvar __zsh_{config,cache,user_data}_dir
 
 ##? Autoload a user functions directory.
 function autoload-dir {
-  local fndir
+  local fndir funcfiles=()
   for fndir in $@; do
     [[ -d $fndir ]] || return 1
     fpath=($fndir $fpath)
-    autoload -Uz $fndir/*~*/_*(N.:t)
+    funcfiles=($fndir/*~*/_*(N.:t))
+    (( ${#funcfiles} > 0 )) && autoload -Uz $funcfiles
   done
 }
 
@@ -61,7 +65,7 @@ function cached-command {
   local -a cached=($memofile(Nmh-20))
   if ! (( ${#cached} )); then
     mkdir -p ${memofile:h}
-    "$@" >| $memofile
+    "$@" 2>/dev/null >$memofile
   fi
   source $memofile
 }
