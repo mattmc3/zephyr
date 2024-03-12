@@ -1,0 +1,5 @@
+##? dirh - print directory history
+##? https://fishshell.com/docs/current/cmds/dirh.html
+function dirh {
+  dirs -v
+}
