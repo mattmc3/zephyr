@@ -19,8 +19,12 @@ function autoload-dir {
 }
 
 # Load zfunctions.
-_zfuncdir=${ZFUNCDIR:-${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config/zsh}}/functions}
-autoload-dir $_zfuncdir/functions(N/) $_zfuncdir/functions/*(N/)
+zstyle -a ':zephyr:plugin:zfunctions' directory '_zfuncdir' ||
+  _zfuncdir=(
+    ${ZFUNCDIR:-${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config/zsh}}/functions}(/N)
+  )
+(( $#_zfuncdir )) || return 1
+autoload-dir ${~_zfuncdir[1]}(N/) ${~_zfuncdir[1]}/*(N/)
 unset _zfuncdir
 
 # Mark this plugin as loaded.
