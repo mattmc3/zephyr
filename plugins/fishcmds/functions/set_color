@@ -3,7 +3,7 @@
 
 ##? set the terminal color
 # function set_color {
-emulate -L zsh; setopt extendedglob
+emulate -L zsh; setopt local_options extended_glob
 
 # set_color requires arguments
 (( $# > 0 )) || return 1
