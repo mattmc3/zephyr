@@ -32,16 +32,14 @@ zle -N self-insert url-quote-magic
 (( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
 alias help=run-help
 
+# Ensure a python command exists.
+if (( $+commands[python3] )) && ! (( $+commands[python] )); then
+  alias python=python3
+fi
+
 # Ensure envsubst command exists.
 if ! (( $+commands[envsubst] )); then
-  typeset -a pycmd=(
-    $commands[python3](N)
-    $commands[python](N)
-  )
-  if (( $#pycmd )); then
-    alias envsubst="${pycmd[1]:t} -c 'import os,sys;[sys.stdout.write(os.path.expandvars(l)) for l in sys.stdin]'"
-  fi
-  unset pycmd
+  alias envsubst="python -c 'import os,sys;[sys.stdout.write(os.path.expandvars(l)) for l in sys.stdin]'"
 fi
 
 # Ensure hex dump (hd) command exists.
