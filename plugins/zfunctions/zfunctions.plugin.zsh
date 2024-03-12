@@ -1,23 +1,27 @@
-##? zfunctions - Use a Fish-like functions directory for zsh functions.
+#
+# zfunctions - Autoload all function files from your $ZDOTDIR/functions directory.
+#
 
-# Load plugins functions.
-fpath=("${0:a:h}/functions" $fpath)
-autoload -Uz $fpath[1]/*(.:t)
+# Set required Zsh options.
+setopt extended_glob
+
+##? autoload-dir - Autoload function files in directory
+function autoload-dir {
+  emulate -L zsh; setopt local_options extended_glob
+  local zdir
+  local -a zautoloads
+  for zdir in $@; do
+    [[ -d "$zdir" ]] || continue
+    fpath=("$zdir" $fpath)
+    zautoloads=($zdir/*~_*(N.:t))
+    (( $#zautoloads > 0 )) && autoload -Uz $zautoloads
+  done
+}
 
 # Load zfunctions.
-if [[ -z "$ZFUNCDIR" ]]; then
-  ZFUNCDIR=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config/zsh}}/functions
-fi
-[[ -d "$ZFUNCDIR" ]] || return
-fpath=("$ZFUNCDIR" $fpath)
-autoload -Uz $fpath[1]/*(.:t)
-
-# Load zfunctions subdirs.
-for _fndir in $ZFUNCDIR(N/) $ZFUNCDIR/*(N/); do
-  fpath=("$_fndir" $fpath)
-  autoload -Uz $fpath[1]/*(.:t)
-done
-unset _fndir
+_zfuncdir=${ZFUNCDIR:-${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config/zsh}}/functions}
+autoload-dir $_zfuncdir/functions(N/) $_zfuncdir/functions/*(N/)
+unset _zfuncdir
 
 # Mark this plugin as loaded.
 zstyle ":zephyr:plugin:zfunctions" loaded 'yes'
