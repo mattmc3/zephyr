@@ -1,5 +1,5 @@
 #
-# Color - Make the terminal more colorful.
+# color: Make the terminal more colorful.
 #
 
 # Return if requirements are not found.
@@ -58,7 +58,7 @@ if ! zstyle -t ':zephyr:plugin:color:alias' skip; then
   fi
 
   # Set colors for ls.
-  if (( ! $+commands[dircolors] )) || is-macos; then
+  if (( ! $+commands[dircolors] )) || [[ "$OSTYPE" == darwin* ]]; then
     alias ls="${aliases[ls]:-ls} -G"
   else
     alias ls="${aliases[ls]:-ls} --group-directories-first --color=auto"
