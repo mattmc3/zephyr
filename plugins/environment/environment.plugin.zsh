@@ -1,5 +1,5 @@
 #
-# Environment: Set common environment variables.
+# environment: Ensure common environment variables are set.
 #
 
 # References:
@@ -10,7 +10,6 @@
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 
-#region zephyr_plugin_environment
 # Set XDG base dirs.
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 if zstyle -T ':zephyr:plugin:environment' use-xdg-basedirs; then
@@ -45,7 +44,9 @@ typeset -gU cdpath fpath mailpath path
 # Set the list of directories that Zsh searches for programs.
 path=(
   $HOME/{,s}bin(N)
-  $HOME/brew/{,s}bin(N)
+  $HOME/.local/{,s}bin(N)
+  $HOME/.homebrew/{,s}bin(N)
+  $HOME/.linuxbrew/{,s}bin(N)
   /opt/{homebrew,local}/{,s}bin(N)
   /usr/local/{,s}bin(N)
   $path
@@ -77,4 +78,3 @@ fi
 
 # Mark this plugin as loaded.
 zstyle ':zephyr:plugin:environment' loaded 'yes'
-#endregion
