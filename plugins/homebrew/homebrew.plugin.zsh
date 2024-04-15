@@ -10,20 +10,23 @@
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 
-#region zephyr_plugin_homebrew
 # Where is brew?
-typeset -aU brewcmd=(
-  $HOME/brew/bin/brew(N)
+# Setup homebrew if it exists on the system.
+typeset -aU _brewcmd=(
   $commands[brew]
+  $HOME/.homebrew/bin/brew(N)
+  $HOME/.linuxbrew/bin/brew(N)
   /opt/homebrew/bin/brew(N)
   /usr/local/bin/brew(N)
   /home/linuxbrew/.linuxbrew/bin/brew(N)
-  $HOME/.linuxbrew/bin/brew(N)
 )
 (( $#brewcmd )) || return 1
 
-# Cache 'brew shellenv'.
-cached-command 'brew-shellenv' ${brewcmd[1]} shellenv
+if zstyle -t ':zephyr:plugin:homebrew' 'use-cache'; then
+  cached-command 'brew_shellenv' $_brewcmd[1] shellenv
+else
+  source <($_brewcmd[1] shellenv)
+fi
 
 # Default to no tracking.
 HOMEBREW_NO_ANALYTICS=${HOMEBREW_NO_ANALYTICS:-1}
@@ -52,4 +55,3 @@ fi
 
 # Mark this plugin as loaded.
 zstyle ':zephyr:plugin:homebrew' loaded 'yes'
-#endregion
