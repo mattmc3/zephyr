@@ -1,5 +1,5 @@
 #
-# Directory: Set directory options and define directory aliases.
+# directory: Set options and aliases related to Zsh directories and dirstack.
 #
 
 # References:
@@ -10,7 +10,6 @@
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 
-#region zephyr_plugin_directory
 # 16.2.3 Expansion and Globbing
 setopt extended_glob           # Use more awesome globbing features.
 setopt glob_dots               # Include dotfiles when globbing.
@@ -33,11 +32,11 @@ if ! zstyle -t ':zephyr:plugin:directory:alias' skip; then
   alias -- -='cd -'
   alias dirh='dirs -v'
   () {
-    local i dotdot=('..')
+    local i dotdots=".."
     for i in {1..9}; do
-      alias "$i"="cd -${i}"             # dirstack aliases (eg: "3"="cd -3")
-      alias -g "..$i"=${(pj:/:)dotdot}  # backref aliases (eg: "..3"="../../..")
-      dotdot+=('..')
+      alias "$i"="cd -${i}"       # dirstack aliases (eg: "3"="cd -3")
+      alias -g "..$i"="$dotdots"  # backref aliases (eg: "..3"="../../..")
+      dotdots+='/..'
     done
   }
 fi
@@ -58,4 +57,3 @@ fi
 
 # Mark this plugin as loaded.
 zstyle ':zephyr:plugin:directory' loaded 'yes'
-#endregion
