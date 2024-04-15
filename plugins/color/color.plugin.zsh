@@ -5,6 +5,10 @@
 # Return if requirements are not found.
 [[ "$TERM" != 'dumb' ]] || return 1
 
+# Bootstrap.
+0=${(%):-%N}
+zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
+
 # Built-in zsh colors.
 autoload -Uz colors && colors
 
@@ -19,14 +23,18 @@ export LESS_TERMCAP_me=$reset_color     # end bold/blink
 
 # Set LS_COLORS using (g)dircolors if found.
 if [[ -z "$LS_COLORS" ]]; then
-  if (( $+commands[dircolors] )); then
-    source <(dircolors --sh)
-  elif (( $+commands[gdircolors] )); then
-    source <(gdircolors --sh)
-  else
-    # Pick a reasonable default.
-    export LS_COLORS="di=34:ln=35:so=32:pi=33:ex=31:bd=1;36:cd=1;33:su=30;41:sg=30;46:tw=30;42:ow=30;43"
-  fi
+  for dircolors_cmd in dircolors gdircolors; do
+    if (( $+commands[$dircolors_cmd] )); then
+      if zstyle -t ':zephyr:feature:color' 'use-cache'; then
+        cached-command "$dircolors_cmd" $dircolors_cmd --sh
+      else
+        source <($dircolors_cmd --sh)
+      fi
+      break
+    fi
+  done
+  # Or, pick a reasonable default.
+  export LS_COLORS="${LS_COLORS:-di=34:ln=35:so=32:pi=33:ex=31:bd=1;36:cd=1;33:su=30;41:sg=30;46:tw=30;42:ow=30;43}"
 fi
 
 # Missing dircolors is a good indicator of a BSD system. Set LSCOLORS for macOS/BSD.
