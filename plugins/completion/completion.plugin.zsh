@@ -17,14 +17,19 @@
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 autoload-dir ${0:a:h}/functions
 
-# Set Zsh completion options.
-setopt complete_in_word     # Complete from both ends of a word.
+# 16.2.2 Completion
 setopt always_to_end        # Move cursor to the end of a completed word.
-setopt auto_menu            # Show completion menu on a successive tab press.
 setopt auto_list            # Automatically list choices on ambiguous completion.
+setopt auto_menu            # Show completion menu on a successive tab press.
 setopt auto_param_slash     # If completed parameter is a directory, add a trailing slash.
-setopt extended_glob        # Needed for file modification glob modifiers with compinit.
+setopt complete_in_word     # Complete from both ends of a word.
 setopt NO_menu_complete     # Do not autoselect the first completion entry.
+
+# 16.2.3 Expansion and Globbing
+setopt extended_glob        # Needed for file modification glob modifiers with compinit.
+
+# 16.2.6 Input/Output
+setopt path_dirs            # Perform path search even on command names with slashes.
 setopt NO_flow_control      # Disable start/stop characters in shell editor.
 
 # Add other upstream completions to $fpath.
