@@ -9,6 +9,10 @@ ZEPHYR_HOME=${0:a:h:h}
 # Critical Zsh options
 setopt extended_glob interactive_comments
 
+# Load core zephyr functions.
+fpath=($ZEPHYR_HOME/functions $fpath)
+autoload -Uz $ZEPHYR_HOME/functions/*(.:t)
+
 # Set Zsh locations.
 typeset -gx __zsh_{config,cache,user_data}_dir
 if [[ -z "$__zsh_config_dir" ]]; then
@@ -29,46 +33,6 @@ fi
 
 # Support for hooks.
 autoload -Uz add-zsh-hook
-
-##? Make directories from vars
-function mkdir-fromvar {
-  local zdirvar
-  for zdirvar in $@; do
-    [[ -d ${(P)zdirvar} ]] || mkdir -p ${(P)zdirvar}
-  done
-}
-mkdir-fromvar __zsh_{config,cache,user_data}_dir
-
-##? Autoload a user functions directory.
-function autoload-dir {
-  local fndir funcfiles=()
-  for fndir in $@; do
-    [[ -d $fndir ]] || return 1
-    fpath=($fndir $fpath)
-    funcfiles=($fndir/*~*/_*(N.:t))
-    (( ${#funcfiles} > 0 )) && autoload -Uz $funcfiles
-  done
-}
-
-##? Memoize a command
-function cached-command {
-  emulate -L zsh; setopt local_options extended_glob
-  (( $# >= 2 )) || return 1
-
-  # make the command name safer as a file path
-  local cmdname="${1}"; shift
-  cmdname=${cmdname:gs/\@/-AT-}
-  cmdname=${cmdname:gs/\:/-COLON-}
-  cmdname=${cmdname:gs/\//-SLASH-}
-
-  local memofile=$__zsh_cache_dir/memoized/${cmdname}.zsh
-  local -a cached=($memofile(Nmh-20))
-  if ! (( ${#cached} )); then
-    mkdir -p ${memofile:h}
-    "$@" 2>/dev/null >$memofile
-  fi
-  source $memofile
-}
 
 ##? Check if a file can be autoloaded by trying to load it in a subshell.
 function is-autoloadable {
