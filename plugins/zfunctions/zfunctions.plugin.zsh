@@ -1,22 +1,18 @@
 #
-# zfunctions - Autoload all function files from your $ZDOTDIR/functions directory.
+# zfunctions: Autoload all function files from your $ZDOTDIR/functions directory.
 #
 
 # Set required Zsh options.
 setopt extended_glob
 
-##? autoload-dir - Autoload function files in directory
-function autoload-dir {
-  emulate -L zsh; setopt local_options extended_glob
-  local zdir
-  local -a zautoloads
-  for zdir in $@; do
-    [[ -d "$zdir" ]] || continue
-    fpath=("$zdir" $fpath)
-    zautoloads=($zdir/*~_*(N.:t))
-    (( $#zautoloads > 0 )) && autoload -Uz $zautoloads
-  done
-}
+# Load required functions.
+0=${(%):-%N}
+if (( ! $+functions[autoload-dir] )); then
+  ZEPHYR_HOME=${0:a:h:h:h}
+  fpath=($ZEPHYR_HOME/functions $fpath)
+  autoload -Uz autoload-dir
+fi
+autoload-dir ${0:a:h}/functions
 
 # Load zfunctions.
 zstyle -a ':zephyr:plugin:zfunctions' directory '_zfuncdir' ||
