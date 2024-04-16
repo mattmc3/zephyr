@@ -1,5 +1,5 @@
 #
-# conf.d - Use a Fish-like conf.d directory for sourcing configs.
+# conf.d: Use a Fish-like conf.d directory for sourcing configs.
 #
 
 # Bootstrap.
