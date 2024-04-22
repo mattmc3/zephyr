@@ -14,7 +14,6 @@ zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zs
 # Setup homebrew if it exists on the system.
 if (( ! $+commands[brew] )); then
   typeset -aU _brewcmd=(
-    $commands[brew]
     $HOME/.homebrew/bin/brew(N)
     $HOME/.linuxbrew/bin/brew(N)
     /opt/homebrew/bin/brew(N)
