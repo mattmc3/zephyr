@@ -20,13 +20,14 @@ typeset -aU _brewcmd=(
   /usr/local/bin/brew(N)
   /home/linuxbrew/.linuxbrew/bin/brew(N)
 )
-(( $#brewcmd )) || return 1
+(( ${#_brewcmd} )) || return 1
 
 if zstyle -t ':zephyr:plugin:homebrew' 'use-cache'; then
   cached-command 'brew_shellenv' $_brewcmd[1] shellenv
 else
   source <($_brewcmd[1] shellenv)
 fi
+unset _brewcmd
 
 # Default to no tracking.
 HOMEBREW_NO_ANALYTICS=${HOMEBREW_NO_ANALYTICS:-1}
