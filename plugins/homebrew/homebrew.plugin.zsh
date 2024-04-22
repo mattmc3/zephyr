@@ -32,6 +32,11 @@ unset _brewcmd
 # Default to no tracking.
 HOMEBREW_NO_ANALYTICS=${HOMEBREW_NO_ANALYTICS:-1}
 
+# Add brewed Zsh to fpath
+if [[ -d "$HOMEBREW_PREFIX/share/zsh/site-functions" ]]; then
+  fpath+=("$HOMEBREW_PREFIX/share/zsh/site-functions")
+fi
+
 # Set aliases.
 if ! zstyle -t ':zephyr:plugin:homebrew:alias' skip; then
   alias brewup="brew update && brew upgrade && brew cleanup"
