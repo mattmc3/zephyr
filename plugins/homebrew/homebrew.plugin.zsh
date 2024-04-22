@@ -14,23 +14,30 @@ zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zs
 # Setup homebrew if it exists on the system.
 if (( ! $+commands[brew] )); then
   typeset -aU _brewcmd=(
+    $commands[brew]
     $HOME/.homebrew/bin/brew(N)
     $HOME/.linuxbrew/bin/brew(N)
     /opt/homebrew/bin/brew(N)
     /usr/local/bin/brew(N)
     /home/linuxbrew/.linuxbrew/bin/brew(N)
   )
-  (( $#_brewcmd )) || return 1
-  
+  (( ${#_brewcmd} )) || return 1
+
   if zstyle -t ':zephyr:plugin:homebrew' 'use-cache'; then
     cached-command 'brew_shellenv' $_brewcmd[1] shellenv
   else
     source <($_brewcmd[1] shellenv)
   fi
+  unset _brewcmd
 fi
 
 # Default to no tracking.
 HOMEBREW_NO_ANALYTICS=${HOMEBREW_NO_ANALYTICS:-1}
+
+# Add brewed Zsh to fpath
+if [[ -d "$HOMEBREW_PREFIX/share/zsh/site-functions" ]]; then
+  fpath+=("$HOMEBREW_PREFIX/share/zsh/site-functions")
+fi
 
 # Set aliases.
 if ! zstyle -t ':zephyr:plugin:homebrew:alias' skip; then

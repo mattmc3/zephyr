@@ -1,5 +1,5 @@
 #
-# Utility: Misc Zsh shell options, utilities, and attempt at cross-platform conformity.
+# utility: Misc Zsh shell options, utilities, and attempt at cross-platform conformity.
 #
 
 # References:
@@ -9,9 +9,7 @@
 # Bootstrap.
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
-autoload-dir ${0:a:h}/functions
 
-#region zephyr_plugin_utility
 if ! zstyle -t ':zephyr:plugin:utility:setopt' skip; then
   # 16.2.7 Job Control
   setopt auto_resume             # Attempt to resume existing job before creating a new process.
@@ -90,4 +88,3 @@ fi
 
 # Mark this plugin as loaded.
 zstyle ':zephyr:plugin:utility' loaded 'yes'
-#endregion
