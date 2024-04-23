@@ -26,6 +26,7 @@ Tests are run using the following command:
 Here we need to handle test setup.
 
 ```zsh
+% cd $PWD/plugins/string
 % source ./string.plugin.zsh
 %
 ```
