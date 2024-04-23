@@ -29,7 +29,6 @@ function string-escape {
   print -lr ${(qqqq)input[@]} | sed -e 's/\\033/\\e\\/g' -e 's/ /\\ /g' | tr -d "$'"
 }
 
-
 function t_setup {
   0=${(%):-%x}
 
@@ -47,19 +46,36 @@ function t_setup {
   typeset -g T_PREV_FPATH=( $fpath )
   typeset -ga T_PREV_ALIASES=( ${(k)aliases} )
   typeset -ga T_PREV_FUNCS=( ${(k)functions} )
+  typeset -gA T_PREV_ZOPTS=( $(set -o) )
   typeset -ga T_PREV_PARAMS=( $(typeset -px | awk -F '=' '{print $1}' | awk '{print $NF}') )
+
+  zsh -df -c "set -o" >| $T_TEMPDIR/zsh_default.opts
+}
+
+function t_print_changedopts {
+  set -o >| $T_TEMPDIR/zsh_changed.opts
+  diff --changed-group-format='%<' --unchanged-group-format='' $T_TEMPDIR/zsh_changed.opts $T_TEMPDIR/zsh_default.opts
 }
 
 function t_teardown {
-  emulate -L zsh
-  setopt local_options
+  # emulate -L zsh
+  # setopt local_options
 
   # reset current session
   ZDOTDIR=$OLD_ZDOTDIR
 
+  # reset Zsh opts
+  local -A zopts=( $(set -o) )
+  local zopt zoptval
+  for zopt zoptval in ${(kv)zopts}; do
+    if [[ $T_PREV_ZOPTS[$zopt] != $zoptval ]]; then
+      [[ $zoptval == on ]] && unsetopt $zopt || setopt $zopt
+    fi
+  done
+
   local aliasname
   for aliasname in ${(k)aliases}; do
-    (( $T_PREV_ALIASES[(Ie)$aliasname] )) || unalias $aliasname
+    (( $T_PREV_ALIASES[(Ie)$aliasname] )) || unalias -- $aliasname
   done
   local funcname
   for funcname in ${(k)functions}; do
@@ -85,7 +101,7 @@ function t_teardown {
   fi
   typeset -gx HOME=$OLD_HOME
 
-  unset T_TEMPDIR OLD_HOME T_PREV_{ALIASES,FPATH,FUNCS,PARAMS}
+  unset T_TEMPDIR OLD_HOME T_PREV_{ALIASES,FPATH,FUNCS,PARAMS,ZOPTS}
 }
 
 function t_reset {
