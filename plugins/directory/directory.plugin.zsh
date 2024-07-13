@@ -43,13 +43,15 @@ alias d='dirs -v'
 ##? up: Quickly go up any number of directories.
 function up {
   local parents=${1:-1}
-  if ! [[ "$parents" -gt 0 ]]; then
-    echo >&2 "up: expecting numeric argument: number of parent dirs"
+  if [[ ! "$parents" -gt 0 ]]; then
+    echo >&2 "usage: up [<num>]"
     return 1
   fi
-  local -a dotdots=($(printf "..%.0s\n" {1..$parents}))
-  local cdstr="${(pj:/:)dotdots}"
-  cd $cdstr
+  local dotdots=".."
+  while (( --parents )); do
+    dotdots+="/.."
+  done
+  cd $dotdots
 }
 
 # Mark this plugin as loaded.
