@@ -6,7 +6,7 @@
 0=${(%):-%N}
 ZEPHYR_HOME=${0:a:h:h}
 
-# Critical Zsh options
+# Set critical Zsh options.
 setopt extended_glob interactive_comments
 
 # Set Zsh locations.
