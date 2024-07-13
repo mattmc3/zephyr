@@ -23,3 +23,6 @@ function is-linux  { [[ "$OSTYPE" == linux*  ]] }
 function is-bsd    { [[ "$OSTYPE" == *bsd*   ]] }
 function is-cygwin { [[ "$OSTYPE" == cygwin* ]] }
 function is-termux { [[ "$OSTYPE" == linux-android ]] }
+
+# Mark this plugin as loaded.
+zstyle ':zephyr:plugin:helper' loaded 'yes'
