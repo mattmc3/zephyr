@@ -20,6 +20,11 @@ zle -N self-insert url-quote-magic
 (( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
 alias help=run-help
 
+# Make ls more useful on non-BSD systems.
+if (( ! $+commands[dircolors] )) && [[ "$OSTYPE" != darwin* ]]; then
+  alias ls="${aliases[ls]:-ls} --group-directories-first"
+fi
+
 # Ensure python commands exist.
 if (( $+commands[python3] )) && ! (( $+commands[python] )); then
   alias python=python3
@@ -33,7 +38,7 @@ if ! (( $+commands[envsubst] )); then
   alias envsubst="python -c 'import os,sys;[sys.stdout.write(os.path.expandvars(l)) for l in sys.stdin]'"
 fi
 
-# Ensure hex dump (hd) command exists.
+# Ensure hd (hex dump) command exists.
 if ! (( $+commands[hd] )) && (( $+commands[hexdump] )); then
   alias hd="hexdump -C"
 fi
