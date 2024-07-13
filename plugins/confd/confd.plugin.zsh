@@ -21,16 +21,16 @@ if [[ ! -e "$_confd[1]" ]]; then
   return 1
 fi
 
-# Source all scripts in conf.d.
-typeset -ga _rcs=(${~_confd[1]}/*.{z,}sh(N))
-for _rcfile in ${(o)_rcs}; do
+# Sort and source conf files.
+typeset -ga _rcs=(${_confd[1]}/*.{z,}sh(N))
+for _rc in ${(o)_rcs}; do
   # ignore files that begin with ~
-  [[ ${_rcfile:t} != '~'* ]] || continue
-  source $_rcfile
+  [[ ${_rc:t} != '~'* ]] || continue
+  source $_rc
 done
 
 # Clean up.
-unset _rcfile {,_user}_confd _rcs
+unset _rc{,s} {,_user}_confd
 
 # Mark this plugin as loaded.
 zstyle ':zephyr:plugin:confd' loaded 'yes'
