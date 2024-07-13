@@ -1,5 +1,5 @@
 #
-# completion - Set up zsh completions.
+# completion: Set up zsh completions.
 #
 
 # References:

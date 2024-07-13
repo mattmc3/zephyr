@@ -1,5 +1,5 @@
 #
-# Homebrew: Environment variables and functions for homebrew users.
+# homebrew: Environment variables and functions for homebrew users.
 #
 
 # References:

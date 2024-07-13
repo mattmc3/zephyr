@@ -1,5 +1,5 @@
 #
-# prompt - Set zsh prompt.
+# prompt: Set zsh prompt.
 #
 
 #

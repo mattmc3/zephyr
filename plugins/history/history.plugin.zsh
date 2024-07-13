@@ -1,5 +1,5 @@
 #
-# History: Set history options and define history aliases.
+# history: Set history options and define history aliases.
 #
 
 # References:

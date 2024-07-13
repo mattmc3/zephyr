@@ -1,5 +1,5 @@
 #
-# editor - Set editor specific key bindings, options, and variables.
+# editor: Setup Zsh line editor behavior.
 #
 
 #

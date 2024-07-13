@@ -1,5 +1,5 @@
 #
-# macos - Aliases and functions for macOS users.
+# macos: Aliases and functions for macOS users.
 #
 
 # References
