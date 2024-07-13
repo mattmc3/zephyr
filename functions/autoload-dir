@@ -1,12 +1,12 @@
 #!/bin/zsh
 ##? Autoload all function files in a directory.
-function autoload-dir {
+#function autoload-dir {
   emulate -L zsh; setopt local_options extended_glob
-  local fndir funcfiles=()
-  for fndir in $@; do
-    [[ -d $fndir ]] || return 1
-    fpath=($fndir $fpath)
-    funcfiles=($fndir/*~*/_*(N.:t))
-    (( ${#funcfiles} > 0 )) && autoload -Uz $funcfiles
+  local zdir zautoloads=()
+  for zdir in $@; do
+    [[ -d $zdir ]] || continue
+    fpath=($zdir $fpath)
+    zautoloads=($zdir/*~_*(N.:t))
+    (( ${#zautoloads} > 0 )) && autoload -Uz $zautoloads
   done
-}
+#}
