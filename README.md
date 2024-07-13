@@ -75,7 +75,7 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 - **directory** - Set options and aliases related to the dirstack and filesystem
 - **editor** - Override and fill in the gaps of the default keybinds
 - **environment** - Define common environment variables
-- **history** - Load and initilize the built-in zsh history system
+- **history** - Load and initialize the built-in zsh history system
 - **homebrew** - Functionality for users of Homebrew
 - **macos** - Functionality for macOS users
 - **prompt** - Load and initialize the build-in zsh prompt system
