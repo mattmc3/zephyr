@@ -38,8 +38,9 @@ fi
 zstyle -s ':zephyr:plugin:history' histfile 'HISTFILE' \
   || HISTFILE="$_zhistfile"
 
-# Make sure the user didn't store a literal '~' and the history path exists.
-HISTFILE="${~HISTFILE}"
+# Make sure the user didn't store an empty history file, or a literal '~',
+# and that the history path exists. Basically, save the user from themselves.
+[[ -z "$HISTFILE" ]] && HISTFILE=$_zhistfile || HISTFILE=${~HISTFILE}
 [[ -d "${HISTFILE:h}" ]] || mkdir -p "${HISTFILE:h}"
 unset _zhistfile
 
