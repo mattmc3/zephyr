@@ -52,27 +52,24 @@ function colormap {
   done
 }
 
-# Set aliases.
-if ! zstyle -t ':zephyr:plugin:color:alias' skip; then
-  # Set colors for grep.
-  alias grep="${aliases[grep]:-grep} --color=auto"
+# Set colors for grep.
+alias grep="${aliases[grep]:-grep} --color=auto"
 
-  # Set colors for coreutils ls.
-  if (( $+commands[gls] )); then
-    alias gls="${aliases[gls]:-gls} --group-directories-first --color=auto"
-  fi
+# Set colors for coreutils ls.
+if (( $+commands[gls] )); then
+  alias gls="${aliases[gls]:-gls} --color=auto"
+fi
 
-  # Set colors for ls.
-  if (( ! $+commands[dircolors] )) || [[ "$OSTYPE" == darwin* ]]; then
-    alias ls="${aliases[ls]:-ls} -G"
-  else
-    alias ls="${aliases[ls]:-ls} --group-directories-first --color=auto"
-  fi
+# Set colors for ls.
+if (( ! $+commands[dircolors] )) || [[ "$OSTYPE" == darwin* ]]; then
+  alias ls="${aliases[ls]:-ls} -G"
+else
+  alias ls="${aliases[ls]:-ls} --color=auto"
+fi
 
-  # Set colors for diff
-  if command diff --color /dev/null{,} &>/dev/null; then
-    alias diff="${aliases[diff]:-diff} --color"
-  fi
+# Set colors for diff
+if command diff --color /dev/null{,} &>/dev/null; then
+  alias diff="${aliases[diff]:-diff} --color"
 fi
 
 # Colorize completions.
