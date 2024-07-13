@@ -37,13 +37,6 @@ zstyle ':zephyr:load' plugins \
 # zstyle ':zephyr:plugin:completion' compstyle 'zephyr'
 
 #
-# Directory
-#
-
-# Don't set directory aliases.
-# zstyle ':zephyr:plugin:directory:alias' skip 'yes'
-
-#
 # Editor
 #
 
@@ -72,9 +65,6 @@ zstyle ':zephyr:plugin:editor' key-bindings 'emacs'
 
 # Set the maximum number of history events to save in the history file.
 # zstyle ':zephyr:plugin:history' savehist 10000
-
-# Don't set history aliases.
-# zstyle ':zephyr:plugin:history:alias' skip 'yes'
 
 #
 # Prompt
