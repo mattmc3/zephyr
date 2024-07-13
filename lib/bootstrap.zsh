@@ -18,18 +18,6 @@ typeset -gx __zsh_{config,cache,user_data}_dir
   local _zdir; for _zdir in $@; [ -d ${(P)_zdir} ] || mkdir -p ${(P)_zdir}
 } __zsh_{config,cache,user_data}_dir
 
-##? Autoload function files in directory
-function autoload-dir {
-  local zdir
-  local -a zautoloads
-  for zdir in $@; do
-    [[ -d "$zdir" ]] || continue
-    fpath=("$zdir" $fpath)
-    zautoloads=($zdir/*~_*(N.:t))
-    (( $#zautoloads > 0 )) && autoload -Uz $zautoloads
-  done
-}
-
 ##? Cache the results of an eval command
 function cached-eval {
   emulate -L zsh; setopt local_options extended_glob

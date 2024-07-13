@@ -6,11 +6,17 @@
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 
-: ${ZFUNCDIR:=$__zsh_config_dir/functions}
-if [[ -d "$ZFUNCDIR" ]]; then
-  # Load zfunctions.
-  autoload-dir $__zsh_config_dir/functions(N/) $__zsh_config_dir/functions/*(N/)
-fi
+##? autoload-dir - Autoload function files in directory
+function autoload-dir {
+  local zdir
+  local -a zautoloads
+  for zdir in $@; do
+    [[ -d "$zdir" ]] || continue
+    fpath=("$zdir" $fpath)
+    zautoloads=($zdir/*~_*(N.:t))
+    (( $#zautoloads > 0 )) && autoload -Uz $zautoloads
+  done
+}
 
 ##? funcsave - Save a function
 function funcsave {
@@ -71,6 +77,13 @@ function funced {
     ${EDITOR:-vim} "$ZFUNCDIR/$1"
   fi
 }
+
+# Autoload ZFUNCDIR
+: ${ZFUNCDIR:=$__zsh_config_dir/functions}
+if [[ -d "$ZFUNCDIR" ]]; then
+  # Load zfunctions.
+  autoload-dir $__zsh_config_dir/functions(N/) $__zsh_config_dir/functions/*(N/)
+fi
 
 # Mark this plugin as loaded.
 zstyle ":zephyr:plugin:zfunctions" loaded 'yes'
