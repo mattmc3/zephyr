@@ -22,12 +22,22 @@ typeset -aU _brewcmd=(
 )
 (( ${#_brewcmd} )) || return 1
 
+# brew shellenv
 if zstyle -t ':zephyr:plugin:homebrew' 'use-cache'; then
   cached-eval 'brew_shellenv' $_brewcmd[1] shellenv
 else
   source <($_brewcmd[1] shellenv)
 fi
 unset _brewcmd
+
+# Ensure user bins preceed homebrew in path.
+path=(
+  $HOME/{,s}bin(N)
+  $HOME/.local/bin(N)
+  $HOMEBREW_PREFIX/{,s}bin(N)
+  /usr/local/{,s}bin(N)
+  $path
+)
 
 # Default to no tracking.
 HOMEBREW_NO_ANALYTICS=${HOMEBREW_NO_ANALYTICS:-1}
