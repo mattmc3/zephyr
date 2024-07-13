@@ -35,6 +35,9 @@ function cached-eval {
   source $cachefile
 }
 
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path
+
 # Support for hooks.
 autoload -Uz add-zsh-hook
 
