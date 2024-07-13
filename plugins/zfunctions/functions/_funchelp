@@ -1,6 +1,0 @@
-#compdef funchelp
-
-# show files in the functions dir (exclude dirs)
-_path_files -W "$ZFUNCDIR" -g "**/*(.)"
-
-# vim: ft=zsh sw=2 ts=2 et

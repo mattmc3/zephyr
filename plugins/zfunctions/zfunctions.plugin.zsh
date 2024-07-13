@@ -2,26 +2,75 @@
 # zfunctions: Autoload all function files from your $ZDOTDIR/functions directory.
 #
 
-# Set required Zsh options.
-setopt extended_glob
-
-# Load required functions.
+# Bootstrap.
 0=${(%):-%N}
-if (( ! $+functions[autoload-dir] )); then
-  ZEPHYR_HOME=${0:a:h:h:h}
-  fpath=($ZEPHYR_HOME/functions $fpath)
-  autoload -Uz autoload-dir
-fi
-autoload-dir ${0:a:h}/functions
+zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 
-# Load zfunctions.
-zstyle -a ':zephyr:plugin:zfunctions' directory '_zfuncdir' ||
-  _zfuncdir=(
-    ${ZFUNCDIR:-${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config/zsh}}/functions}(/N)
-  )
-(( $#_zfuncdir )) || return 1
-autoload-dir ${~_zfuncdir[1]}(N/) ${~_zfuncdir[1]}/*(N/)
-unset _zfuncdir
+: ${ZFUNCDIR:=$__zsh_config_dir/functions}
+if [[ -d "$ZFUNCDIR" ]]; then
+  # Load zfunctions.
+  autoload-dir $__zsh_config_dir/functions(N/) $__zsh_config_dir/functions/*(N/)
+fi
+
+##? funcsave - Save a function
+function funcsave {
+  emulate -L zsh; setopt local_options
+  : ${ZFUNCDIR:=$__zsh_config_dir/functions}
+
+  # check args
+  if (( $# == 0 )); then
+    echo >&2 "funcsave: Expected at least 1 args, got only 0."
+    return 1
+  elif ! typeset -f "$1" > /dev/null; then
+    echo >&2 "funcsave: Unknown function '$1'."
+    return 1
+  elif [[ ! -d "$ZFUNCDIR" ]]; then
+    echo >&2 "funcsave: Directory not found '$ZFUNCDIR'."
+    return 1
+  fi
+
+  # make sure the function is loaded in case it's already lazy
+  autoload +X "$1" > /dev/null
+
+  # remove first/last lines (ie: 'function foo {' and '}') and de-indent one level
+  type -f "$1" | awk 'NR>2 {print prev} {gsub(/^\t/, "", $0); prev=$0}' >| "$ZFUNCDIR/$1"
+}
+
+##? funced - edit the function specified
+function funced {
+  emulate -L zsh; setopt local_options
+  : ${ZFUNCDIR:=$__zsh_config_dir/functions}
+
+  # check args
+  if (( $# == 0 )); then
+    echo >&2 "funced: Expected at least 1 args, got only 0."
+    return 1
+  elif [[ ! -d "$ZFUNCDIR" ]]; then
+    echo >&2 "funced: Directory not found '$ZFUNCDIR'."
+    return 1
+  fi
+
+  # new function definition: make a file template
+  if [[ ! -f "$ZFUNCDIR/$1" ]]; then
+    local -a funcstub
+    funcstub=(
+      "#\!/bin/zsh"
+      "#function $1 {"
+      ""
+      "#}"
+      "#$1 \"\$@\""
+    )
+    printf '%s\n' "${funcstub[@]}" > "$ZFUNCDIR/$1"
+    autoload -Uz "$ZFUNCDIR/$1"
+  fi
+
+  # open the function file
+  if [[ -n "$VISUAL" ]]; then
+    $VISUAL "$ZFUNCDIR/$1"
+  else
+    ${EDITOR:-vim} "$ZFUNCDIR/$1"
+  fi
+}
 
 # Mark this plugin as loaded.
 zstyle ":zephyr:plugin:zfunctions" loaded 'yes'
