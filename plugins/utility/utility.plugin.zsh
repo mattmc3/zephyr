@@ -71,13 +71,11 @@ if ! (( $+commands[pbcopy] )); then
   fi
 fi
 
-if ! zstyle -t ':zephyr:plugin:utility:function' skip; then
-  ##? Cross platform `sed -i` syntax
-  function sedi {
-    # GNU/BSD
-    sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
-  }
-fi
+##? Cross platform `sed -i` syntax
+function sedi {
+  # GNU/BSD
+  sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
+}
 
 # Mark this plugin as loaded.
 zstyle ':zephyr:plugin:utility' loaded 'yes'
