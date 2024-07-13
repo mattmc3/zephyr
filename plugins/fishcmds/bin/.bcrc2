@@ -1,0 +1,77 @@
+# https://man.freebsd.org/cgi/man.cgi?query=bc&sektion=1
+
+define npr(n, r) {
+  return perm(n, r)
+}
+
+define ncr(n, r) {
+  return comb(n, r)
+}
+
+define fac(n) {
+  return f(n);
+}
+
+define floor(x) {
+  scale=0
+  return x/1
+}
+
+define min(n, m) {
+  if (n < m) return n;
+  return m;
+}
+
+define max(n, m) {
+  if (n < m) return (m);
+  return n;
+}
+
+########################################################################################
+
+define pi(x) {
+  scale=x
+  return 4*a(1)
+}
+
+define ceil(x,y) {
+  scale=0
+  if (x == x/1) return(x)
+  return((x+1)/1)
+}
+
+define abs(n) {
+  if (n<0) return -n
+  return n
+}
+
+define f(n) {
+  if (n <= 1) return (1);
+  return (f(n-1) * n);
+}
+
+define min(x,y) {
+  if (x<y) return x
+  return y
+}
+
+define max(x,y) {
+  if (x<y) return y
+  return x
+}
+
+define comb(n, r) {
+  scale=0
+  return ( fac(n) / ( (fac(r)*fac(n-r) ) ) )
+}
+
+define perm(n, r) {
+  scale=0
+  return ( fac(n) / fac(n-r) )
+}
+
+define sin(n) {
+  return (s(n));
+}
+
+# vim ft=bc

@@ -206,3 +206,4 @@ function string {
     echo >&2 "string: Subcommand '$1' is not valid." && return 1
   fi
 }
+string "$@"
