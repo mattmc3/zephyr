@@ -18,7 +18,7 @@ zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zs
 #
 
 # Treat these characters as part of a word.
-zstyle -s ':zephyr:plugins:editor' wordchars 'WORDCHARS' \
+zstyle -s ':zephyr:plugin:editor' wordchars 'WORDCHARS' \
   || WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
 # Use human-friendly identifiers.
@@ -93,23 +93,23 @@ function bindkey-all {
 function editor-info {
   # Ensure that we're going to set the editor-info for prompts that
   # are managed and/or compatible.
-  if zstyle -t ':zephyr:plugins:prompt' managed; then
+  if zstyle -t ':zephyr:plugin:prompt' managed; then
     # Clean up previous $editor_info.
     unset editor_info
     typeset -gA editor_info
 
     if [[ "$KEYMAP" == 'vicmd' ]]; then
-      zstyle -s ':zephyr:plugins:editor:info:keymap:alternate' format 'REPLY'
+      zstyle -s ':zephyr:plugin:editor:info:keymap:alternate' format 'REPLY'
       editor_info[keymap]="$REPLY"
     else
-      zstyle -s ':zephyr:plugins:editor:info:keymap:primary' format 'REPLY'
+      zstyle -s ':zephyr:plugin:editor:info:keymap:primary' format 'REPLY'
       editor_info[keymap]="$REPLY"
 
       if [[ "$ZLE_STATE" == *overwrite* ]]; then
-        zstyle -s ':zephyr:plugins:editor:info:keymap:primary:overwrite' format 'REPLY'
+        zstyle -s ':zephyr:plugin:editor:info:keymap:primary:overwrite' format 'REPLY'
         editor_info[overwrite]="$REPLY"
       else
-        zstyle -s ':zephyr:plugins:editor:info:keymap:primary:insert' format 'REPLY'
+        zstyle -s ':zephyr:plugin:editor:info:keymap:primary:insert' format 'REPLY'
         editor_info[overwrite]="$REPLY"
       fi
     fi
@@ -123,7 +123,7 @@ zle -N editor-info
 # Reset the prompt based on the current context and
 # the ps-context option.
 function zle-reset-prompt {
-  if zstyle -t ':zephyr:plugins:editor' ps-context; then
+  if zstyle -t ':zephyr:plugin:editor' ps-context; then
     # If we aren't within one of the specified contexts, then we want to reset
     # the prompt with the appropriate editor_info[keymap] if there is one.
     if [[ $CONTEXT != (select|cont) ]]; then
@@ -213,7 +213,7 @@ zle -N expand-dot-to-parent-directory-path
 # Displays an indicator when completing.
 function expand-or-complete-with-indicator {
   local indicator
-  zstyle -s ':zephyr:plugins:editor:info:completing' format 'indicator'
+  zstyle -s ':zephyr:plugin:editor:info:completing' format 'indicator'
 
   # This is included to work around a bug in zsh which shows up when interacting
   # with multi-line prompts.
@@ -240,7 +240,7 @@ zle -N prepend-sudo
 # Expand aliases
 function glob-alias {
   local -a noexpand_aliases
-  zstyle -a ':zephyr:plugins:editor:glob-alias' 'noexpand' 'noexpand_aliases' \
+  zstyle -a ':zephyr:plugin:editor:glob-alias' 'noexpand' 'noexpand_aliases' \
     || noexpand_aliases=()
 
   # Get last word to the left of the cursor:
@@ -426,7 +426,7 @@ for keymap in 'emacs' 'viins'; do
   bindkey -M "$keymap" "$key_info[Control]I" expand-or-complete
 
   # Expand .... to ../..
-  if zstyle -t ':zephyr:plugins:editor' dot-expansion; then
+  if zstyle -t ':zephyr:plugin:editor' dot-expansion; then
     bindkey -M "$keymap" "." expand-dot-to-parent-directory-path
   fi
 
@@ -442,12 +442,12 @@ done
 bindkey -M vicmd "$key_info[Delete]" delete-char
 
 # Do not expand .... to ../.. during incremental search.
-if zstyle -t ':zephyr:plugins:editor' dot-expansion; then
+if zstyle -t ':zephyr:plugin:editor' dot-expansion; then
   bindkey -M isearch . self-insert 2> /dev/null
 fi
 
 # Expand aliases
-if zstyle -t ':zephyr:plugins:editor' glob-alias; then
+if zstyle -t ':zephyr:plugin:editor' glob-alias; then
   # space expands all aliases, including global
   bindkey -M emacs " " glob-alias
   bindkey -M viins " " glob-alias
@@ -465,7 +465,7 @@ fi
 #
 
 # Set the key layout.
-zstyle -s ':zephyr:plugins:editor' key-bindings 'key_bindings'
+zstyle -s ':zephyr:plugin:editor' key-bindings 'key_bindings'
 if [[ "$key_bindings" == (emacs|) ]]; then
   bindkey -e
 elif [[ "$key_bindings" == vi ]]; then
