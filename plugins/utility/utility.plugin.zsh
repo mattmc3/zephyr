@@ -30,9 +30,12 @@ zle -N self-insert url-quote-magic
 (( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
 alias help=run-help
 
-# Ensure a python command exists.
+# Ensure python commands exist.
 if (( $+commands[python3] )) && ! (( $+commands[python] )); then
   alias python=python3
+fi
+if (( $+commands[pip3] )) && ! (( $+commands[pip] )); then
+  alias pip=pip3
 fi
 
 # Ensure envsubst command exists.
