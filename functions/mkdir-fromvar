@@ -1,9 +1,0 @@
-#!/bin/zsh
-##? Make directories from vars
-function mkdir-fromvar {
-  local zdirvar
-  for zdirvar in $@; do
-    [[ -d ${(P)zdirvar} ]] || mkdir -p ${(P)zdirvar}
-  done
-}
-mkdir-fromvar __zsh_{config,cache,user_data}_dir

@@ -17,7 +17,9 @@ if zstyle -T ':zephyr:plugin:environment' use-xdg-basedirs; then
   export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
   export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
   export XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
-  mkdir-fromvar XDG_{CONFIG,CACHE,DATA,STATE}_HOME
+  () {
+    local _zdir; for _zdir in $@; [ -d ${(P)_zdir} ] || mkdir -p ${(P)_zdir}
+  } XDG_{CONFIG,CACHE,DATA,STATE}_HOME
 fi
 
 # Editors
