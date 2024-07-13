@@ -2,20 +2,12 @@
 # editor: Setup Zsh line editor behavior.
 #
 
-#
-# Requirements
-#
-
 # Return if requirements are not found.
 [[ "$TERM" != 'dumb' ]] || return 1
 
 # Bootstrap.
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
-
-#
-# Variables
-#
 
 # Treat these characters as part of a word.
 zstyle -s ':zephyr:plugin:editor' wordchars 'WORDCHARS' \
@@ -65,10 +57,6 @@ for key in "${(k)key_info[@]}"; do
     key_info[$key]='�'
   fi
 done
-
-#
-# External Editor
-#
 
 # Allow command line editing in an external editor.
 autoload -Uz edit-command-line
@@ -318,7 +306,6 @@ fi
 # being seen in iTerm.
 bindkey -M emacs "$key_info[Escape];" pound-toggle
 
-
 #
 # Vi Key Bindings
 #
@@ -475,10 +462,6 @@ else
 fi
 
 unset key{,map,_bindings}
-
-#
-# Wrap up
-#
 
 # Mark this plugin as loaded.
 zstyle ':zephyr:plugin:editor' loaded 'yes'
