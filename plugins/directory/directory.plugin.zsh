@@ -30,7 +30,7 @@ setopt multios                 # Write to multiple descriptors.
 
 # Set directory aliases.
 alias -- -='cd -'
-alias d='dirs -v'
+alias dirh='dirs -v'
 () {
   local i dotdots=".."
   for i in {1..9}; do
