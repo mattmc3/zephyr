@@ -4,6 +4,7 @@
 
 # References:
 # - https://github.com/sorin-ionescu/prezto/tree/master/modules/directory
+# - https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/directories.zsh
 # - https://zsh.sourceforge.io/Doc/Release/Options.html#Changing-Directories
 
 # Bootstrap.
@@ -29,7 +30,7 @@ setopt multios                 # Write to multiple descriptors.
 
 # Set directory aliases.
 alias -- -='cd -'
-alias dirh='dirs -v'
+alias d='dirs -v'
 () {
   local i dotdots=".."
   for i in {1..9}; do
