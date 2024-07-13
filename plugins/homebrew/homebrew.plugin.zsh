@@ -23,7 +23,7 @@ typeset -aU _brewcmd=(
 (( ${#_brewcmd} )) || return 1
 
 if zstyle -t ':zephyr:plugin:homebrew' 'use-cache'; then
-  cached-command 'brew_shellenv' $_brewcmd[1] shellenv
+  cached-eval 'brew_shellenv' $_brewcmd[1] shellenv
 else
   source <($_brewcmd[1] shellenv)
 fi

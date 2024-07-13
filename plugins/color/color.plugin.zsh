@@ -26,7 +26,7 @@ if [[ -z "$LS_COLORS" ]]; then
   for dircolors_cmd in dircolors gdircolors; do
     if (( $+commands[$dircolors_cmd] )); then
       if zstyle -t ':zephyr:feature:color' 'use-cache'; then
-        cached-command "$dircolors_cmd" $dircolors_cmd --sh
+        cached-eval "$dircolors_cmd" $dircolors_cmd --sh
       else
         source <($dircolors_cmd --sh)
       fi
