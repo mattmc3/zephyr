@@ -15,6 +15,9 @@ Test plugin is not initialized
 not loaded
 % test -v EDITOR  #=> --exit 1
 % test -v VISUAL  #=> --exit 1
+% set -o | grep -v off | awk '{print $1}' | sort
+nohashdirs
+norcs
 %
 ```
 
@@ -31,6 +34,20 @@ Test plugin is initialized
 % zstyle -t ':zephyr:plugin:environment' loaded || echo "not loaded"
 % test -v EDITOR  #=> --exit 0
 % test -v VISUAL  #=> --exit 0
+% set -o | grep 'on$' | awk '{print $1}' | sort
+autoresume
+combiningchars
+extendedglob
+interactivecomments
+longlistjobs
+nobeep
+nobgnice
+nocheckjobs
+noflowcontrol
+nohashdirs
+nohup
+norcs
+rcquotes
 %
 ```
 

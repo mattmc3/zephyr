@@ -16,9 +16,6 @@ not loaded
 % test $+functions[bracketed-paste-url-magic] = 0  #=> --exit 0
 % test $+functions[url-quote-magic] = 0  #=> --exit 0
 % test $+functions[sedi] = 0  #=> --exit 0
-% set -o | grep -v off | awk '{print $1}' | sort
-nohashdirs
-norcs
 %
 ```
 
@@ -36,16 +33,6 @@ Test plugin is initialized
 % test $+functions[bracketed-paste-url-magic] = 1  #=> --exit 0
 % test $+functions[url-quote-magic] = 1  #=> --exit 0
 % test $+functions[sedi] = 1  #=> --exit 0
-% set -o | grep -v off | awk '{print $1}' | sort
-autoresume
-extendedglob
-interactivecomments
-longlistjobs
-nobgnice
-nocheckjobs
-nohashdirs
-nohup
-norcs
 %
 ```
 
