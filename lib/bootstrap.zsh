@@ -34,45 +34,27 @@ fi
 # Support for hooks.
 autoload -Uz add-zsh-hook
 
-##? Check if a file can be autoloaded by trying to load it in a subshell.
+##? Checks if a file can be autoloaded by trying to load it in a subshell.
 function is-autoloadable {
-  ( unfunction $1 ; autoload -U +X $1 ) &> /dev/null
+  ( unfunction "$1"; autoload -U +X "$1" ) &> /dev/null
 }
 
-##? Check if a name is a command, function, or alias.
+##? Checks if a name is a command, function, or alias.
 function is-callable {
   (( $+commands[$1] || $+functions[$1] || $+aliases[$1] || $+builtins[$1] ))
 }
 
-##? Check a string for case-insensitive "true" value (1,y,yes,t,true,o,on).
+##? Check whether a string represents "true" (1, y, yes, t, true, o, on).
 function is-true {
   [[ -n "$1" && "$1:l" == (1|y(es|)|t(rue|)|o(n|)) ]]
 }
 
-##? Check if running on macOS.
-function is-macos {
-  [[ "$OSTYPE" == darwin* ]]
-}
-
-##? Check if running on Linux.
-function is-linux {
-  [[ "$OSTYPE" == linux* ]]
-}
-
-##? Check if running on BSD.
-function is-bsd {
-  [[ "$OSTYPE" == *bsd* ]]
-}
-
-##? Check if running on Cygwin (Windows).
-function is-cygwin {
-  [[ "$OSTYPE" == cygwin* ]]
-}
-
-##? Check if running on termux (Android).
-function is-termux {
-  [[ "$OSTYPE" == linux-android ]]
-}
+# OS checks.
+function is-macos  { [[ "$OSTYPE" == darwin* ]] }
+function is-linux  { [[ "$OSTYPE" == linux*  ]] }
+function is-bsd    { [[ "$OSTYPE" == *bsd*   ]] }
+function is-cygwin { [[ "$OSTYPE" == cygwin* ]] }
+function is-termux { [[ "$OSTYPE" == linux-android ]] }
 
 # Mark this lib as loaded.
 zstyle ":zephyr:lib:bootstrap" loaded 'yes'
