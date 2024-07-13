@@ -44,10 +44,13 @@ if (( ! $+commands[dircolors] )); then
   export LSCOLORS="${LSCOLORS:-exfxcxdxbxGxDxabagacad}"
 fi
 
-# Set functions.
-if ! zstyle -t ':zephyr:plugin:color:function' skip; then
-  autoload-dir ${0:a:h}/functions
-fi
+# https://github.com/romkatv/powerlevel10k/blob/8fefef228571c08ce8074d42304adec3b0876819/config/p10k-lean.zsh#L6C5-L6C105
+##? Show a simple colormap
+function colormap {
+  for i in {0..255}; do
+    print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}
+  done
+}
 
 # Set aliases.
 if ! zstyle -t ':zephyr:plugin:color:alias' skip; then
