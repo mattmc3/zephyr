@@ -31,13 +31,7 @@ fi
 unset _brewcmd
 
 # Ensure user bins preceed homebrew in path.
-path=(
-  $HOME/{,s}bin(N)
-  $HOME/.local/bin(N)
-  $HOMEBREW_PREFIX/{,s}bin(N)
-  /usr/local/{,s}bin(N)
-  $path
-)
+path=($prepath $path)
 
 # Default to no tracking.
 HOMEBREW_NO_ANALYTICS=${HOMEBREW_NO_ANALYTICS:-1}
