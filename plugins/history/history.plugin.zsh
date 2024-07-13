@@ -26,18 +26,21 @@ setopt inc_append_history      # Write to the history file immediately, not when
 setopt NO_hist_beep            # Don't beep when accessing non-existent history.
 setopt NO_share_history        # Don't share history between all sessions.
 
-# Set the path to the history file.
-zstyle -s ':zephyr:plugin:history' histfile '_zhistfile'
-if [[ -z "$_zhistfile" ]]; then
-  if zstyle -T ':zephyr:plugin:history' use-xdg-basedirs; then
-    _zhistfile=${__zsh_user_data_dir}/zsh_history
-  else
-    _zhistfile=${ZDOTDIR:-$HOME}/.zsh_history
-  fi
+# Set the path to the default history file.
+if zstyle -T ':zephyr:plugin:history' use-xdg-basedirs; then
+  : ${__zsh_user_data_dir:=${XDG_DATA_HOME:-$HOME/.local/share}/zsh}
+  _zhistfile=${__zsh_user_data_dir}/zsh_history
+else
+  _zhistfile=${ZDOTDIR:-$HOME}/.zsh_history
 fi
-_zhistfile=${~_zhistfile}
-[[ -d $_zhistfile:h ]] || mkdir -p $_zhistfile:h
-HISTFILE=$_zhistfile
+
+# Set the history file to whereever the user specified, or the default
+zstyle -s ':zephyr:plugin:history' histfile 'HISTFILE' \
+  || HISTFILE="$_zhistfile"
+
+# Make sure the user didn't store a literal '~' and the history path exists.
+HISTFILE="${~HISTFILE}"
+[[ -d "${HISTFILE:h}" ]] || mkdir -p "${HISTFILE:h}"
 unset _zhistfile
 
 # Set history file size (Zsh default 1000, Zephyr multiply by 100).
