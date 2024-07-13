@@ -78,6 +78,19 @@ function funced {
   fi
 }
 
+##? funcfresh - Reload an autoload function
+function funcfresh {
+  if (( $# == 0 )); then
+    echo >&2 "funcfresh: Expecting function argument."
+    return 1
+  elif ! (( $+functions[$1] )); then
+    echo >&2 "funcfresh: Function not found '$1'."
+    return 1
+  fi
+  unfunction $1
+  autoload -Uz $1
+}
+
 # Autoload ZFUNCDIR
 : ${ZFUNCDIR:=$__zsh_config_dir/functions}
 if [[ -d "$ZFUNCDIR" ]]; then
