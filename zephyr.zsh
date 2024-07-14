@@ -6,6 +6,24 @@ source ${0:a:h}/lib/bootstrap.zsh
 
 # Load plugins.
 zstyle -a ':zephyr:load' plugins '_zephyr_plugins'
+if (( ${#_zephyr_plugins} == 0 )); then
+  _zephyr_plugins=(
+    environment
+    color
+    completion
+    directory
+    editor
+    helper
+    history
+    prompt
+    utility
+    zfunctions
+  )
+  if [[ "$OSTYPE" == darwin* ]]; then
+    _zephyr_plugins=(homebrew $_zephyr_plugins macos)
+  fi
+  _zephyr_plugins+=(confd)
+fi
 for _zephyr_plugin in $_zephyr_plugins; do
   # Allow overriding plugins.
   _initfiles=(
