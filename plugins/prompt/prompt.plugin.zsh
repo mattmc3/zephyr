@@ -18,7 +18,7 @@ PS2='${${${(%):-%_}//[^ ]}// /  }    '
 0=${(%):-%N}
 fpath=(${0:a:h}/functions $fpath)
 
-if zstyle -t ':zephyr:plugin:prompt:transient' enable; then
+if zstyle -t ':zephyr:plugin:prompt' transient; then
   setopt transient_rprompt
   function zle-line-init() {
     emulate -L zsh
