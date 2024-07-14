@@ -74,8 +74,8 @@ elif (( $#prompt_argv > 0 )); then
 fi
 unset prompt_argv
 
-#
-# Wrap up
-#
+# Keep prompt array sorted.
+prompt_themes=( "${(@on)prompt_themes}" )
 
+# Mark this plugin as loaded.
 zstyle ":zephyr:plugin:prompt" loaded 'yes'
