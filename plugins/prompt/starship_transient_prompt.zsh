@@ -1,6 +1,6 @@
 # https://www.zsh.org/mla/users/2019/msg00633.html
 # https://github.com/starship/starship/issues/888#issuecomment-580127661
-function zle-line-init() {
+function starship_transient_prompt() {
   emulate -L zsh
 
   [[ $CONTEXT == start ]] || return 0
@@ -34,3 +34,4 @@ function zle-line-init() {
   fi
   return ret
 }
+hooks-add-hook zle_line_init_hook starship_transient_prompt
