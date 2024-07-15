@@ -16,10 +16,13 @@ zle -N self-insert url-quote-magic
 (( $+aliases[run-help] )) && unalias run-help && autoload -Uz run-help
 alias help=run-help
 
-# Make ls more useful on non-BSD systems.
+# Make ls more useful.
 if (( ! $+commands[dircolors] )) && [[ "$OSTYPE" != darwin* ]]; then
+  # Group dirs first on non-BSD systems
   alias ls="${aliases[ls]:-ls} --group-directories-first"
 fi
+# Show human readable file sizes.
+alias ls="${aliases[ls]:-ls} -h"
 
 # Ensure python commands exist.
 if (( $+commands[python3] )) && ! (( $+commands[python] )); then
