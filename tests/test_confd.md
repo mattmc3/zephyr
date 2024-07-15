@@ -79,16 +79,17 @@ Next, `$ZDOTDIR`, should override `$HOME` in this order:
 - `$ZDOTDIR/.zshrc.d`
 
 ```zsh
-% . $PWD/plugins/confd/confd.plugin.zsh | substenv ZDOTDIR
+% confd_plugin=$PWD/plugins/confd/confd.plugin.zsh
+% . $confd_plugin | substenv ZDOTDIR
 mock sourcing file... $ZDOTDIR/conf.d/rcfile.zsh
 % rm -rf -- $HOME/.zsh/conf.d
-% . $PWD/plugins/confd/confd.plugin.zsh | substenv ZDOTDIR
+% . $confd_plugin | substenv ZDOTDIR
 mock sourcing file... $ZDOTDIR/zshrc.d/rcfile.zsh
 % rm -rf -- $HOME/.zsh/zshrc.d
-% . $PWD/plugins/confd/confd.plugin.zsh | substenv ZDOTDIR
+% . $confd_plugin | substenv ZDOTDIR
 mock sourcing file... $ZDOTDIR/rc.d/rcfile.zsh
 % rm -rf -- $HOME/.zsh/rc.d
-% . $PWD/plugins/confd/confd.plugin.zsh | substenv ZDOTDIR
+% . $confd_plugin | substenv ZDOTDIR
 mock sourcing file... $ZDOTDIR/.zshrc.d/rcfile.zsh
 % rm -rf -- $HOME/.zsh/.zshrc.d
 % unset ZDOTDIR

@@ -2,8 +2,9 @@
 # zfunctions: Autoload all function files from your $ZDOTDIR/functions directory.
 #
 
-# Requirements.
-: ${__zsh_config_dir:=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}}
+# Bootstrap.
+0=${(%):-%N}
+zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 
 ##? autoload-dir - Autoload function files in directory
 function autoload-dir {

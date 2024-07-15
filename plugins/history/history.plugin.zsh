@@ -7,8 +7,9 @@
 # - https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/history.zsh
 # - https://zsh.sourceforge.io/Doc/Release/Options.html#History
 
-# Requirements
-: ${__zsh_user_data_dir:=${XDG_DATA_HOME:-$HOME/.local/share}/zsh}
+# Bootstrap.
+0=${(%):-%N}
+zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 
 # 16.2.4 History
 setopt bang_hist               # Treat the '!' character specially during expansion.

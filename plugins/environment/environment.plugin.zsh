@@ -6,6 +6,10 @@
 # - https://github.com/sorin-ionescu/prezto/blob/master/modules/environment/init.zsh
 # - https://github.com/sorin-ionescu/prezto/blob/master/runcoms/zprofile
 
+# Bootstrap.
+0=${(%):-%N}
+zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
+
 # 16.2.3 Expansion and Globbing
 setopt extended_glob           # Use extended chars (#,~,^) in globbing patterns.
 
