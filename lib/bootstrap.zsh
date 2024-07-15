@@ -18,24 +18,6 @@ typeset -gx __zsh_{config,cache,user_data}_dir
   local _zdir; for _zdir in $@; [ -d ${(P)_zdir} ] || mkdir -p ${(P)_zdir}
 } __zsh_{config,cache,user_data}_dir
 
-# Ensure path arrays do not contain duplicates.
-typeset -gU cdpath fpath mailpath path
-
-# Set the list of directories that Zsh searches for programs.
-if [[ ! -v prepath ]]; then
-  # If path ever gets out of order, you can use `path=($prepath $path)` to reset it.
-  typeset -ga prepath=(
-    $HOME/{,s}bin(N)
-    $HOME/.local/{,s}bin(N)
-  )
-fi
-path=(
-  $prepath
-  /opt/{homebrew,local}/{,s}bin(N)
-  /usr/local/{,s}bin(N)
-  $path
-)
-
 # Support for hooks.
 source ${0:a:h}/zsh-hooks.zsh
 

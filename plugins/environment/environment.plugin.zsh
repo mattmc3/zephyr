@@ -59,6 +59,24 @@ fi
 # Set language.
 export LANG=${LANG:-en_US.UTF-8}
 
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path
+
+# Set the list of directories that Zsh searches for programs.
+if [[ ! -v prepath ]]; then
+  # If path ever gets out of order, you can use `path=($prepath $path)` to reset it.
+  typeset -ga prepath=(
+    $HOME/{,s}bin(N)
+    $HOME/.local/{,s}bin(N)
+  )
+fi
+path=(
+  $prepath
+  /opt/{homebrew,local}/{,s}bin(N)
+  /usr/local/{,s}bin(N)
+  $path
+)
+
 # Set the default Less options.
 # Mouse-wheel scrolling can be disabled with -X (disable screen clearing).
 # Add -X to disable it.
