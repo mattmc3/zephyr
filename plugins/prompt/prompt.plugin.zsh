@@ -23,7 +23,7 @@ fpath=(${0:a:h}/functions $fpath)
 
 if zstyle -t ':zephyr:plugin:prompt:starship' transient; then
   setopt transient_rprompt
-  source ${0:A:h}/starship_transient_prompt.zsh
+  source ${0:a:h}/starship_transient_prompt.zsh
   zle -N zle-line-init
 fi
 

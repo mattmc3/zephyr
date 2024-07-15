@@ -3,7 +3,7 @@
 
 setopt extended_glob
 
-ZEPHYR_HOME=${0:A:h:h}
+ZEPHYR_HOME=${0:a:h:h}
 cd $ZEPHYR_HOME
 
 local o_unit
