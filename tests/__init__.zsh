@@ -79,7 +79,7 @@ function t_teardown {
   done
   local funcname
   for funcname in ${(k)functions}; do
-    (( $T_PREV_FUNCS[(Ie)$funcname] )) || unfunction $funcname
+    (( $T_PREV_FUNCS[(Ie)$funcname] )) || unfunction -- $funcname
   done
   local paramname params=( $(typeset -px | awk -F '=' '{print $1}' | awk '{print $NF}') )
   for paramname in $params; do
@@ -116,11 +116,16 @@ function t_mock_source {
   fi
   local srcfile
   for srcfile in $@; do
-    if [[ -r "$srcfile" ]]; then
-      echo "mock sourcing file... $srcfile"
+    # if the file lives in $ZDOTDIR, don't really source it
+    if [[ "$srcfile" =~ "$T_TEMPDIR/"* ]] then
+      if [[ -r "$srcfile" ]]; then
+        echo "mock sourcing file... $srcfile"
+      else
+        echo >&2 "mock source: no such file or directory: $srcfile"
+        return 1
+      fi
     else
-      echo >&2 "mock source: no such file or directory: $srcfile"
-      return 1
+      . "$srcfile"
     fi
   done
 }
