@@ -2,7 +2,8 @@
 
 # Bootstrap Zephyr.
 0=${(%):-%N}
-source ${0:a:h}/lib/bootstrap.zsh
+ZEPHYR_HOME=${0:a:h}
+source $ZEPHYR_HOME/lib/bootstrap.zsh
 
 # Load plugins.
 zstyle -a ':zephyr:load' plugins '_zephyr_plugins'
