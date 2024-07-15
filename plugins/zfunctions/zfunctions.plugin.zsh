@@ -2,10 +2,6 @@
 # zfunctions: Autoload all function files from your $ZDOTDIR/functions directory.
 #
 
-# Bootstrap.
-0=${(%):-%N}
-zstyle -t ':zephyr:plugin:helper' loaded || source ${0:a:h:h}/helper/helper.plugin.zsh
-
 ##? autoload-dir - Autoload function files in directory
 function autoload-dir {
   local zdir
@@ -91,11 +87,15 @@ function funcfresh {
   autoload -Uz $1
 }
 
-# Autoload ZFUNCDIR
-: ${ZFUNCDIR:=$__zsh_config_dir/functions}
+# Set ZFUNCDIR.
+if [[ -z "$ZFUNCDIR" ]]; then
+  : ${__zsh_config_dir:=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}}
+  zstyle -s ':zephyr:plugin:zfunctions' dir 'ZFUNCDIR' || ZFUNCDIR=$__zsh_config_dir/functions
+fi
+
+# Autoload ZFUNCDIR.
 if [[ -d "$ZFUNCDIR" ]]; then
-  # Load zfunctions.
-  autoload-dir $__zsh_config_dir/functions(N/) $__zsh_config_dir/functions/*(N/)
+  autoload-dir $ZFUNCDIR(N/) $ZFUNCDIR/*(N/)
 fi
 
 # Mark this plugin as loaded.
