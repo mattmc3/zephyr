@@ -2,6 +2,9 @@
 # zfunctions: Autoload all function files from your $ZDOTDIR/functions directory.
 #
 
+# Requirements.
+: ${__zsh_config_dir:=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}}
+
 ##? autoload-dir - Autoload function files in directory
 function autoload-dir {
   local zdir
@@ -89,8 +92,7 @@ function funcfresh {
 
 # Set ZFUNCDIR.
 if [[ -z "$ZFUNCDIR" ]]; then
-  : ${__zsh_config_dir:=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}}
-  zstyle -s ':zephyr:plugin:zfunctions' dir 'ZFUNCDIR' || ZFUNCDIR=$__zsh_config_dir/functions
+  zstyle -s ':zephyr:plugin:zfunctions' directory 'ZFUNCDIR' || ZFUNCDIR=$__zsh_config_dir/functions
 fi
 
 # Autoload ZFUNCDIR.
