@@ -2,10 +2,6 @@
 # helper: Common variables and functions used by Zephyr plugins.
 #
 
-# Set common vars.
-0=${(%):-%N}
-: ${ZEPHYR_HOME:=${0:a:h:h:h}}
-
 # Set critical Zsh options.
 setopt extended_glob interactive_comments
 
