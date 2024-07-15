@@ -39,7 +39,6 @@ autopushd             on
 extendedglob          on
 noglobalrcs           off
 globdots              on
-interactivecomments   on
 pushdminus            on
 pushdsilent           on
 pushdtohome           on

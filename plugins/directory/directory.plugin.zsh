@@ -7,10 +7,6 @@
 # - https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/directories.zsh
 # - https://zsh.sourceforge.io/Doc/Release/Options.html#Changing-Directories
 
-# Bootstrap.
-0=${(%):-%N}
-zstyle -t ':zephyr:plugin:helper' loaded || source ${0:a:h:h}/helper/helper.plugin.zsh
-
 # 16.2.1 Changing Directories
 setopt auto_pushd              # Make cd push the old directory onto the dirstack.
 setopt pushd_minus             # Exchanges meanings of +/- when navigating the dirstack.
@@ -18,7 +14,7 @@ setopt pushd_silent            # Do not print the directory stack after pushd or
 setopt pushd_to_home           # Push to home directory when no argument is given.
 
 # 16.2.3 Expansion and Globbing
-setopt extended_glob           # Use more awesome globbing features.
+setopt extended_glob           # Use extended chars (#,~,^) in globbing patterns.
 setopt glob_dots               # Include dotfiles when globbing.
 
 # 16.2.6 Input/Output
