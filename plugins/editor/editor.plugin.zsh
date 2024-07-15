@@ -5,6 +5,10 @@
 # Return if requirements are not found.
 [[ "$TERM" != 'dumb' ]] || return 1
 
+# Bootstrap.
+0=${(%):-%N}
+zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
+
 # Treat these characters as part of a word.
 zstyle -s ':zephyr:plugin:editor' wordchars 'WORDCHARS' \
   || WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
@@ -122,13 +126,13 @@ function zle-reset-prompt {
 zle -N zle-reset-prompt
 
 # Updates editor information when the keymap changes.
-function zle-keymap-select {
+function zle-keymap-select-default {
   zle editor-info
 }
-zle -N zle-keymap-select
+hooks-add-hook zle_keymap_select_hook zle-keymap-select-default
 
 # Enables terminal application mode and updates editor information.
-function zle-line-init {
+function zle-line-init-default {
   # The terminal must be in application mode when ZLE is active for $terminfo
   # values to be valid.
   if (( $+terminfo[smkx] )); then
@@ -139,10 +143,10 @@ function zle-line-init {
   # Update editor information.
   zle editor-info
 }
-zle -N zle-line-init
+hooks-add-hook zle_line_init_hook zle-line-init-default
 
 # Disables terminal application mode and updates editor information.
-function zle-line-finish {
+function zle-line-finish-default {
   # The terminal must be in application mode when ZLE is active for $terminfo
   # values to be valid.
   if (( $+terminfo[rmkx] )); then
@@ -153,7 +157,7 @@ function zle-line-finish {
   # Update editor information.
   zle editor-info
 }
-zle -N zle-line-finish
+hooks-add-hook zle_line_finish_hook zle-line-finish-default
 
 # Toggles emacs overwrite mode and updates editor information.
 function overwrite-mode {
