@@ -5,10 +5,6 @@
 # Return if requirements are not found.
 [[ "$TERM" != 'dumb' ]] || return 1
 
-# Bootstrap.
-0=${(%):-%N}
-zstyle -t ':zephyr:plugin:helper' loaded || source ${0:a:h:h}/helper/helper.plugin.zsh
-
 # Treat these characters as part of a word.
 zstyle -s ':zephyr:plugin:editor' wordchars 'WORDCHARS' \
   || WORDCHARS='*?_-.[]~&;!#$%^(){}<>'

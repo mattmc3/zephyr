@@ -6,10 +6,6 @@
 # - https://github.com/sorin-ionescu/prezto/blob/master/modules/utility/init.zsh
 # - https://github.com/belak/zsh-utils/blob/main/utility/utility.plugin.zsh
 
-# Bootstrap.
-0=${(%):-%N}
-zstyle -t ':zephyr:plugin:helper' loaded || source ${0:a:h:h}/helper/helper.plugin.zsh
-
 # Use built-in paste magic.
 autoload -Uz bracketed-paste-url-magic
 zle -N bracketed-paste bracketed-paste-url-magic

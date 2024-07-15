@@ -7,9 +7,8 @@
 # - https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/history.zsh
 # - https://zsh.sourceforge.io/Doc/Release/Options.html#History
 
-# Bootstrap.
-0=${(%):-%N}
-zstyle -t ':zephyr:plugin:helper' loaded || source ${0:a:h:h}/helper/helper.plugin.zsh
+# Requirements
+: ${__zsh_user_data_dir:=${XDG_DATA_HOME:-$HOME/.local/share}/zsh}
 
 # 16.2.4 History
 setopt bang_hist               # Treat the '!' character specially during expansion.
@@ -28,7 +27,6 @@ setopt NO_share_history        # Don't share history between all sessions.
 
 # Set the path to the default history file.
 if zstyle -T ':zephyr:plugin:history' use-xdg-basedirs; then
-  : ${__zsh_user_data_dir:=${XDG_DATA_HOME:-$HOME/.local/share}/zsh}
   _zhistfile=${__zsh_user_data_dir}/zsh_history
 else
   _zhistfile=${ZDOTDIR:-$HOME}/.zsh_history

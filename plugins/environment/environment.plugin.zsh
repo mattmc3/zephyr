@@ -6,9 +6,8 @@
 # - https://github.com/sorin-ionescu/prezto/blob/master/modules/environment/init.zsh
 # - https://github.com/sorin-ionescu/prezto/blob/master/runcoms/zprofile
 
-# Bootstrap.
-0=${(%):-%N}
-zstyle -t ':zephyr:plugin:helper' loaded || source ${0:a:h:h}/helper/helper.plugin.zsh
+# 16.2.3 Expansion and Globbing
+setopt extended_glob           # Use extended chars (#,~,^) in globbing patterns.
 
 # 16.2.6 Input/Output
 setopt interactive_comments    # Enable comments in interactive shell.
