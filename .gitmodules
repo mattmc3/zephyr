@@ -1,3 +1,0 @@
-[submodule "plugins/completion/external"]
-	path = plugins/completion/external
-	url = https://github.com/zsh-users/zsh-completions
