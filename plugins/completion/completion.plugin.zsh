@@ -14,7 +14,7 @@
 
 # Bootstrap.
 0=${(%):-%N}
-zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
+zstyle -t ':zephyr:plugin:helper' loaded || source ${0:a:h:h}/helper/helper.plugin.zsh
 
 # Load plugin functions.
 0=${(%):-%N}

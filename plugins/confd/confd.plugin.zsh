@@ -4,7 +4,7 @@
 
 # Bootstrap.
 0=${(%):-%N}
-zstyle -t ':zephyr:lib:bootstrap' loaded || . ${0:a:h:h:h}/lib/bootstrap.zsh
+zstyle -t ':zephyr:plugin:helper' loaded || source ${0:a:h:h}/helper/helper.plugin.zsh
 
 # Find the conf.d directory.
 : __zsh_config_dir=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}

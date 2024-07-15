@@ -2,6 +2,10 @@
 # prompt: Set zsh prompt.
 #
 
+# Bootstrap.
+0=${(%):-%N}
+zstyle -t ':zephyr:plugin:helper' loaded || source ${0:a:h:h}/helper/helper.plugin.zsh
+
 #
 # Variables
 #
@@ -15,7 +19,6 @@ PS2='${${${(%):-%_}//[^ ]}// /  }    '
 #
 
 # Add Zephyr's prompt functions to fpath.
-0=${(%):-%N}
 fpath=(${0:a:h}/functions $fpath)
 
 if zstyle -t ':zephyr:plugin:prompt:starship' transient; then

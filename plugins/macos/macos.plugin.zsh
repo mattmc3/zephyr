@@ -9,6 +9,10 @@
 # Expecting macOS.
 [[ "$OSTYPE" == darwin* ]] || return 1
 
+# Bootstrap.
+0=${(%):-%N}
+zstyle -t ':zephyr:plugin:helper' loaded || source ${0:a:h:h}/helper/helper.plugin.zsh
+
 # Load plugin functions.
 0=${(%):-%N}
 fpath=(${0:a:h}/functions $fpath)
