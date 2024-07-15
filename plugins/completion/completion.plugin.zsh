@@ -58,7 +58,7 @@ if (( $+commands[brew] )); then
 fi
 
 # Add custom completions.
-fpath=(${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}/completions(-/FN) $fpath)
+fpath=($__zsh_config_dir/completions(-/FN) $fpath)
 
 # Let's talk compinit... compinit works by finding _completion files in your fpath. That
 # means fpath has to be fully populated prior to calling compinit. If you use oh-my-zsh,
@@ -87,24 +87,26 @@ else
   function compinit {
     unfunction compinit compdef &>/dev/null
     autoload -Uz compinit && compinit "$@"
+
+    # Apply all the queued compdefs.
     local typedef_compdef_args
     for typedef_compdef_args in $__zephyr_compdef_queue; do
       eval $typedef_compdef_args
       compdef "$compdef_args[@]"
     done
     unset __zephyr_compdef_queue
+
+    # If we're here, it's because the user manually ran compinit, which means we
+    # no longer need the failsafe hook.
+    hooks-add-hook -d post_zshrc run-compinit-post-zshrc
   }
 
-  # If the user didn't specify they wanted to manually initialize completions,
-  # then attach compinit to the precmd hook so that it happens at the very end.
-  if ! zstyle -t ':zephyr:plugin:completion' manual; then
-    autoload -Uz add-zsh-hook
-    function run-compinit-precmd {
-      run-compinit
-      add-zsh-hook -d precmd run-compinit-precmd
-    }
-    add-zsh-hook precmd run-compinit-precmd
-  fi
+  # Failsafe to make sure compinit runs during the post_zshrc event
+  function run-compinit-post-zshrc {
+    run-compinit
+    hooks-add-hook -d post_zshrc run-compinit-post-zshrc
+  }
+  hooks-add-hook post_zshrc run-compinit-post-zshrc
 fi
 
 # Set the completion style

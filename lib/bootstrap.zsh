@@ -37,7 +37,19 @@ path=(
 )
 
 # Support for hooks.
-autoload -Uz add-zsh-hook
+source ${0:a:h}/zsh-hooks.zsh
+
+# There's not really a post_zshrc event, so we're going to fake one by adding it
+# as a one-time precmd event, and then unregistering it.
+hooks-define-hook 'post_zshrc'
+function post_zshrc_hook {
+  # Run once
+  hooks-run-hook post_zshrc
+  # Now remove this hook so that it doesn't keep running on every precmd event.
+  add-zsh-hook -d precmd post_zshrc_hook
+  unfunction -- post_zshrc_hook
+}
+add-zsh-hook precmd post_zshrc_hook
 
 ##? Cache the results of an eval command
 function cached-eval {
