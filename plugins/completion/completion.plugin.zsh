@@ -36,13 +36,6 @@ setopt extended_glob        # Needed for file modification glob modifiers with c
 setopt path_dirs            # Perform path search even on command names with slashes.
 setopt NO_flow_control      # Disable start/stop characters in shell editor.
 
-# Add other upstream completions to $fpath.
-fpath=(
-  ${0:a:h}/external/src  # zsh-users/zsh-completions
-  ${0:a:h}/completions   # starship, git contrib
-  $fpath
-)
-
 # Add completions for keg-only brews when available.
 if (( $+commands[brew] )); then
   brew_prefix=${HOMEBREW_PREFIX:-${HOMEBREW_REPOSITORY:-$commands[brew]:A:h:h}}
