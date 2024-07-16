@@ -21,11 +21,11 @@ PS2='${${${(%):-%_}//[^ ]}// /  }    '
 # Add Zephyr's prompt functions to fpath.
 fpath=(${0:a:h}/functions $fpath)
 
-if zstyle -t ':zephyr:plugin:prompt:starship' transient; then
-  setopt transient_rprompt
-  source ${0:a:h}/starship_transient_prompt.zsh
-  zle -N zle-line-init
-fi
+# if zstyle -t ':zephyr:plugin:prompt:starship' transient; then
+#   setopt transient_rprompt
+#   source ${0:a:h}/starship_transient_prompt.zsh
+#   zle -N zle-line-init
+# fi
 
 # Initialize Zsh's prompt system
 autoload -Uz promptinit && promptinit
