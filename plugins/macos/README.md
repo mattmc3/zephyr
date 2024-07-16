@@ -2,9 +2,15 @@
 
 > Zsh goodies for MacOS users
 
-## Description
+## Options
 
-| Command     | Description                                                           |
+This plugin sets no Zsh options.
+
+## Functions
+
+This plugin adds the following functions:
+
+| function    | description                                                           |
 | ----------- | --------------------------------------------------------------------- |
 | `cdf`       | Change to the current Finder directory                                |
 | `flushdns`  | Flush the DNS cache                                                   |
@@ -19,3 +25,16 @@
 | `pushdf`    | Push to the current Finder directory to the dirstack                  |
 | `rmdsstore` | Remove .DS_Store files recursively in a directory                     |
 | `showfiles` | Show hidden dotfiles in Finder                                        |
+| `trash`     | Move a file or folder to the macOS trashcan                           |
+
+## Aliases
+
+This plugin sets no aliases.
+
+## Variables
+
+This plugin sets no variables.
+
+## Customizations
+
+This plugin does not have any zstyles for customization.
