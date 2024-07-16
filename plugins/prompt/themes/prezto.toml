@@ -20,7 +20,8 @@ format = '[$branch]($style) '
 style = 'bold green'
 
 [python]
-format = '\($virtualenv\) '
+format = '[(\($virtualenv\) )]($style)'
+style = 'white'
 
 [git_status]
 format = '$all_status$ahead_behind '
