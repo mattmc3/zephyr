@@ -85,6 +85,9 @@ function t_teardown {
   for paramname in $params; do
     (( $T_PREV_PARAMS[(Ie)$paramname] )) || unset $paramname
   done
+  for varname in post_zshrc; do
+    unset $varname &>/dev/null
+  done
 
   # restore original fpath
   fpath=( $T_PREV_FPATH )

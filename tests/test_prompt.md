@@ -13,8 +13,8 @@ Test plugin is not initialized
 ```zsh
 % zstyle -t ':zephyr:plugin:prompt' loaded || echo "not loaded"
 not loaded
-% test $+functions[prompt_starship_setup] = 0  #=> --exit 0
-% test $+functions[prompt_zephyr_setup] = 0  #=> --exit 0
+% test $+functions[run-promptinit] = 0  #=> --exit 0
+% test $+functions[hooks-add-hook] = 0  #=> --exit 0
 % set -o | grep 'on$' | awk '{print $1}' | sort
 nohashdirs
 norcs
@@ -32,13 +32,15 @@ Test plugin is initialized
 
 ```zsh
 % zstyle -t ':zephyr:plugin:prompt' loaded || echo "not loaded"
-% test $+functions[prompt_starship_setup] = 1  #=> --exit 0
-% test $+functions[prompt_zephyr_setup] = 1  #=> --exit 0
+% test $+functions[run-promptinit] = 1  #=> --exit 0
+% hooks-add-hook -L post_zshrc run-promptinit-post-zshrc
+typeset -g -a post_zshrc=( run-promptinit-post-zshrc )
 % set -o | grep 'on$' | sort
 extendedglob          on
 interactivecomments   on
 nohashdirs            on
 norcs                 on
+promptsubst           on
 %
 ```
 

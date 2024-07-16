@@ -35,6 +35,8 @@ Test plugin is initialized
 % test $+functions[bindkey-all] = 1  #=> --exit 0
 % test $+functions[editor-info] = 1  #=> --exit 0
 % set -o | grep 'on$' | sort
+extendedglob          on
+interactivecomments   on
 nohashdirs            on
 norcs                 on
 %

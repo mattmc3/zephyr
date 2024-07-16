@@ -7,6 +7,13 @@
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 
 #
+# Options
+#
+
+# 16.2.8 Prompting
+setopt prompt_subst    # Expand parameters in prompt variables.
+
+#
 # Variables
 #
 
@@ -46,6 +53,11 @@ function run-promptinit {
   # Set the prompt if specified
   local -a prompt_theme
   zstyle -a ':zephyr:plugin:prompt' theme 'prompt_argv'
+
+  if zstyle -t ":zephyr:plugin:prompt:${prompt_argv[1]}" transient; then
+    setopt transient_rprompt  # Remove right prompt artifacts from prior commands.
+  fi
+
   if [[ $TERM == (dumb|linux|*bsd*) ]]; then
     prompt 'off'
   elif (( $#prompt_argv > 0 )); then
