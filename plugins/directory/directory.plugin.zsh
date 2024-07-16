@@ -1,5 +1,5 @@
 #
-# directory: Set options and aliases related to Zsh directories and dirstack.
+# directory: Set features related to Zsh directories and dirstack.
 #
 
 # References:

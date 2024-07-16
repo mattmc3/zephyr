@@ -1,6 +1,6 @@
-# Color
+# Directory
 
-> Make the terminal more colorful
+> Set features related to Zsh directories and dirstack.
 
 ## Options
 
