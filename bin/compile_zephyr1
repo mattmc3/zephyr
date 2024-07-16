@@ -1,0 +1,20 @@
+#!/bin/zsh
+
+0=${(%):-%N}
+ZEPHYR_HOME=${0:a:h:h}
+
+for plugin in $ZEPHYR_HOME/plugins/*(/); do
+  pluginfile=$plugin/${plugin:t}.plugin.zsh
+  echo "function zephyr_${plugin:t} {"
+
+  for funcfile in $plugin/functions/*(.N); do
+    echo "  function ${funcfile:t} {"
+    pr -t -o 4 $funcfile
+    echo "  }"
+    echo
+  done
+
+  pr -t -o 2 $pluginfile
+  echo "}"
+  echo
+done
