@@ -27,25 +27,42 @@ fpath=(${0:a:h}/functions $fpath)
 #   zle -N zle-line-init
 # fi
 
-# Initialize Zsh's prompt system
-autoload -Uz promptinit && promptinit
+function promptinit {
+  # Initialize real built-in prompt system.
+  unfunction promptinit prompt &>/dev/null
+  autoload -Uz promptinit && promptinit "$@"
 
-#
-# Init
-#
+  # If we're here, it's because the user manually ran promptinit, which means we
+  # no longer need the failsafe hook.
+  hooks-add-hook -d post_zshrc run-promptinit-post-zshrc
+}
 
-# Set the prompt if specified
-local -a prompt_theme
-zstyle -a ':zephyr:plugin:prompt' theme 'prompt_argv'
-if [[ $TERM == (dumb|linux|*bsd*) ]]; then
-  prompt 'off'
-elif (( $#prompt_argv > 0 )); then
-  prompt "$prompt_argv[@]"
-fi
-unset prompt_argv
+# Wrap promptinit.
+function run-promptinit {
+  # Initialize real built-in prompt system.
+  unfunction promptinit prompt &>/dev/null
+  autoload -Uz promptinit && promptinit
 
-# Keep prompt array sorted.
-prompt_themes=( "${(@on)prompt_themes}" )
+  # Set the prompt if specified
+  local -a prompt_theme
+  zstyle -a ':zephyr:plugin:prompt' theme 'prompt_argv'
+  if [[ $TERM == (dumb|linux|*bsd*) ]]; then
+    prompt 'off'
+  elif (( $#prompt_argv > 0 )); then
+    prompt "$prompt_argv[@]"
+  fi
+  unset prompt_argv
+
+  # Keep prompt array sorted.
+  prompt_themes=( "${(@on)prompt_themes}" )
+}
+
+# Failsafe to make sure promptinit runs during the post_zshrc event
+function run-promptinit-post-zshrc {
+  run-promptinit
+  hooks-add-hook -d post_zshrc run-promptinit-post-zshrc
+}
+hooks-add-hook post_zshrc run-promptinit-post-zshrc
 
 # Mark this plugin as loaded.
 zstyle ":zephyr:plugin:prompt" loaded 'yes'
