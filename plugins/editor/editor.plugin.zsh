@@ -9,6 +9,9 @@
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 
+# Options.
+setopt NO_beep  # Do not beep on error in line editor.
+
 # Treat these characters as part of a word.
 zstyle -s ':zephyr:plugin:editor' wordchars 'WORDCHARS' \
   || WORDCHARS='*?_-.[]~&;!#$%^(){}<>'

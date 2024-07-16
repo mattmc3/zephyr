@@ -29,7 +29,6 @@ setopt NO_hup                  # Don't kill jobs on shell exit.
 
 # 16.2.12 Zle
 setopt combining_chars         # Combine 0-len chars with the base character (eg: accents).
-setopt NO_beep                 # Do not beep on error in line editor.
 
 # Allow mapping Ctrl+S and Ctrl+Q shortcuts
 [[ -r ${TTY:-} && -w ${TTY:-} && $+commands[stty] == 1 ]] && stty -ixon <$TTY >$TTY
