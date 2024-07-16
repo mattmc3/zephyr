@@ -1,14 +1,16 @@
 #!/bin/zsh
 
 function compstyle_zephyr_help {
-  cat <<'EOF'
-A composite of the grml, prezto, and ohmyzsh completions.
-You can invoke it with the following command:
-
-  compstyle zephyr
-
-More information available here: https://github.com/mattmc3/zephyr
-EOF
+  local -a help
+  help=(
+    'A composite of the grml, prezto, and ohmyzsh completions.'
+    'You can invoke it with the following command:'
+    ''
+    '  compstyle zephyr'
+    ''
+    'More information available here: https://github.com/mattmc3/zephyr'
+  )
+  printf '%s\n' "${help[@]}"
 }
 
 function compstyle_zephyr_setup {
