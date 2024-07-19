@@ -113,7 +113,7 @@ fi
 zstyle -s ':zephyr:plugin:completion' compstyle 'zcompstyle' || zcompstyle=zephyr
 if (( $+functions[compstyle_${zcompstyle}_setup] )); then
   compstyle_${zcompstyle}_setup
-else
+elif [[ "$zcompstyle" != none ]]; then
   compstyleinit && compstyle ${zcompstyle}
 fi
 unset zcompstyle
