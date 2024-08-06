@@ -39,7 +39,7 @@ function promptinit {
 }
 
 # Wrap promptinit.
-function run-promptinit {
+function run_promptinit {
   # Initialize real built-in prompt system.
   unfunction promptinit prompt &>/dev/null
   autoload -Uz promptinit && promptinit
@@ -65,7 +65,7 @@ function run-promptinit {
 
 # Failsafe to make sure promptinit runs during the post_zshrc event
 function run-promptinit-post-zshrc {
-  run-promptinit
+  run_promptinit
   hooks-add-hook -d post_zshrc run-promptinit-post-zshrc
 }
 hooks-add-hook post_zshrc run-promptinit-post-zshrc
