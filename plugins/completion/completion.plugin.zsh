@@ -60,6 +60,64 @@ fi
 # Add custom completions.
 fpath=($__zsh_config_dir/completions(-/FN) $fpath)
 
+function run_compinit {
+  emulate -L zsh
+  setopt localoptions extendedglob
+
+  # Use ZSH_COMPDUMP for location of completion file.
+  local zcompdump
+  if [[ -n "$ZSH_COMPDUMP" ]]; then
+    zcompdump="$ZSH_COMPDUMP"
+  else
+    zcompdump="${__zsh_cache_dir:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh}/zcompdump"
+  fi
+  [[ -d $zcompdump:h ]] || mkdir -p $zcompdump:h
+
+  # `run_compinit -f` forces a cache reset.
+  if [[ "$1" == "-f" ]] || [[ "$1" == "--force" ]]; then
+    shift
+    [[ -f "$zcompdump" ]] && rm -rf -- $zcompdump
+  fi
+
+  # Compfix flag
+  local -a compinit_flags=(-d "$zcompdump")
+  if zstyle -t ':zephyr:plugin:completion' 'disable-compfix'; then
+    # Allow insecure directories in fpath
+    compinit_flags=(-u $compinit_flags)
+  else
+    # Remove insecure directories from fpath
+    compinit_flags=(-i $compinit_flags)
+  fi
+
+  # Initialize completions
+  autoload -Uz compinit
+  if zstyle -t ':zephyr:plugin:completion' 'use-cache'; then
+    # Load and initialize the completion system ignoring insecure directories with a
+    # cache time of 20 hours, so it should almost always regenerate the first time a
+    # shell is opened each day.
+    local compdump_cache=($zcompdump(Nmh-20))
+    if (( $#compdump_cache )); then
+      compinit -C $compinit_flags
+    else
+      compinit $compinit_flags
+      # Ensure $zcompdump is younger than the cache time even if it isn't regenerated.
+      touch "$zcompdump"
+    fi
+  else
+    compinit $compinit_flags
+  fi
+
+  # Compile zcompdump, if modified, in background to increase startup speed.
+  {
+    if [[ -s "$zcompdump" && (! -s "${zcompdump}.zwc" || "$zcompdump" -nt "${zcompdump}.zwc") ]]; then
+      if command mkdir "${zcompdump}.zwc.lock" 2>/dev/null; then
+        zcompile "$zcompdump"
+        command rmdir  "${zcompdump}.zwc.lock" 2>/dev/null
+      fi
+    fi
+  } &!
+}
+
 # Let's talk compinit... compinit works by finding _completion files in your fpath. That
 # means fpath has to be fully populated prior to calling compinit. If you use oh-my-zsh,
 # if populates fpath and runs compinit prior to loading plugins. This is only
@@ -71,7 +129,7 @@ fpath=($__zsh_config_dir/completions(-/FN) $fpath)
 # hooks compinit to precmd for one call only, which happens automatically at the end of
 # your config. You can override this behavior with zstyles.
 if zstyle -t ':zephyr:plugin:completion' immediate; then
-  run-compinit
+  run_compinit
 else
   # Define compinit placeholder functions (compdef) so we can queue up calls to compdef.
   # That way when the real compinit is called, we can execute the queue.
@@ -103,7 +161,7 @@ else
 
   # Failsafe to make sure compinit runs during the post_zshrc event
   function run-compinit-post-zshrc {
-    run-compinit
+    run_compinit
     hooks-add-hook -d post_zshrc run-compinit-post-zshrc
   }
   hooks-add-hook post_zshrc run-compinit-post-zshrc
