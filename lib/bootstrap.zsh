@@ -31,22 +31,9 @@ function post_zshrc_hook {
 }
 add-zsh-hook precmd post_zshrc_hook
 
-##? Cache the results of an eval command
-function cached-eval {
-  emulate -L zsh; setopt local_options extended_glob
-  (( $# >= 2 )) || return 1
-
-  : ${__zsh_cache_dir:=${XDG_CACHE_HOME:-$HOME/.cache}/zsh}
-  local cmdname=$1; shift
-  local cachefile=$__zsh_cache_dir/cached/${cmdname}.zsh
-  local -a cached=($cachefile(Nmh-20))
-  # If the file has no size (is empty), or is older than 20 hours re-gen the cache.
-  if [[ ! -s $cachefile ]] || (( ! ${#cached} )); then
-    mkdir -p ${cachefile:h}
-    "$@" >| $cachefile
-  fi
-  source $cachefile
-}
+# Load helper functions.
+zstyle -t ':zephyr:plugin:helper' loaded \
+  || source $ZEPHYR_HOME/plugins/helper/helper.plugin.zsh
 
 # Mark this lib as loaded.
 zstyle ":zephyr:lib:bootstrap" loaded 'yes'
