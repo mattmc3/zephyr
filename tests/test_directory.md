@@ -34,11 +34,12 @@ Test plugin is initialized
 % zstyle -t ':zephyr:plugin:directory' loaded || echo "not loaded"
 % test $+functions[up] = 1  #=> --exit 0
 % test $+aliases[dirh] = 1  #=> --exit 0
-% t_print_changedopts
+% set -o | grep 'on$' | sort
 autopushd             on
 extendedglob          on
-noglobalrcs           off
 globdots              on
+nohashdirs            on
+norcs                 on
 pushdminus            on
 pushdsilent           on
 pushdtohome           on

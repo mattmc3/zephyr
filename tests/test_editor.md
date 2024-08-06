@@ -37,6 +37,7 @@ Test plugin is initialized
 % set -o | grep 'on$' | sort
 extendedglob          on
 interactivecomments   on
+nobeep                on
 nohashdirs            on
 norcs                 on
 %

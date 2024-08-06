@@ -52,11 +52,6 @@ function t_setup {
   zsh -df -c "set -o" >| $T_TEMPDIR/zsh_default.opts
 }
 
-function t_print_changedopts {
-  set -o >| $T_TEMPDIR/zsh_changed.opts
-  diff --changed-group-format='%<' --unchanged-group-format='' $T_TEMPDIR/zsh_changed.opts $T_TEMPDIR/zsh_default.opts
-}
-
 function t_teardown {
   # emulate -L zsh
   # setopt local_options
