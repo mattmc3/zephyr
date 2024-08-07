@@ -75,7 +75,7 @@ if ! (( $+commands[pbcopy] )); then
   fi
 fi
 
-##? Cross platform `sed -i` syntax
+# Cross platform `sed -i` syntax.
 function sedi {
   # GNU/BSD
   sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
