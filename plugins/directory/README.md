@@ -43,7 +43,13 @@ This plugin sets no variables.
 
 ## Customizations
 
-This plugin does not have any zstyles for customization.
+To skip setting directory related aliases, you can set:
+
+`zstyle ':zephyr:plugin:directory:alias' 'skip' 'yes'`
+
+To always skip aliases, you can set:
+
+`zstyle ':zephyr:plugin:*:alias' 'skip' 'yes'`
 
 [16.2.1]: https://zsh.sourceforge.io/Doc/Release/Options.html#Changing-Directories
 [16.2.3]: https://zsh.sourceforge.io/Doc/Release/Options.html#Expansion-and-Globbing
