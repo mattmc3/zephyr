@@ -80,7 +80,15 @@ function t_teardown {
   for paramname in $params; do
     (( $T_PREV_PARAMS[(Ie)$paramname] )) || unset $paramname
   done
-  for varname in post_zshrc; do
+  local -a globalvars=(
+    post_zshrc
+    post_zshrc_hook
+    completion_styles
+    completion_style
+    key_info
+    __zephyr_compdef_queue
+  )
+  for varname in $globalvars; do
     unset $varname &>/dev/null
   done
 
