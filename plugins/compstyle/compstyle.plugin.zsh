@@ -5,6 +5,12 @@
 # References:
 # - https://github.com/zsh-users/zsh/blob/master/Functions/Prompts/promptinit
 
+#region BOOTSTRAP
+0=${(%):-%N}
+zstyle -t ':zephyr:lib:bootstrap'    loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
+zstyle -t ':zephyr:plugin:compstyle' loaded && return 1
+#endregion BOOTSTRAP
+
 function compstyle_zephyr_help {
   echo "A composite of the grml, prezto, and ohmyzsh completions."
   echo "You can invoke it with the following command:"
@@ -242,4 +248,3 @@ function compstyleinit {
 zstyle ':zephyr:plugin:compstyle' loaded 'yes'
 
 # vim: ft=zsh sw=2 ts=2 et
-
