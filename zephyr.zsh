@@ -5,12 +5,15 @@
 ZEPHYR_HOME=${0:a:h}
 source $ZEPHYR_HOME/lib/bootstrap.zsh
 
-# Load plugins.
-zstyle -a ':zephyr:load' plugins '_zephyr_plugins'
-if (( ${#_zephyr_plugins} == 0 )); then
+# Set which plugins to load. It doesn't really matter if we include plugins we don't
+# need (eg: running Linux, not macOS) because the plugins themselves check and exit
+# if requirements aren't met.
+zstyle -a ':zephyr:load' plugins '_zephyr_plugins' ||
   _zephyr_plugins=(
     environment
+    homebrew
     color
+    compstyle
     completion
     directory
     editor
@@ -19,12 +22,10 @@ if (( ${#_zephyr_plugins} == 0 )); then
     prompt
     utility
     zfunctions
+    macos
+    confd
   )
-  if [[ "$OSTYPE" == darwin* ]]; then
-    _zephyr_plugins=(homebrew $_zephyr_plugins macos)
-  fi
-  _zephyr_plugins+=(confd)
-fi
+
 for _zephyr_plugin in $_zephyr_plugins; do
   # Allow overriding plugins.
   _initfiles=(
