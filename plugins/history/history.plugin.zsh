@@ -7,9 +7,10 @@
 # - https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/history.zsh
 # - https://zsh.sourceforge.io/Doc/Release/Options.html#History
 
-# Bootstrap.
+#region BOOTSTRAP
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
+#endregion BOOTSTRAP
 
 # Set Zsh options related to history.
 setopt bang_hist               # Treat the '!' character specially during expansion.
@@ -32,7 +33,6 @@ if zstyle -s ':zephyr:plugin:history' histfile 'HISTFILE'; then
   HISTFILE="${~HISTFILE}"
 else
   if zstyle -T ':zephyr:plugin:history' use-xdg-basedirs; then
-    : ${__zsh_user_data_dir:=${XDG_DATA_HOME:-$HOME/.local/share}/zsh}
     HISTFILE="${__zsh_user_data_dir}/zsh_history"
   else
     HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"

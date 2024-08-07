@@ -2,12 +2,12 @@
 # conf.d: Use a Fish-like conf.d directory for sourcing configs.
 #
 
-# Bootstrap.
+#region BOOTSTRAP
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
+#endregion BOOTSTRAP
 
 # Find the conf.d directory.
-: ${__zsh_config_dir:=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}}
 zstyle -a ':zephyr:plugin:confd' directory '_user_confd'
 typeset -a _confd=(
   ${~_user_confd}

@@ -2,9 +2,10 @@
 # zfunctions: Autoload all function files from your $ZDOTDIR/functions directory.
 #
 
-# Bootstrap.
+#region BOOTSTRAP
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
+#endregion BOOTSTRAP
 
 ##? autoload-dir - Autoload function files in directory
 function autoload-dir {

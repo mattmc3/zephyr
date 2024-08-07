@@ -2,9 +2,10 @@
 # prompt: Set zsh prompt.
 #
 
-# Bootstrap.
+#region BOOTSTRAP
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
+#endregion BOOTSTRAP
 
 #
 # Options
