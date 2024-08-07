@@ -19,7 +19,7 @@ typeset -aU _brewcmd=(
   $HOME/.linuxbrew/bin/brew(N)
   /opt/homebrew/bin/brew(N)
   /usr/local/bin/brew(N)
-  /home/linuxbrew/.linuxbrew/bin/brew(N)
+  # /home/linuxbrew/.linuxbrew/bin/brew(N)
 )
 (( ${#_brewcmd} )) || return 1
 
