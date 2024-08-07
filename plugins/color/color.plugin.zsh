@@ -22,11 +22,11 @@ if [[ -z "$LS_COLORS" ]]; then
   _dircolors_cmds=(
     $commands[dircolors](N) $commands[gdircolors](N)
   )
-  if (( $#dircolors_cmds )); then
+  if (( $#_dircolors_cmds )); then
     if zstyle -t ':zephyr:plugin:color' 'use-cache'; then
-      cached-eval "$dircolors_cmds[1]" $dircolors_cmd --sh
+      cached-eval "$_dircolors_cmds[1]" $_dircolors_cmds[1] --sh
     else
-      source <("${dircolors_cmds[1]}" --sh)
+      source <("$_dircolors_cmds[1]" --sh)
     fi
   fi
   unset _dircolors_cmds
@@ -42,21 +42,24 @@ if (( ! $+commands[dircolors] )); then
   export LSCOLORS="${LSCOLORS:-exfxcxdxbxGxDxabagacad}"
 fi
 
-# Print a simple colormap.
-alias colormap='for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+"\n"}; done'
+# Set aliases.
+if ! zstyle -t ':zephyr:plugin:color:alias' skip; then
+  # Print a simple colormap.
+  alias colormap='for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+"\n"}; done'
 
-# Set colors for grep.
-alias grep="${aliases[grep]:-grep} --color=auto"
+  # Set colors for grep.
+  alias grep="${aliases[grep]:-grep} --color=auto"
 
-# Set colors for ls.
-alias ls="${aliases[ls]:-ls} --color=auto"
-if (( $+commands[gls] )); then
-  alias gls="${aliases[gls]:-gls} --color=auto"
-fi
+  # Set colors for ls.
+  alias ls="${aliases[ls]:-ls} --color=auto"
+  if (( $+commands[gls] )); then
+    alias gls="${aliases[gls]:-gls} --color=auto"
+  fi
 
-# Set colors for diff.
-if command diff --color /dev/null{,} &>/dev/null; then
-  alias diff="${aliases[diff]:-diff} --color"
+  # Set colors for diff.
+  if command diff --color /dev/null{,} &>/dev/null; then
+    alias diff="${aliases[diff]:-diff} --color"
+  fi
 fi
 
 # Colorize completions.
