@@ -14,23 +14,16 @@ This plugin adds the following features:
 | add color flags to commands | Add colors for `grep`, `ls`, and `diff` commands        |
 | colorize completions        | Add zstyles for list-colors                             |
 
-## Functions
-
-This plugin adds the following functions:
-
-| function   | description                                       |
-| ---------- | ------------------------------------------------- |
-| `colormap` | Show a helpful colormap with terminal color codes |
-
 ## Aliases
 
 This plugin adds/modifies the following aliases:
 
-| alias  | description              |
-| ------ | ------------------------ |
-| `diff` | Adds `--color` flag      |
-| `grep` | Adds `--color=auto` flag |
-| `ls`   | Adds `--color=auto` flag |
+| alias      | description                               |
+| ---------- | ----------------------------------------- |
+| `diff`     | Adds `--color` flag                       |
+| `grep`     | Adds `--color=auto` flag                  |
+| `ls`       | Adds `--color=auto` flag                  |
+| `colormap` | Show a colormap with terminal color codes |
 
 ## Variables
 
