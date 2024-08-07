@@ -14,7 +14,7 @@ Test plugin is not initialized
 % zstyle -t ':zephyr:plugin:editor' loaded || echo "not loaded"
 not loaded
 % test $+functions[bindkey-all] = 0  #=> --exit 0
-% test $+functions[editor-info] = 0  #=> --exit 0
+% test -v key_info #=> --exit 1
 % set -o | grep 'on$' | awk '{print $1}' | sort
 nohashdirs
 norcs
@@ -33,11 +33,12 @@ Test plugin is initialized
 ```zsh
 % zstyle -t ':zephyr:plugin:editor' loaded || echo "not loaded"
 % test $+functions[bindkey-all] = 1  #=> --exit 0
-% test $+functions[editor-info] = 1  #=> --exit 0
+% test -v key_info #=> --exit 0
 % set -o | grep 'on$' | sort
 extendedglob          on
 interactivecomments   on
 nobeep                on
+noflowcontrol         on
 nohashdirs            on
 norcs                 on
 %
