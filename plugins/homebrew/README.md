@@ -6,10 +6,10 @@
 
 Sets `brew` environment variables from `brew shellenv`.
 
-## Functions
+## Aliases
 
-| Function    | Description                        |
-| ----------- | -----------------------------------|
-| `brewinfo`  | Show descriptions of brew installs |
-| `brews`     | Show brewed formulae               |
-| `brewup`    | brew update/upgrade/cleanup        |
+| Function   | Description                           |
+| ---------- | ------------------------------------- |
+| `brewdeps` | Show brewed formulae and dependencies |
+| `brewinfo` | Show descriptions of brew installs    |
+| `brewup`   | brew update/upgrade/cleanup           |

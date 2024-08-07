@@ -41,23 +41,27 @@ if [[ -d "$HOMEBREW_PREFIX/share/zsh/site-functions" ]]; then
   fpath+=("$HOMEBREW_PREFIX/share/zsh/site-functions")
 fi
 
+# Add keg-only completions to fpath
+zstyle -a ':zephyr:plugin:homebrew' 'keg-only-brews' '_kegonly' \
+  || _kegonly=(curl ruby sqlite)
+for _keg in $_kegonly; do
+  fpath=($HOMEBREW_PREFIX/opt/${_keg}/share/zsh/site-functions(/N) $fpath)
+done
+unset _keg{,only}
+
 # Set aliases.
-alias brewup="brew update && brew upgrade && brew cleanup"
-alias brewinfo="brew leaves | xargs brew desc --eval-all"
+if ! zstyle -t ':zephyr:plugin:homebrew:alias' skip; then
+  alias brewup="brew update && brew upgrade && brew cleanup"
+  alias brewinfo="brew leaves | xargs brew desc --eval-all"
+  alias brewdeps='brew leaves | xargs brew deps --installed --for-each | awk ''{leaf=$1;$1=""; printf "%s\033[34m%s\033[0m\n",leaf,$0}'''
 
-##? Show brewed apps.
-function brews {
-  local formulae="$(brew leaves | xargs brew deps --installed --for-each)"
-  local casks="$(brew list --cask 2>/dev/null)"
-
-  local blue="$(tput setaf 4)"
-  local bold="$(tput bold)"
-  local off="$(tput sgr0)"
-
-  echo "${blue}==>${off} ${bold}Formulae${off}"
-  echo "${formulae}" | sed "s/^\(.*\):\(.*\)$/\1${blue}\2${off}/"
-  echo "\n${blue}==>${off} ${bold}Casks${off}\n${casks}"
-}
+  # Handle brew on multi-user systems.
+  _brew_owner="$(stat -f "%Su" "$HOMEBREW_PREFIX" 2>/dev/null)"
+  if [[ -n "$_brew_owner" ]] && [[ "$(whoami)" != "$_brew_owner" ]]; then
+    alias brew="sudo -Hu '$_brew_owner' brew"
+  fi
+  unset _brew_owner
+fi
 
 # Mark this plugin as loaded.
 zstyle ':zephyr:plugin:homebrew' loaded 'yes'

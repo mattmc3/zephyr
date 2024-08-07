@@ -15,7 +15,7 @@ Test plugin is not initialized
 not loaded
 % test $+aliases[brewup] = 0  #=> --exit 0
 % test $+aliases[brewinfo] = 0  #=> --exit 0
-% test $+functions[brews] = 0  #=> --exit 0
+% test $+aliases[brewdeps] = 0  #=> --exit 0
 % set -o | grep 'on$' | awk '{print $1}' | sort
 nohashdirs
 norcs
@@ -35,7 +35,7 @@ Test plugin is initialized
 % zstyle -t ':zephyr:plugin:homebrew' loaded || echo "not loaded"
 % test $+aliases[brewup] = 1  #=> --exit 0
 % test $+aliases[brewinfo] = 1  #=> --exit 0
-% test $+functions[brews] = 1  #=> --exit 0
+% test $+aliases[brewdeps] = 1  #=> --exit 0
 % set -o | grep 'on$' | sort
 extendedglob          on
 interactivecomments   on
