@@ -40,6 +40,7 @@ combiningchars
 extendedglob
 interactivecomments
 longlistjobs
+nobeep
 nobgnice
 nocheckjobs
 noflowcontrol
