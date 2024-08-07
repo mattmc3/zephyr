@@ -10,7 +10,7 @@
 #region BOOTSTRAP
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
-#endregion BOOTSTRAP
+#endregion
 
 # Set Zsh options related to history.
 setopt bang_hist               # Treat the '!' character specially during expansion.
