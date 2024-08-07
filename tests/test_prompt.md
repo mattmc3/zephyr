@@ -33,8 +33,6 @@ Test plugin is initialized
 ```zsh
 % zstyle -t ':zephyr:plugin:prompt' loaded || echo "not loaded"
 % test $+functions[run_promptinit] = 1  #=> --exit 0
-% hooks-add-hook -L post_zshrc run-promptinit-post-zshrc
-typeset -g -a post_zshrc=( run-promptinit-post-zshrc )
 % set -o | grep 'on$' | sort
 extendedglob          on
 interactivecomments   on

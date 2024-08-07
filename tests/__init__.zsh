@@ -36,6 +36,9 @@ function t_setup {
   typeset -ga T_PREV_ZSTYLES=( ${(@f)"$(zstyle -L ':zephyr:*')"} )
   source <(zstyle -L ':zephyr:*' | awk '{print "zstyle -d",$2}')
 
+  # Set everything to run immediately
+  zstyle ':zephyr:plugin:*' immediate 'yes'
+
   # works with BSD and GNU gmktemp
   typeset -gx T_TEMPDIR=${$(mktemp -d -t t_zephyr.XXXXXXXX):A}
   typeset -gx OLD_HOME=$HOME

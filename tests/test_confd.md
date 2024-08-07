@@ -9,6 +9,7 @@ Here we need to handle test setup.
 ```zsh
 % source ./tests/__init__.zsh
 % t_setup
+% zstyle ':zephyr:plugin:confd' immediate 'yes'
 %
 ```
 

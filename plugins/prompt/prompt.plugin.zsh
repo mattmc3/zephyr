@@ -7,69 +7,89 @@
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 #endregion
 
-#
-# Options
-#
+# Prompt options
+setopt prompt_subst       # Expand parameters in prompt variables.
+#setopt transient_rprompt  # Remove right prompt artifacts from prior commands.
 
-# 16.2.8 Prompting
-setopt prompt_subst    # Expand parameters in prompt variables.
-
-#
-# Variables
-#
-
-# Set 2 space indent for each new level in a multi-line script
-# This can then be overridden by a prompt, but is a better default than zsh's
+# Set 2 space indent for each new level in a multi-line script. This can then be
+# overridden by a prompt or plugin, but is a better default than Zsh's.
 PS2='${${${(%):-%_}//[^ ]}// /  }    '
 
-#
-# Functions
-#
+# Wrap powerlevel10k prompt to support themes directory
+function prompt_p10k_setup {
+  if [[ -n "$1" ]]; then
+    local -a configs=($__zsh_config_dir/themes/$1.p10k.zsh(N))
+    (( $#configs )) && source $configs[1]
+  fi
+  prompt_powerlevel10k_setup
+}
 
-# Add Zephyr's prompt functions to fpath.
-fpath=(${0:a:h}/functions $fpath)
+# Make starship work with built-in prompt system.
+function prompt_starship_setup {
+  # When loaded through the prompt command, these prompt_* options will be enabled
+  prompt_opts=(cr percent sp subst)
 
-function promptinit {
-  # Initialize real built-in prompt system.
-  unfunction promptinit prompt &>/dev/null
-  autoload -Uz promptinit && promptinit "$@"
+  # Set the starship config based on the argument if provided.
+  if [[ -n "$1" ]]; then
+    local -a configs=(
+      "$__zsh_config_dir/themes/${1}.toml"(N)
+      "${XDG_CONFIG_HOME:-$HOME/.config}/starship/${1}.toml"(N)
+    )
+    (( $#configs )) && export STARSHIP_CONFIG=$configs[1]
+  fi
 
-  # If we're here, it's because the user manually ran promptinit, which means we
-  # no longer need the failsafe hook.
-  hooks-add-hook -d post_zshrc run-promptinit-post-zshrc
+  # Initialize starship.
+  if zstyle -t ':zephyr:plugin:prompt' 'use-cache'; then
+    cached-eval 'starship-init-zsh' starship init zsh
+  else
+    source <(starship init zsh)
+  fi
 }
 
 # Wrap promptinit.
-function run_promptinit {
+function promptinit {
   # Initialize real built-in prompt system.
-  unfunction promptinit prompt &>/dev/null
+  unfunction promptinit
   autoload -Uz promptinit && promptinit
 
-  # Set the prompt if specified
-  local -a prompt_theme
+  # Hook P10k into Zsh's prompt system.
+  (( $+functions[prompt_powerlevel10k_setup] )) \
+    && prompt_themes+=( p10k ) \
+    || unfunction prompt_p10k_setup
+
+  # Hook starship into Zsh's prompt system.
+  (( $+commands[starship] )) \
+    && prompt_themes+=( starship ) \
+    || unfunction prompt_starship_setup
+
+  # Keep prompt array sorted.
+  prompt_themes=( "${(@on)prompt_themes}" )
+
+  # We can run promptinit early, and if we did we no longer need a post_zshrc hook.
+  post_zshrc_hook=(${post_zshrc_hook:#run_promptinit})
+}
+
+function run_promptinit {
+  # Initialize the built-in prompt system.
+  autoload -Uz promptinit && promptinit
+
+  # Set the prompt if specified.
+  local -a prompt_argv
   zstyle -a ':zephyr:plugin:prompt' theme 'prompt_argv'
-
-  if zstyle -t ":zephyr:plugin:prompt:${prompt_argv[1]}" transient; then
-    setopt transient_rprompt  # Remove right prompt artifacts from prior commands.
-  fi
-
   if [[ $TERM == (dumb|linux|*bsd*) ]]; then
     prompt 'off'
   elif (( $#prompt_argv > 0 )); then
     prompt "$prompt_argv[@]"
   fi
-  unset prompt_argv
-
-  # Keep prompt array sorted.
-  prompt_themes=( "${(@on)prompt_themes}" )
 }
 
-# Failsafe to make sure promptinit runs during the post_zshrc event
-function run-promptinit-post-zshrc {
-  run_promptinit
-  hooks-add-hook -d post_zshrc run-promptinit-post-zshrc
-}
-hooks-add-hook post_zshrc run-promptinit-post-zshrc
+# Allow the user to bypass the confd deferral and run it immediately. Otherwise, we
+# hook run_confd to the custom post_zshrc event.
+if zstyle -t ':zephyr:plugin:prompt' immediate; then
+  run_promptinit || return 1
+else
+  post_zshrc_hook+=(run_promptinit)
+fi
 
 #region MARK LOADED
 zstyle ":zephyr:plugin:prompt" loaded 'yes'
