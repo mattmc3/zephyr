@@ -11,7 +11,7 @@
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 
-# 16.2.4 History
+# Set Zsh options related to history.
 setopt bang_hist               # Treat the '!' character specially during expansion.
 setopt extended_history        # Write the history file in the ':start:elapsed;command' format.
 setopt hist_expire_dups_first  # Expire a duplicate event first when trimming history.
@@ -27,33 +27,34 @@ setopt NO_hist_beep            # Don't beep when accessing non-existent history.
 setopt NO_share_history        # Don't share history between all sessions.
 
 # Set the path to the default history file.
-if zstyle -T ':zephyr:plugin:history' use-xdg-basedirs; then
-  _zhistfile=${__zsh_user_data_dir}/zsh_history
+if zstyle -s ':zephyr:plugin:history' histfile 'HISTFILE'; then
+  # Make sure the user didn't store a HISTFILE with a leading '~'.
+  HISTFILE="${~HISTFILE}"
 else
-  _zhistfile=${ZDOTDIR:-$HOME}/.zsh_history
+  if zstyle -T ':zephyr:plugin:history' use-xdg-basedirs; then
+    : ${__zsh_user_data_dir:=${XDG_DATA_HOME:-$HOME/.local/share}/zsh}
+    HISTFILE="${__zsh_user_data_dir}/zsh_history"
+  else
+    HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
+  fi
 fi
 
-# Set the history file to whereever the user specified, or the default
-zstyle -s ':zephyr:plugin:history' histfile 'HISTFILE' \
-  || HISTFILE="$_zhistfile"
-
-# Make sure the user didn't store an empty history file, or a literal '~',
-# and that the history path exists. Basically, save the user from themselves.
-[[ -z "$HISTFILE" ]] && HISTFILE=$_zhistfile || HISTFILE=${~HISTFILE}
+# Make sure the HISTFILE's directory exists.
 [[ -d "${HISTFILE:h}" ]] || mkdir -p "${HISTFILE:h}"
-unset _zhistfile
 
-# Set history file size (Zsh default 1000, Zephyr multiply by 100).
+# Set history file size.
 zstyle -s ':zephyr:plugin:history' savehist 'SAVEHIST' \
   || SAVEHIST=100000
 
-# Set session history size (Zsh default 2000, Zephyr multiply by 10).
+# Set session history size.
 zstyle -s ':zephyr:plugin:history' histsize 'HISTSIZE' \
   || HISTSIZE=20000
 
-# Set Zsh aliases related to history.
-alias hist='fc -li'
-alias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -nr | head"
+# Set history aliases.
+if ! zstyle -t ':zephyr:plugin:history:alias' skip; then
+  alias hist='fc -li'
+  alias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
+fi
 
 # Mark this plugin as loaded.
 zstyle ':zephyr:plugin:history' loaded 'yes'
