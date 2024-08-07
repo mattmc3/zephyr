@@ -18,7 +18,7 @@ function cached-eval {
 
   : ${__zsh_cache_dir:=${XDG_CACHE_HOME:-$HOME/.cache}/zsh}
   local cmdname=$1; shift
-  local cachefile=$__zsh_cache_dir/cached/${cmdname}.zsh
+  local cachefile=$__zsh_cache_dir/cached-eval/${cmdname}.zsh
   local -a cached=($cachefile(Nmh-20))
   # If the file has no size (is empty), or is older than 20 hours re-gen the cache.
   if [[ ! -s $cachefile ]] || (( ! ${#cached} )); then
