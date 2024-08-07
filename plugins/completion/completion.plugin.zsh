@@ -14,12 +14,8 @@
 
 # Bootstrap.
 0=${(%):-%N}
-zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
-
-# Load plugin functions.
-0=${(%):-%N}
-fpath=(${0:a:h}/functions $fpath)
-autoload -Uz ${0:a:h}/functions/*(.:t)
+zstyle -t ':zephyr:lib:bootstrap'    loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
+zstyle -t ':zephyr:plugin:compstyle' loaded || source $ZEPHYR_HOME/plugins/compstyle/compstyle.plugin.zsh
 
 # 16.2.2 Completion
 setopt always_to_end        # Move cursor to the end of a completed word.
