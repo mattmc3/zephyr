@@ -467,5 +467,6 @@ fi
 
 unset key{,map,_bindings}
 
-# Mark this plugin as loaded.
+#region MARK LOADED
 zstyle ':zephyr:plugin:editor' loaded 'yes'
+#endregion

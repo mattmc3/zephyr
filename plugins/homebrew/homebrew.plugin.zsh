@@ -64,5 +64,6 @@ if ! zstyle -t ':zephyr:plugin:homebrew:alias' skip; then
   unset _brew_owner
 fi
 
-# Mark this plugin as loaded.
+#region MARK LOADED
 zstyle ':zephyr:plugin:homebrew' loaded 'yes'
+#endregion

@@ -32,5 +32,6 @@ done
 # Clean up.
 unset _rc{,s} {,_user}_confd
 
-# Mark this plugin as loaded.
+#region MARK LOADED
 zstyle ':zephyr:plugin:confd' loaded 'yes'
+#endregion

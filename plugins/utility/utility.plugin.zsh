@@ -81,5 +81,6 @@ function sedi {
   sed --version &>/dev/null && sed -i -- "$@" || sed -i "" "$@"
 }
 
-# Mark this plugin as loaded.
+#region MARK LOADED
 zstyle ':zephyr:plugin:utility' loaded 'yes'
+#endregion

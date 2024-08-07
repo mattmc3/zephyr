@@ -41,5 +41,6 @@ function up {
   cd "$dotdots"
 }
 
-# Mark this plugin as loaded.
+#region MARK LOADED
 zstyle ':zephyr:plugin:directory' loaded 'yes'
+#endregion

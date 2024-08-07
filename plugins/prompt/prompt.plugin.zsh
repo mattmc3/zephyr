@@ -71,5 +71,6 @@ function run-promptinit-post-zshrc {
 }
 hooks-add-hook post_zshrc run-promptinit-post-zshrc
 
-# Mark this plugin as loaded.
+#region MARK LOADED
 zstyle ":zephyr:plugin:prompt" loaded 'yes'
+#endregion

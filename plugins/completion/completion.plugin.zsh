@@ -173,5 +173,6 @@ elif [[ "$zcompstyle" != none ]]; then
 fi
 unset zcompstyle
 
-# Mark this plugin as loaded.
+#region MARK LOADED
 zstyle ':zephyr:plugin:completion' loaded 'yes'
+#endregion

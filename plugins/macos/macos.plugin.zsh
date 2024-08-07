@@ -14,5 +14,6 @@
 fpath=(${0:a:h}/functions $fpath)
 autoload -Uz ${0:a:h}/functions/*(.:t)
 
-# Mark this plugin as loaded.
+#region MARK LOADED
 zstyle ':zephyr:plugin:macos' loaded 'yes'
+#endregion

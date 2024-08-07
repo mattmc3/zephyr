@@ -60,5 +60,6 @@ function is-tmux {
   is-term-family tmux || [[ -n "$TMUX" ]]
 }
 
-# Mark this plugin as loaded.
+#region MARK LOADED
 zstyle ':zephyr:plugin:helper' loaded 'yes'
+#endregion

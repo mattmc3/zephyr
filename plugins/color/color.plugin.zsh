@@ -65,5 +65,6 @@ fi
 # Colorize completions.
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
-# Mark this plugin as loaded.
+#region MARK LOADED
 zstyle ':zephyr:plugin:color' loaded 'yes'
+#endregion

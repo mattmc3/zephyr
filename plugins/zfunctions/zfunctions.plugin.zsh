@@ -102,5 +102,6 @@ if [[ -d "$ZFUNCDIR" ]]; then
   autoload-dir $ZFUNCDIR(N/) $ZFUNCDIR/*(N/)
 fi
 
-# Mark this plugin as loaded.
+#region MARK LOADED
 zstyle ":zephyr:plugin:zfunctions" loaded 'yes'
+#endregion
