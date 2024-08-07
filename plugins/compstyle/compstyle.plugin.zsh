@@ -37,7 +37,7 @@ function compstyle_zephyr_setup {
   zstyle ':completion::complete:*' cache-path "$__zsh_cache_dir/zcompcache"
 
   # Case-insensitive (all), partial-word, and then substring completion.
-  if zstyle -t ':zephyr:plugin:completion:*' case-sensitive; then
+  if zstyle -t ':zephyr:plugin:compstyle:*' case-sensitive; then
     zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=* r:|=*'
     setopt case_glob
   else
@@ -91,7 +91,7 @@ function compstyle_zephyr_setup {
 
   # Populate hostname completion. But allow ignoring custom entries from static
   # */etc/hosts* which might be uninteresting.
-  zstyle -a ':zephyr:plugin:completion:*:hosts' etc-host-ignores '_etc_host_ignores'
+  zstyle -a ':zephyr:plugin:compstyle:*:hosts' etc-host-ignores '_etc_host_ignores'
 
   zstyle -e ':completion:*:hosts' hosts 'reply=(
     ${=${=${=${${(f)"$(cat {/etc/ssh/ssh_,~/.ssh/}known_hosts(|2)(N) 2> /dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
