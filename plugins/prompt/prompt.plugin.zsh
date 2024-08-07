@@ -34,6 +34,7 @@ function prompt_starship_setup {
     local -a configs=(
       "$__zsh_config_dir/themes/${1}.toml"(N)
       "${XDG_CONFIG_HOME:-$HOME/.config}/starship/${1}.toml"(N)
+      "$ZEPHYR_HOME/plugins/prompt/themes/${1}.toml"(N)
     )
     (( $#configs )) && export STARSHIP_CONFIG=$configs[1]
   fi
@@ -75,7 +76,8 @@ function run_promptinit {
 
   # Set the prompt if specified.
   local -a prompt_argv
-  zstyle -a ':zephyr:plugin:prompt' theme 'prompt_argv'
+  zstyle -a ':zephyr:plugin:prompt' theme 'prompt_argv' \
+    || prompt_argv=(starship zephyr)
   if [[ $TERM == (dumb|linux|*bsd*) ]]; then
     prompt 'off'
   elif (( $#prompt_argv > 0 )); then
