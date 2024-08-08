@@ -1,3 +1,4 @@
+#region HEADER
 #
 # environment: Ensure common environment variables are set.
 #
@@ -6,7 +7,6 @@
 # - https://github.com/sorin-ionescu/prezto/blob/master/modules/environment/init.zsh
 # - https://github.com/sorin-ionescu/prezto/blob/master/runcoms/zprofile
 
-#region BOOTSTRAP
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 #endregion

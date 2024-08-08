@@ -1,6 +1,8 @@
+#region HEADER
 #
 # helper: Common variables and functions used by Zephyr plugins.
 #
+#endregion
 
 # Make a directory from a variable name.
 function mkdirvar {

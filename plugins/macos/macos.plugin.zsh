@@ -1,3 +1,4 @@
+#region HEADER
 #
 # macos: Aliases and functions for macOS users.
 #
@@ -5,6 +6,7 @@
 # References
 # - https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/macos
 # - https://github.com/sorin-ionescu/prezto/tree/master/modules/osx
+#endregion
 
 # Expecting macOS.
 [[ "$OSTYPE" == darwin* ]] || return 1

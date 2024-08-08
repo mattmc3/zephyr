@@ -1,6 +1,8 @@
+#region HEADER
 #
 # directory: Set features related to Zsh directories and dirstack.
 #
+#endregion
 
 # Set Zsh options related to directories, globbing, and I/O.
 setopt auto_pushd         # Make cd push the old directory onto the dirstack.

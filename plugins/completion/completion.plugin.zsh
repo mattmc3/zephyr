@@ -1,3 +1,4 @@
+#region HEADER
 #
 # completion: Set up zsh completions.
 #
@@ -9,14 +10,13 @@
 # - https://gist.github.com/ctechols/ca1035271ad134841284#gistcomment-2894219
 # - https://htr3n.github.io/2018/07/faster-zsh/
 
-# Return if requirements are not found.
-[[ "$TERM" != 'dumb' ]] || return 1
-
-#region BOOTSTRAP
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap'    loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 zstyle -t ':zephyr:plugin:compstyle' loaded || source $ZEPHYR_HOME/plugins/compstyle/compstyle.plugin.zsh
 #endregion
+
+# Return if requirements are not found.
+[[ "$TERM" != 'dumb' ]] || return 1
 
 # Set completion options.
 setopt always_to_end        # Move cursor to the end of a completed word.

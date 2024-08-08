@@ -1,3 +1,4 @@
+#region HEADER
 #
 # utility: Misc Zsh shell options, utilities, and attempt at cross-platform conformity.
 #
@@ -5,6 +6,7 @@
 # References:
 # - https://github.com/sorin-ionescu/prezto/blob/master/modules/utility/init.zsh
 # - https://github.com/belak/zsh-utils/blob/main/utility/utility.plugin.zsh
+#endregion
 
 # Use built-in paste magic.
 autoload -Uz bracketed-paste-url-magic

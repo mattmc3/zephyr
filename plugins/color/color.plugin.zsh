@@ -1,6 +1,8 @@
+#region HEADER
 #
 # color: Make the terminal more colorful.
 #
+#endregion
 
 # Return if requirements are not found.
 [[ "$TERM" != 'dumb' ]] || return 1

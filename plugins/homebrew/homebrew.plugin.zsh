@@ -1,3 +1,4 @@
+#region HEADER
 #
 # homebrew: Environment variables and functions for homebrew users.
 #
@@ -6,7 +7,6 @@
 # - https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/brew
 # - https://github.com/sorin-ionescu/prezto/tree/master/modules/homebrew
 
-#region BOOTSTRAP
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 #endregion

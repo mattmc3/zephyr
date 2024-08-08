@@ -1,3 +1,4 @@
+#region HEADER
 #
 # history: Set history options and define history aliases.
 #
@@ -7,7 +8,6 @@
 # - https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/history.zsh
 # - https://zsh.sourceforge.io/Doc/Release/Options.html#History
 
-#region BOOTSTRAP
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 #endregion

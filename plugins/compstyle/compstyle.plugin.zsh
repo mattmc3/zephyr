@@ -1,3 +1,4 @@
+#region HEADER
 #
 # completion: Set up system for Zsh completion styles similar to prompt system.
 #
@@ -5,7 +6,6 @@
 # References:
 # - https://github.com/zsh-users/zsh/blob/master/Functions/Prompts/promptinit
 
-#region BOOTSTRAP
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap'    loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 zstyle -t ':zephyr:plugin:compstyle' loaded && return 1

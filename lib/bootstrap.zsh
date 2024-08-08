@@ -1,3 +1,4 @@
+#region HEADER
 #
 # bootstrap: Ensure Zephyr is properly boostrapped.
 #
@@ -5,6 +6,7 @@
 # Set ZEPHYR_HOME.
 0=${(%):-%N}
 : ${ZEPHYR_HOME:=${0:a:h:h}}
+#endregion
 
 # Set critical Zsh options.
 setopt extended_glob interactive_comments

@@ -1,3 +1,4 @@
+#region HEADER
 #
 # editor: Setup Zsh line editor behavior.
 #
@@ -6,13 +7,13 @@
 # - https://github.com/belak/zsh-utils/blob/main/editor/editor.plugin.zsh
 # - https://github.com/sorin-ionescu/prezto/blob/master/modules/editor/init.zsh
 
-# Return if requirements are not found.
-[[ "$TERM" != 'dumb' ]] || return 1
-
 #region BOOTSTRAP
 0=${(%):-%N}
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 #endregion
+
+# Return if requirements are not found.
+[[ "$TERM" != 'dumb' ]] || return 1
 
 #
 # Options
