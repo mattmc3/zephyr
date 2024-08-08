@@ -94,7 +94,9 @@ function funcfresh {
 
 # Set ZFUNCDIR.
 if [[ -z "$ZFUNCDIR" ]]; then
-  zstyle -s ':zephyr:plugin:zfunctions' directory 'ZFUNCDIR' || ZFUNCDIR=$__zsh_config_dir/functions
+  zstyle -s ':zephyr:plugin:zfunctions' directory 'ZFUNCDIR' \
+  || ZFUNCDIR="$__zsh_config_dir/functions"
+  ZFUNCDIR="${~ZFUNCDIR}"
 fi
 
 # Autoload ZFUNCDIR.
