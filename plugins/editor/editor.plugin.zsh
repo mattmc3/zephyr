@@ -206,6 +206,61 @@ function pound-toggle {
 }
 zle -N pound-toggle
 
+# https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/fancy-ctrl-z/fancy-ctrl-z.plugin.zsh
+# https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
+function symmetric-ctrl-z {
+  if [[ $#BUFFER -eq 0 ]]; then
+    BUFFER="fg"
+    zle accept-line -w
+  else
+    zle push-input -w
+    zle clear-screen -w
+  fi
+}
+zle -N symmetric-ctrl-z
+
+# https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/magic-enter
+(( $+functions[magic-enter-cmd] )) ||
+function magic-enter-cmd {
+  local cmd
+  zstyle -s ':zephyr:plugin:editor:magic-enter' command 'cmd' ||
+    cmd="ls ."
+
+  if command git rev-parse --is-inside-work-tree &>/dev/null; then
+    zstyle -s ':zephyr:plugin:editor:magic-enter' git-command 'cmd' ||
+      cmd="git status -sb ."
+  fi
+  echo $cmd
+}
+
+function magic-enter {
+  # Only run MAGIC_ENTER commands when in PS1 and command line is empty
+  # http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html#User_002dDefined-Widgets
+  if [[ -n "$BUFFER" || "$CONTEXT" != start ]]; then
+    return
+  fi
+  BUFFER=$(magic-enter-cmd)
+}
+
+# Wrapper for the accept-line zle widget (run when pressing Enter)
+# If the wrapper already exists don't redefine it
+if (( ! ${+functions[_magic-enter_accept-line]} )); then
+  case "$widgets[accept-line]" in
+    # Override the current accept-line widget, calling the old one
+    user:*) zle -N _magic-enter_orig_accept-line "${widgets[accept-line]#user:}"
+      function _magic-enter_accept-line {
+        magic-enter
+        zle _magic-enter_orig_accept-line -- "$@"
+      } ;;
+    # If no user widget defined, call the original accept-line widget
+    builtin) function _magic-enter_accept-line {
+        magic-enter
+        zle .accept-line
+      } ;;
+  esac
+  zle -N accept-line _magic-enter_accept-line
+fi
+
 #
 # Init
 #
@@ -274,15 +329,15 @@ for keymap in 'emacs' 'viins'; do
   fi
 done
 
-# Toggle comment at the start of the line. Note that we use pound-toggle for emacs
-# mode, which is similar to pount insert, but meant to work around some bugs.
-bindkey -M emacs "$key_info[Escape];" pound-toggle
-bindkey -M vicmd "#" vi-pound-insert
-
 # Do not expand .... to ../.. during incremental search.
 if zstyle -t ':zephyr:plugin:editor' dot-expansion; then
   bindkey -M isearch . self-insert 2> /dev/null
 fi
+
+# Toggle comment at the start of the line. Note that we use pound-toggle for emacs
+# mode, which is similar to pount insert, but meant to work around some bugs.
+bindkey -M emacs "$key_info[Escape];" pound-toggle
+bindkey -M vicmd "#" vi-pound-insert
 
 # Expand aliases
 if zstyle -t ':zephyr:plugin:editor' glob-alias; then
@@ -296,6 +351,11 @@ if zstyle -t ':zephyr:plugin:editor' glob-alias; then
 
   # normal space during searches
   bindkey -M isearch " " magic-space
+fi
+
+# Expand aliases
+if zstyle -t ':zephyr:plugin:editor' 'symmetric-ctrl-z'; then
+  bindkey '^Z' symmetric-ctrl-z
 fi
 
 #

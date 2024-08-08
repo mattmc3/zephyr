@@ -10,9 +10,6 @@
 # Set case-sensitivity for completion, history lookup, etc.
 # zstyle ':zephyr:*:*' case-sensitive 'yes'
 
-# Color output (auto set to 'no' on dumb terminals).
-zstyle ':zephyr:*:*' color 'yes'
-
 # Set the Zephyr plugins to load (browse plugins).
 # The order matters.
 zstyle ':zephyr:load' plugins \
@@ -43,15 +40,19 @@ zstyle ':zephyr:load' plugins \
 # Set the key mapping style to 'emacs' or 'vi'.
 zstyle ':zephyr:plugin:editor' key-bindings 'emacs'
 
-# Don't auto convert .... to ../..
-# zstyle ':zephyr:plugin:editor' dot-expansion 'no'
+# Auto convert .... to ../..
+# zstyle ':zephyr:plugin:editor' dot-expansion 'yes'
 
-# Allow the zsh prompt context to be shown.
-# zstyle ':zephyr:plugin:editor' ps-context 'yes'
+# Use ^z to return background processes to foreground.
+# zstyle ':zephyr:plugin:editor' symmetric-ctrl-z 'yes'
+
+# Expand aliases to their actual command like Fish abbreviations.
+# zstyle ':zephyr:plugin:editor' glob-alias 'yes'
 
 # Set the default (magic) command when hitting enter on an empty prompt.
-# zstyle ':zephyr:plugin:editor' default-command 'ls -lh .'
-# zstyle ':zephyr:plugin:editor' default-git-command 'git status -u .'
+# zstyle ':zephyr:plugin:editor' magic-enter 'yes'
+# zstyle ':zephyr:plugin:editor:magic-enter' command 'ls -lh .'
+# zstyle ':zephyr:plugin:editor:magic-enter' git-command 'git status -u .'
 
 #
 # History
@@ -73,19 +74,3 @@ zstyle ':zephyr:plugin:editor' key-bindings 'emacs'
 # Set the prompt theme to load.
 # starship themes: zephyr, hydro, prezto
 zstyle ':zephyr:plugin:prompt' theme starship zephyr
-
-#
-# Terminal
-#
-
-# Auto set the tab and window titles.
-# zstyle ':zephyr:plugin:terminal' auto-title 'yes'
-
-# Set the window title format.
-# zstyle ':zephyr:plugin:terminal:window-title' format '%n@%m: %s'
-
-# Set the tab title format.
-# zstyle ':zephyr:plugin:terminal:tab-title' format '%m: %s'
-
-# Set the terminal multiplexer title format.
-# zstyle ':zephyr:plugin:terminal:multiplexer-title' format '%s'
