@@ -1,0 +1,161 @@
+#!/bin/sh
+##? usage: zephyr <command>
+# To check, run: shellcheck -e SC3043 -e SC2016 ./zephyr
+
+# Zsh can be POSIX too... with help.
+[ -n "$ZSH_VERSION" ] && setopt POSIX_ARGZERO
+
+# THIS_SCRIPT="$(realpath "$0")"
+ZEPHYR_HOME="$(realpath "$0"/../..)"
+
+# POSIX test for function existance.
+is_function() {
+  [ "$#" -eq 1 ] || return 1
+  type "$1" | sed "s/$1//" | grep -qwi function
+}
+
+##? commands:
+##?   help    Display this help
+zephyr_help() {
+  # echo "$0"
+  grep "^##?" "$0" | cut -c 5-
+}
+
+contains() {(
+  while getopts "i" opt; do
+    case "$opt" in
+      i) o_index=1 ;;
+      *) return 1  ;;
+    esac
+  done
+  shift $(( OPTIND - 1 ))
+
+  if [ "$#" -eq 0 ]; then
+    echo >&2 "contains: key not specified"
+    return 1
+  fi
+
+  key="$1"; shift
+  index=0
+  for val in "$@"; do
+    index=$(( index + 1 ))
+    if [ "$val" = "$key" ]; then
+      [ -n "$o_index" ] && echo $index
+      return 0
+    fi
+  done
+  return 1
+)}
+
+print_start_region() {
+  echo "#region $1"
+  echo "#"
+}
+
+print_end_region() {
+  echo "#"
+  echo "#endregion"
+}
+
+##?   bulid1  Build the .zephyr1 file
+zephyr_build1() {
+  local filter_regions squish_newlines anon_func_wrapper noop
+  local tmpfile zephyr1_file plugin plugin_file
+  tmpfile=$ZEPHYR_HOME/lib/.zephyr1.tmp
+  zephyr1_file="$ZEPHYR_HOME/lib/.zephyr1"
+
+  noop='{print $0}'
+
+  filter_regions='
+    BEGIN          { skip=0 }
+    /^\#region/    { skip=1; next }
+    /^\#endregion/ { skip=0; next }
+    skip==0        { print }
+  '
+
+  squish_newlines='
+    BEGIN { nl=0  }
+    NF==0 { nl+=1 }
+    NF>0  { nl=0  }
+    nl<2  { print }
+  '
+
+  anon_func_wrapper='
+    BEGIN { print ""; print "() {" }
+    NF==0 { print $0; next }
+          { print "  " $0 }
+    END   { print "}"; print "" }
+  '
+
+  {
+    echo "#!/bin/zsh"
+    echo "# .zshrc1"
+    echo "# > First things first - start your .zshrc off right with Zephyr lite"
+    echo "# Project Home: https://github.com/mattmc3/zephyr"
+    echo
+
+    print_start_region "bootstrap"
+    awk "$filter_regions" "$ZEPHYR_HOME/lib/bootstrap.zsh"
+    print_end_region
+    print_start_region "helper"
+    awk "$filter_regions" "$ZEPHYR_HOME/plugins/helper/helper.plugin.zsh"
+    print_end_region
+  } > "$tmpfile"
+
+  for plugin in \
+    environment homebrew history directory color editor utility zfunctions \
+    prompt compstyle completion confd
+  do
+    plugin_file="$ZEPHYR_HOME/plugins/${plugin}/${plugin}.plugin.zsh"
+    {
+      print_start_region "$plugin"
+      outfilter=$noop
+      if contains "$plugin" color compstyle directory editor history homebrew utility zfunctions; then
+        outfilter="$anon_func_wrapper"
+      fi
+      awk "$filter_regions" "$plugin_file" | tac | sed -e '/./,$!d' | tac | sed -e '/./,$!d' | awk "$outfilter"
+      print_end_region
+    } >> "$tmpfile"
+  done
+
+  {
+    awk "$squish_newlines" "$tmpfile"
+    echo
+    echo "# vim: ft=zsh sw=2 ts=2 et"
+  } > "$zephyr1_file"
+
+  # Cleanup
+  rm -f -- "$tmpfile"
+}
+
+# main zephyr command
+zephyr() {
+  local subcmd
+  if [ "$#" -eq 0 ]; then
+    echo >&2 "zephyr: expecting a subcommand."
+    echo
+    zephyr_help
+    return 1
+  fi
+
+  subcmd="$1"
+  if [ "$subcmd" = "-h" ] || [ "$subcmd" = "--help" ]; then
+    # Support -h/--help flags
+    subcmd="help"
+  else
+    # Make kebab-case-subcommands work.
+    subcmd=$(printf '%s' "$subcmd" | tr '-' '_')
+  fi
+
+  # Call the subcommand if it exists.
+  if is_function "zephyr_${subcmd}"; then
+    shift
+    "zephyr_${subcmd}" "$@"
+  else
+    echo >&2 "zephyr: subcommand not found '$subcmd'."
+    return 1
+  fi
+}
+zephyr "$@"
+
+# vim: set sw=2 sts=2 ts=8 et:
