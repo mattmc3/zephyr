@@ -43,7 +43,6 @@ longlistjobs
 nobeep
 nobgnice
 nocheckjobs
-noflowcontrol
 nohashdirs
 nohup
 norcs
