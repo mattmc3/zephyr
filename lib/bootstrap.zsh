@@ -14,8 +14,8 @@ setopt extended_glob interactive_comments
 # Set Zsh locations.
 typeset -gx __zsh_{config,cache,user_data}_dir
 : ${__zsh_config_dir:=${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}}
-: ${__zsh_cache_dir:=${XDG_CACHE_HOME:-$HOME/.cache}/zsh}
 : ${__zsh_user_data_dir:=${XDG_DATA_HOME:-$HOME/.local/share}/zsh}
+: ${__zsh_cache_dir:=${XDG_CACHE_HOME:-$HOME/.cache}/zsh}
 mkdir -p $__zsh_config_dir $__zsh_user_data_dir $__zsh_cache_dir
 
 # There's not really a post_zshrc event, so we're going to fake one by adding a
