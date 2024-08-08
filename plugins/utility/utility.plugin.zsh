@@ -8,6 +8,10 @@
 # - https://github.com/belak/zsh-utils/blob/main/utility/utility.plugin.zsh
 #endregion
 
+# Return if requirements are not met.
+[[ "$TERM" != 'dumb' ]] || return 1
+! zstyle -t ":zephyr:plugin:utility" skip || return 0
+
 # Use built-in paste magic.
 autoload -Uz bracketed-paste-url-magic
 zle -N bracketed-paste bracketed-paste-url-magic

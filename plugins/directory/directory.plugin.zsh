@@ -4,6 +4,10 @@
 #
 #endregion
 
+# Return if requirements are not met.
+[[ "$TERM" != 'dumb' ]] || return 1
+! zstyle -t ":zephyr:plugin:directory" skip || return 0
+
 # Set Zsh options related to directories, globbing, and I/O.
 setopt auto_pushd         # Make cd push the old directory onto the dirstack.
 setopt pushd_minus        # Exchanges meanings of +/- when navigating the dirstack.

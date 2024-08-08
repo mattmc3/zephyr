@@ -7,6 +7,9 @@
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 #endregion
 
+# Return if requirements are not met.
+! zstyle -t ":zephyr:plugin:confd" skip || return 0
+
 function run_confd {
   # Find the conf.d directory.
   local confd user_confd

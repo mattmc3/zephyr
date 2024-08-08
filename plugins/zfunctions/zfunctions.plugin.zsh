@@ -7,6 +7,9 @@
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 #endregion
 
+# Return if requirements are not met.
+! zstyle -t ":zephyr:plugin:zfunctions" skip || return 0
+
 ##? autoload-dir - Autoload function files in directory
 function autoload-dir {
   local zdir

@@ -8,8 +8,9 @@
 # - https://github.com/sorin-ionescu/prezto/tree/master/modules/osx
 #endregion
 
-# Expecting macOS.
+# Return if requirements are not met.
 [[ "$OSTYPE" == darwin* ]] || return 1
+! zstyle -t ":zephyr:plugin:macos" skip || return 0
 
 # Load plugin functions.
 0=${(%):-%N}

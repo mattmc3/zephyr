@@ -11,9 +11,11 @@
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 #endregion
 
+# Return if requirements are not met.
+! zstyle -t ":zephyr:plugin:environment" skip || return 0
+
 # Set Zsh options related to globbing.
 setopt extended_glob         # Use more awesome globbing features.
-setopt glob_dots             # Include dotfiles when globbing.
 setopt NO_rm_star_silent     # Ask for confirmation for `rm *' or `rm path/*'
 
 # Set general Zsh options.

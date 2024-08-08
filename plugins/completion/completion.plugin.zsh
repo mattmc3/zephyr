@@ -15,8 +15,9 @@ zstyle -t ':zephyr:lib:bootstrap'    loaded || source ${0:a:h:h:h}/lib/bootstrap
 zstyle -t ':zephyr:plugin:compstyle' loaded || source $ZEPHYR_HOME/plugins/compstyle/compstyle.plugin.zsh
 #endregion
 
-# Return if requirements are not found.
+# Return if requirements are not met.
 [[ "$TERM" != 'dumb' ]] || return 1
+! zstyle -t ":zephyr:plugin:completion" skip || return 0
 
 # Set completion options.
 setopt always_to_end        # Move cursor to the end of a completed word.

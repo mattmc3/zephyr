@@ -11,6 +11,10 @@ zstyle -t ':zephyr:lib:bootstrap'    loaded || source ${0:a:h:h:h}/lib/bootstrap
 zstyle -t ':zephyr:plugin:compstyle' loaded && return 1
 #endregion
 
+# Return if requirements are not met.
+[[ "$TERM" != 'dumb' ]] || return 1
+! zstyle -t ":zephyr:plugin:compstyle" skip || return 0
+
 function compstyle_zephyr_help {
   echo "A composite of the grml, prezto, and ohmyzsh completions."
   echo "You can invoke it with the following command:"

@@ -7,6 +7,9 @@
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 #endregion
 
+# Support skipping this plugin - useful if loading everything through zephyr.zsh.
+! zstyle -t ":zephyr:plugin:prompt" skip || return 0
+
 # Prompt options
 setopt prompt_subst       # Expand parameters in prompt variables.
 #setopt transient_rprompt  # Remove right prompt artifacts from prior commands.

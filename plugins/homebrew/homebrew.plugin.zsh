@@ -11,6 +11,9 @@
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 #endregion
 
+# Return if requirements are not met.
+! zstyle -t ":zephyr:plugin:homebrew" skip || return 0
+
 # Where is brew?
 # Setup homebrew if it exists on the system.
 typeset -aU _brewcmd=(

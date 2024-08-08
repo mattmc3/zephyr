@@ -12,8 +12,9 @@
 zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 #endregion
 
-# Return if requirements are not found.
+# Return if requirements are not met.
 [[ "$TERM" != 'dumb' ]] || return 1
+! zstyle -t ":zephyr:plugin:editor" skip || return 0
 
 #
 # Options

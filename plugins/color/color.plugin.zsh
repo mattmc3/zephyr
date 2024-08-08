@@ -4,8 +4,9 @@
 #
 #endregion
 
-# Return if requirements are not found.
+# Return if requirements are not met.
 [[ "$TERM" != 'dumb' ]] || return 1
+! zstyle -t ":zephyr:plugin:color" skip || return 0
 
 # Built-in zsh colors.
 autoload -Uz colors && colors
