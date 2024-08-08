@@ -353,9 +353,10 @@ if zstyle -t ':zephyr:plugin:editor' glob-alias; then
   bindkey -M isearch " " magic-space
 fi
 
-# Expand aliases
+# ctrl-z sends things to the background - make it also bring to forground
 if zstyle -t ':zephyr:plugin:editor' 'symmetric-ctrl-z'; then
-  bindkey '^Z' symmetric-ctrl-z
+  bindkey -M emacs '^Z' symmetric-ctrl-z
+  bindkey -M viins '^Z' symmetric-ctrl-z
 fi
 
 #
