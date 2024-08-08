@@ -247,5 +247,3 @@ function compstyleinit {
 #region MARK LOADED
 zstyle ':zephyr:plugin:compstyle' loaded 'yes'
 #endregion
-
-# vim: ft=zsh sw=2 ts=2 et
