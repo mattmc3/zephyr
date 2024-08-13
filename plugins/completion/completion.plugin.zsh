@@ -58,12 +58,12 @@ function run_compinit {
 
   # compinit flags: https://zsh.sourceforge.io/Doc/Release/Completion-System.html#Use-of-compinit
   # -C        : Omit the check for new completion functions
-  # -i        : Ignore insecure directories from fpath
+  # -i        : Ignore insecure directories in fpath
   # -u        : Allow insecure directories in fpath
   # -d <file> : Specify zcompdump file
   local -a compinit_flags=(-i)
   if zstyle -t ':zephyr:plugin:completion' 'disable-compfix'; then
-    compinit_flags=(-u $compinit_flags)
+    compinit_flags=(-u)
   fi
   compinit_flags+=(-d "$ZSH_COMPDUMP")
 
