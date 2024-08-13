@@ -92,14 +92,14 @@ if [[ ! -v prepath ]]; then
   # If path ever gets out of order, you can use `path=($prepath $path)` to reset it.
   zstyle -a ':zephyr:plugin:environment' 'prepath' 'prepath' \
   || prepath=(
-    $HOME/{,s}bin(/N)
-    $HOME/.local/{,s}bin(/N)
+    $HOME/{,s}bin(N)
+    $HOME/.local/{,s}bin(N)
   )
 fi
 path=(
   $prepath
-  /opt/{homebrew,local}/{,s}bin(/N)
-  /usr/local/{,s}bin(/N)
+  /opt/{homebrew,local}/{,s}bin(N)
+  /usr/local/{,s}bin(N)
   $path
 )
 
