@@ -57,7 +57,15 @@ unset _keg{,only}
 if ! zstyle -t ':zephyr:plugin:homebrew:alias' skip; then
   alias brewup="brew update && brew upgrade && brew cleanup"
   alias brewinfo="brew leaves | xargs brew desc --eval-all"
-  alias brewdeps='brew leaves | xargs brew deps --installed --for-each | awk ''{leaf=$1;$1=""; printf "%s\033[34m%s\033[0m\n",leaf,$0}'''
+
+  brewdeps() {
+    emulate -L zsh; setopt local_options
+    local bluify_deps='
+      BEGIN { blue = "\033[34m"; reset = "\033[0m" }
+            { leaf = $1; $1 = ""; printf "%s%s%s%s\n", leaf, blue, $0, reset}
+    '
+    brew leaves | xargs brew deps --installed --for-each | awk "$bluify_deps"
+  }
 
   # Handle brew on multi-user systems.
   _brew_owner="$(stat -f "%Su" "$HOMEBREW_PREFIX" 2>/dev/null)"
