@@ -67,12 +67,14 @@ if ! zstyle -t ':zephyr:plugin:homebrew:alias' skip; then
     brew leaves | xargs brew deps --installed --for-each | awk "$bluify_deps"
   }
 
-  # Handle brew on multi-user systems.
-  _brew_owner="$(stat -f "%Su" "$HOMEBREW_PREFIX" 2>/dev/null)"
-  if [[ -n "$_brew_owner" ]] && [[ "$(whoami)" != "$_brew_owner" ]]; then
-    alias brew="sudo -Hu '$_brew_owner' brew"
+  # Handle brew on multi-user Apple silicon.
+  if [[ "$HOMEBREW_PREFIX" == /opt/homebrew ]]; then
+    _brew_owner="$(stat -f "%Su" "$HOMEBREW_PREFIX" 2>/dev/null)"
+    if [[ -n "$_brew_owner" ]] && [[ "$(whoami)" != "$_brew_owner" ]]; then
+      alias brew="sudo -Hu '$_brew_owner' brew"
+    fi
+    unset _brew_owner
   fi
-  unset _brew_owner
 fi
 
 #region MARK LOADED
