@@ -118,7 +118,7 @@ Zephyr is a derivative work of the following great projects:
 - [zsh-utils][zsh-utils] - [MIT License][zsh-utils-license]
 - [Oh-My-Zsh][ohmyzsh] - [MIT License][ohmyzsh-license]
 
-[antidote]:           https://getantidote.github.io
+[antidote]:           https://antidote.sh
 [ohmyzsh]:            https://github.com/ohmyzsh/ohmyzsh
 [ohmyzsh-license]:    https://github.com/ohmyzsh/ohmyzsh/blob/master/LICENSE.txt
 [prezto]:             https://github.com/sorin-ionescu/prezto
