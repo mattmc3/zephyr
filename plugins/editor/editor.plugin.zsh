@@ -101,13 +101,13 @@ function update-cursor-style {
   fi
 
   if bindkey -lL main | grep viins > /dev/null; then
-    # For vi-mode we
+    # For vi-mode we use a line for insert mode and block for normal
     case $KEYMAP in
       vicmd)      printf '\e[2 q';;
       viins|main) printf '\e[6 q';;
     esac
-  else
-    # If we're in emacs mode, we always want a line cursor
+  elif ! zstyle -t ':zephyr:plugin:editor:emacs:cursor' block; then
+    # If we're in emacs mode, use a line cursor by default
     printf '\e[6 q'
   fi
 }
