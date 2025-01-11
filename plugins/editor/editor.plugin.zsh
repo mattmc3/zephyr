@@ -100,6 +100,10 @@ function update-cursor-style {
     return
   fi
 
+  if zstyle -t ':zephyr:plugin:editor' use-block-cursor; then
+    return
+  fi
+
   if bindkey -lL main | grep viins > /dev/null; then
     # For vi-mode we
     case $KEYMAP in
