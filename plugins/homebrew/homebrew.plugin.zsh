@@ -69,7 +69,7 @@ if ! zstyle -t ':zephyr:plugin:homebrew:alias' skip; then
 
   # Handle brew on multi-user Apple silicon.
   if [[ "$HOMEBREW_PREFIX" == /opt/homebrew ]]; then
-    _brew_owner="$(stat -f "%Su" "$HOMEBREW_PREFIX" 2>/dev/null)"
+    _brew_owner="$(/usr/bin/stat -f "%Su" "$HOMEBREW_PREFIX" 2>/dev/null)"
     if [[ -n "$_brew_owner" ]] && [[ "$(whoami)" != "$_brew_owner" ]]; then
       alias brew="sudo -Hu '$_brew_owner' brew"
     fi
