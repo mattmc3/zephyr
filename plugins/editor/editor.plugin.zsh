@@ -102,21 +102,13 @@ function update-cursor-style {
 
   local style esc
 
-  if bindkey -lL main | grep viins > /dev/null; then
-    # For vi-mode we use a line for insert mode and block for normal
-    case $KEYMAP in
-      vicmd)
-        zstyle -s ':zephyr:plugin:editor:vicmd' cursor style \
-          || style=block
-        ;;
-      viins|main)
-        zstyle -s ':zephyr:plugin:editor:viins' cursor style \
-          || style=line
-        ;;
+  # Try to get style for the current keymap, fallback to sensible defaults
+  zstyle -s ":zephyr:plugin:editor:$KEYMAP" cursor style
+  if [[ -z "$style" ]]; then
+    case "$KEYMAP" in
+      emacs|viins) style=line ;;
+      *)           style=block ;;
     esac
-  else
-    zstyle -s ':zephyr:plugin:editor:emacs' cursor style \
-      || style=line
   fi
 
   case $style in
@@ -126,7 +118,7 @@ function update-cursor-style {
     *)          esc='\e[6 q' ;; # default to line
   esac
 
-  printf "$esc"
+  printf "%s" "$esc"
 }
 zle -N update-cursor-style
 
