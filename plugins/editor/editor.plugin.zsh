@@ -118,7 +118,7 @@ function update-cursor-style {
     *)          esc='\e[6 q' ;; # default to line
   esac
 
-  printf "%s" "$esc"
+  printf "$esc"
 }
 zle -N update-cursor-style
 
