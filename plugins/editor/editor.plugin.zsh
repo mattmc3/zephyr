@@ -100,16 +100,33 @@ function update-cursor-style {
     return
   fi
 
+  local style esc
+
   if bindkey -lL main | grep viins > /dev/null; then
     # For vi-mode we use a line for insert mode and block for normal
     case $KEYMAP in
-      vicmd)      printf '\e[2 q';;
-      viins|main) printf '\e[6 q';;
+      vicmd)
+        zstyle -s ':zephyr:plugin:editor:vicmd' cursor style \
+          || style=block
+        ;;
+      viins|main)
+        zstyle -s ':zephyr:plugin:editor:viins' cursor style \
+          || style=line
+        ;;
     esac
-  elif ! zstyle -t ':zephyr:plugin:editor:emacs:cursor' block; then
-    # If we're in emacs mode, use a line cursor by default
-    printf '\e[6 q'
+  else
+    zstyle -s ':zephyr:plugin:editor:emacs' cursor style \
+      || style=line
   fi
+
+  case $style in
+    block)      esc='\e[2 q' ;;
+    underscore) esc='\e[4 q' ;;
+    line)       esc='\e[6 q' ;;
+    *)          esc='\e[6 q' ;; # default to line
+  esac
+
+  printf "$esc"
 }
 zle -N update-cursor-style
 
