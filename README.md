@@ -44,6 +44,7 @@ If your plugin manager supports using sub-plugins, you can load Zephyr that way 
 # pick only the plugins you want and remove the rest
 mattmc3/zephyr path:plugins/color
 mattmc3/zephyr path:plugins/completion
+mattmc3/zephyr path:plugins/compstyle
 mattmc3/zephyr path:plugins/confd
 mattmc3/zephyr path:plugins/directory
 mattmc3/zephyr path:plugins/editor
