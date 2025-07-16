@@ -100,25 +100,23 @@ function update-cursor-style {
     return
   fi
 
-  local style esc
+  local style
 
   # Try to get style for the current keymap, fallback to sensible defaults
   zstyle -s ":zephyr:plugin:editor:$KEYMAP" cursor style
   if [[ -z "$style" ]]; then
     case "$KEYMAP" in
-      emacs|viins) style=line ;;
-      *)           style=block ;;
+      main|emacs|viins) style=line ;;
+      *)                style=block ;;
     esac
   fi
 
+  # Print the cursor style, or do nothing and use the default.
   case $style in
-    block)      esc='\e[2 q' ;;
-    underscore) esc='\e[4 q' ;;
-    line)       esc='\e[6 q' ;;
-    *)          esc='\e[6 q' ;; # default to line
+    block)      printf '\e[2 q' ;;
+    underscore) printf '\e[4 q' ;;
+    line)       printf '\e[6 q' ;;
   esac
-
-  printf "$esc"
 }
 zle -N update-cursor-style
 
