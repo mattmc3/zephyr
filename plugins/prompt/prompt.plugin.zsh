@@ -88,8 +88,8 @@ function run_promptinit {
   fi
 }
 
-# Allow the user to bypass the confd deferral and run it immediately. Otherwise, we
-# hook run_confd to the custom post_zshrc event.
+# Allow the user to bypass the promptinit deferral and run it immediately.
+# Otherwise, we hook run_promptinit to the custom post_zshrc event.
 if zstyle -t ':zephyr:plugin:prompt' immediate; then
   run_promptinit || return 1
 else
