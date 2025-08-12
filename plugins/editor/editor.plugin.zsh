@@ -252,7 +252,7 @@ function magic-enter {
 
 # Wrapper for the accept-line zle widget (run when pressing Enter)
 # If the wrapper already exists don't redefine it
-if (( ! ${+functions[_magic-enter_accept-line]} )); then
+if (( ! ${+functions[_magic-enter_accept-line]} )) && zstyle -t ':zephyr:plugin:editor' magic-enter; then
   case "$widgets[accept-line]" in
     # Override the current accept-line widget, calling the old one
     user:*) zle -N _magic-enter_orig_accept-line "${widgets[accept-line]#user:}"
