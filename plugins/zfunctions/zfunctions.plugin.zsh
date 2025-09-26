@@ -15,6 +15,7 @@ function autoload-dir {
   local zdir
   local -a zautoloads
   for zdir in $@; do
+    zdir="${zdir:A}"
     [[ -d "$zdir" ]] || continue
     fpath=("$zdir" $fpath)
     zautoloads=($zdir/*~_*(N.:t))
@@ -55,7 +56,7 @@ function funced {
   if (( $# == 0 )); then
     echo >&2 "funced: Expected at least 1 args, got only 0."
     return 1
-  elif [[ ! -d "$ZFUNCDIR" ]]; then
+  elif [[ ! -d "${ZFUNCDIR:A}" ]]; then
     echo >&2 "funced: Directory not found '$ZFUNCDIR'."
     return 1
   fi
@@ -103,8 +104,8 @@ if [[ -z "$ZFUNCDIR" ]]; then
 fi
 
 # Autoload ZFUNCDIR.
-if [[ -d "$ZFUNCDIR" ]]; then
-  autoload-dir $ZFUNCDIR(N/) $ZFUNCDIR/*(N/)
+if [[ -d "${ZFUNCDIR:A}" ]]; then
+  autoload-dir ${ZFUNCDIR:A} ${ZFUNCDIR:A}/*(N)
 fi
 
 #region MARK LOADED
