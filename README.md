@@ -97,7 +97,11 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 ## Customization
 
-Zephyr uses Zsh's zstyles to let you easily customize your config. Unlike environment variables which pollute your environment, zstyles make it easy to handle more robust configuration. The customizations are detailed below.
+Zephyr uses Zsh's zstyles to let you easily customize your config. Unlike environment variables which pollute your environment, zstyles make it easy to handle more robust configuration.
+
+**Reminder:** `zstyle` settings need to be set prior to loading Zepyr.
+
+The customizations are detailed below.
 
 ### Common
 
