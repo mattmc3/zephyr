@@ -101,23 +101,23 @@ Zephyr uses Zsh's zstyles to let you easily customize your config. Unlike enviro
 
 ### Common
 
-To selectively load any plugins when sourcing zephyr.plugin.zsh directly:
+To selectively load plugins when sourcing zephyr.plugin.zsh directly:
 
 ```zsh
-# skip yes/no
-zstyle ':zephyr:plugin:color' skip no
-zstyle ':zephyr:plugin:completion' skip no
-zstyle ':zephyr:plugin:compstyle' skip no
-zstyle ':zephyr:plugin:confd' skip yes
-zstyle ':zephyr:plugin:directory' skip no
-zstyle ':zephyr:plugin:editor' skip no
-zstyle ':zephyr:plugin:environment' skip no
-zstyle ':zephyr:plugin:history' skip no
-zstyle ':zephyr:plugin:homebrew' skip yes
-zstyle ':zephyr:plugin:macos' skip yes
-zstyle ':zephyr:plugin:prompt' skip no
-zstyle ':zephyr:plugin:utility' skip no
-zstyle ':zephyr:plugin:zfunctions' skip yes
+zstyle ':zephyr:load' plugins \
+  color \
+  completion \
+  compstyle \
+  confd \
+  directory \
+  editor \
+  environment \
+  history \
+  homebrew \
+  macos \
+  prompt \
+  utility \
+  zfunctions
 ```
 
 To use your home directory instead of using [XDG Base Directories][xdg-base-dirs]:
