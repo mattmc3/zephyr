@@ -157,14 +157,14 @@ function zle-keymap-select {
 zle -N zle-keymap-select
 
 # Expands .... to ../..
-function expand-dot-to-parent-directory-path {
+function dot-expansion {
   if [[ $LBUFFER = *.. ]]; then
     LBUFFER+='/..'
   else
     LBUFFER+='.'
   fi
 }
-zle -N expand-dot-to-parent-directory-path
+zstyle -T ':zephyr:plugin:editor' 'dot-expansion' && zle -N dot-expansion
 
 # Inserts 'sudo ' at the beginning of the line.
 function prepend-sudo {
@@ -173,7 +173,7 @@ function prepend-sudo {
     (( CURSOR += 5 ))
   fi
 }
-zle -N prepend-sudo
+zstyle -T ':zephyr:plugin:editor' 'prepend-sudo' && zle -N prepend-sudo
 
 # Expand aliases
 function glob-alias {
@@ -191,7 +191,7 @@ function glob-alias {
   fi
   zle self-insert
 }
-zle -N glob-alias
+zstyle -T ':zephyr:plugin:editor' 'glob-alias' && zle -N glob-alias
 
 # Toggle the comment character at the start of the line. This is meant to work
 # around a buggy implementation of pound-insert in zsh.
@@ -212,7 +212,7 @@ function pound-toggle {
     (( CURSOR += 1 ))
   fi
 }
-zle -N pound-toggle
+zstyle -T ':zephyr:plugin:editor' 'pound-toggle' && zle -N pound-toggle
 
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/fancy-ctrl-z/fancy-ctrl-z.plugin.zsh
 # https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
@@ -225,7 +225,7 @@ function symmetric-ctrl-z {
     zle clear-screen -w
   fi
 }
-zle -N symmetric-ctrl-z
+zstyle -T ':zephyr:plugin:editor' 'symmetric-ctrl-z' && zle -N symmetric-ctrl-z
 
 # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/magic-enter
 (( $+functions[magic-enter-cmd] )) ||
@@ -250,23 +250,25 @@ function magic-enter {
   BUFFER=$(magic-enter-cmd)
 }
 
-# Wrapper for the accept-line zle widget (run when pressing Enter)
-# If the wrapper already exists don't redefine it
-if (( ! ${+functions[_magic-enter_accept-line]} )); then
-  case "$widgets[accept-line]" in
-    # Override the current accept-line widget, calling the old one
-    user:*) zle -N _magic-enter_orig_accept-line "${widgets[accept-line]#user:}"
-      function _magic-enter_accept-line {
-        magic-enter
-        zle _magic-enter_orig_accept-line -- "$@"
-      } ;;
-    # If no user widget defined, call the original accept-line widget
-    builtin) function _magic-enter_accept-line {
-        magic-enter
-        zle .accept-line
-      } ;;
-  esac
-  zle -N accept-line _magic-enter_accept-line
+if zstyle -T ':zephyr:plugin:editor' 'magic-enter'; then
+  # Wrapper for the accept-line zle widget (run when pressing Enter)
+  # If the wrapper already exists don't redefine it
+  if (( ! ${+functions[_magic-enter_accept-line]} )); then
+    case "$widgets[accept-line]" in
+      # Override the current accept-line widget, calling the old one
+      user:*) zle -N _magic-enter_orig_accept-line "${widgets[accept-line]#user:}"
+        function _magic-enter_accept-line {
+          magic-enter
+          zle _magic-enter_orig_accept-line -- "$@"
+        } ;;
+      # If no user widget defined, call the original accept-line widget
+      builtin) function _magic-enter_accept-line {
+          magic-enter
+          zle .accept-line
+        } ;;
+    esac
+    zle -N accept-line _magic-enter_accept-line
+  fi
 fi
 
 #

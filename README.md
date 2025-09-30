@@ -95,6 +95,65 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 - **utility** - Common shell utilities, aimed at making cross platform work less painful
 - **zfunctions** - Lazy load a Fish-like functions directory
 
+## Customization
+
+Zephyr uses Zsh's zstyles to let you easily customize your config. Unlike environment variables which pollute your environment, zstyles make it easy to handle more robust configuration. The customizations are detailed below.
+
+### Common
+
+To selectively load any plugins when sourcing zephyr.plugin.zsh directly:
+
+```zsh
+# skip yes/no
+zstyle ':zephyr:plugin:color' skip no
+zstyle ':zephyr:plugin:completion' skip no
+zstyle ':zephyr:plugin:compstyle' skip no
+zstyle ':zephyr:plugin:confd' skip yes
+zstyle ':zephyr:plugin:directory' skip no
+zstyle ':zephyr:plugin:editor' skip no
+zstyle ':zephyr:plugin:environment' skip no
+zstyle ':zephyr:plugin:history' skip no
+zstyle ':zephyr:plugin:homebrew' skip yes
+zstyle ':zephyr:plugin:macos' skip yes
+zstyle ':zephyr:plugin:prompt' skip no
+zstyle ':zephyr:plugin:utility' skip no
+zstyle ':zephyr:plugin:zfunctions' skip yes
+```
+
+To use your home directory instead of using [XDG Base Directories][xdg-base-dirs]:
+
+```zsh
+zstyle ':zephyr:plugin:*' use-xdg-basedirs no
+```
+
+### conf.d
+
+Change the confd directory used for conf.d:
+
+```zsh
+':zephyr:plugin:confd' directory ${HOME:-$ZDOTDIR}/.zshrc.d
+```
+
+### editor
+
+Disable editor features with 'no'. Features are enabled by default:
+
+```zsh
+zstyle ':zephyr:plugin:editor' 'prepend-sudo' yes
+zstyle ':zephyr:plugin:editor' 'glob-alias' no
+zstyle ':zephyr:plugin:editor' 'magic-enter' no
+zstyle ':zephyr:plugin:editor' 'pound-toggle' yes
+zstyle ':zephyr:plugin:editor' 'symmetric-ctrl-z' no
+```
+
+### zfunctions
+
+Change the zfunctions directory:
+
+```zsh
+':zephyr:plugin:zfunctions' directory ${HOME:-$ZDOTDIR}/.zfuncs
+```
+
 ## Why don't you include...
 
 _Q: Why don't you include programming language plugins (eg: Python, Ruby)?_ \
@@ -119,12 +178,13 @@ Zephyr is a derivative work of the following great projects:
 - [zsh-utils][zsh-utils] - [MIT License][zsh-utils-license]
 - [Oh-My-Zsh][ohmyzsh] - [MIT License][ohmyzsh-license]
 
-[antidote]:           https://antidote.sh
-[ohmyzsh]:            https://github.com/ohmyzsh/ohmyzsh
-[ohmyzsh-license]:    https://github.com/ohmyzsh/ohmyzsh/blob/master/LICENSE.txt
-[prezto]:             https://github.com/sorin-ionescu/prezto
-[prezto-license]:     https://github.com/sorin-ionescu/prezto/blob/master/LICENSE
-[zsh-utils]:          https://github.com/belak/zsh-utils
-[zsh-utils-license]:  https://github.com/belak/zsh-utils/blob/main/LICENSE
-[terminal-img]:       https://raw.githubusercontent.com/mattmc3/zephyr/resources/img/terminal.png
-[starship]:           https://starship.rs
+[antidote]: https://antidote.sh
+[ohmyzsh]: https://github.com/ohmyzsh/ohmyzsh
+[ohmyzsh-license]: https://github.com/ohmyzsh/ohmyzsh/blob/master/LICENSE.txt
+[prezto]: https://github.com/sorin-ionescu/prezto
+[prezto-license]: https://github.com/sorin-ionescu/prezto/blob/master/LICENSE
+[zsh-utils]: https://github.com/belak/zsh-utils
+[zsh-utils-license]: https://github.com/belak/zsh-utils/blob/main/LICENSE
+[terminal-img]: https://raw.githubusercontent.com/mattmc3/zephyr/resources/img/terminal.png
+[starship]: https://starship.rs
+[xdg-base-dirs]: https://specifications.freedesktop.org/basedir-spec/latest/
