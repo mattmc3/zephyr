@@ -101,23 +101,24 @@ Zephyr uses Zsh's zstyles to let you easily customize your config. Unlike enviro
 
 ### Common
 
-To selectively load plugins when sourcing zephyr.plugin.zsh directly:
+To selectively load plugins when sourcing zephyr.plugin.zsh directly, use the `zstyle ':zephyr:load' plugins ...` array. Order matters.
 
 ```zsh
 zstyle ':zephyr:load' plugins \
+  environment \
+  homebrew \
   color \
-  completion \
   compstyle \
-  confd \
+  completion \
   directory \
   editor \
-  environment \
+  helper \
   history \
-  homebrew \
-  macos \
   prompt \
   utility \
-  zfunctions
+  zfunctions \
+  macos \
+  confd
 ```
 
 To use your home directory instead of using [XDG Base Directories][xdg-base-dirs]:
