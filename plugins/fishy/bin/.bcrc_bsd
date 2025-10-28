@@ -1,0 +1,34 @@
+# https://man.freebsd.org/cgi/man.cgi?query=bc&sektion=1
+
+define npr(n, r) {
+  return perm(n, r)
+}
+
+define ncr(n, r) {
+  return comb(n, r)
+}
+
+define fac(n) {
+  return f(n);
+}
+
+define floor(x) {
+  scale=0
+  return x/1
+}
+
+define min(n, m) {
+  if (n < m) return n;
+  return m;
+}
+
+define max(n, m) {
+  if (n < m) return (m);
+  return n;
+}
+
+define pow(x, y) {
+  return p(x, y)
+}
+
+# vim: ft=bc

@@ -1,0 +1,73 @@
+#!/bin/sh
+##? math - perform mathematics calculations
+# Description:
+#   A POSIX implementation of Fish's math utility
+#   https://fishshell.com/docs/current/cmds/math.html
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" 2>/dev/null && pwd)"
+
+SCALE=
+BASE=
+
+# Parse options
+while [ $# -gt 0 ]; do
+  case $1 in
+    --) shift; break ;;
+    -s|--scale)
+      shift
+      [ $# -gt 0 ] || { printf '%s\n' "math: missing argument for $1" >&2; exit 2; }
+      SCALE=$1
+      shift
+      ;;
+    -s[0-9]*)
+      SCALE=${1#-s}
+      shift
+      ;;
+    -s=*|--scale=*)
+      SCALE=${1#*=}
+      shift
+      ;;
+    -b|--base)
+      shift
+      [ $# -gt 0 ] || { printf '%s\n' "math: missing argument for $1" >&2; exit 2; }
+      BASE=$1
+      shift
+      ;;
+    -b[0-9]*)
+      BASE=${1#-b}
+      shift
+      ;;
+    -b=*|--base=*)
+      BASE=${1#*=}
+      shift
+      ;;
+    -*)
+      # Treat unknown -foo as start of expression (e.g., negative numbers).
+      break
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+# Collect piped input
+if ! [ -t 0 ]; then
+  while IFS= read -r LINE || [ -n "$LINE" ]; do
+    set -- "$@" "$LINE"
+  done
+fi
+
+FORMULA="$*"
+if [ -n "$BASE" ]; then
+  FORMULA="obase=$BASE; $FORMULA"
+fi
+if [ -n "$SCALE" ]; then
+  FORMULA="scale=$SCALE; $FORMULA"
+fi
+
+${BC_CMD:-bc} -V > /dev/null 2>&1 \
+&& BCRC="$SCRIPT_DIR"/.bcrc_bsd \
+|| BCRC="$SCRIPT_DIR"/.bcrc_gnu
+
+printf '%s\n' "$FORMULA" | bc -l "$BCRC"
