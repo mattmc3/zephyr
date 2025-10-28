@@ -1,0 +1,4 @@
+#!/bin/sh
+
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" 2>/dev/null && pwd)
+"$SCRIPT_DIR"/string-transform upper "$@"

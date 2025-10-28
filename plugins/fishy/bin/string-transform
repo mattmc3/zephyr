@@ -1,0 +1,62 @@
+#!/bin/sh
+# shellcheck disable=SC3043
+
+# string upper [-q | --quiet] [STRING ...]
+# string lower [-q | --quiet] [STRING ...]
+
+die()  { ERR=$1; shift; warn "$*"; exit "$ERR"; }
+warn() { printf '%s\n' "$*" >&2; }
+say()  { printf '%s\n' "$@"; }
+usage() {
+  say "string $ACTION [-h | --help] [-q | --quiet] [STRING ...]"
+}
+
+ACTION="$1"
+case "$ACTION" in
+  lower|upper) shift ;;
+  *) die 2 "string transform: unknown transform '$ACTION'." ;;
+esac
+
+# Parse options.
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    -q|--quiet)
+      say() { :; }
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      die 2 "string transform: unknown option '$1'."
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+# Collect piped input
+if ! [ -t 0 ]; then
+  while IFS= read -r LINE || [ -n "$LINE" ]; do
+    set -- "$@" "$LINE"
+  done
+fi
+
+# Transform strings and return success only if any were transformed.
+ERR=1
+for STR in "$@"; do
+  if [ "$ACTION" = "upper" ]; then
+    NEWSTR="$(printf '%s\n' "$STR" | tr "[:lower:]" "[:upper:]")"
+  else
+    NEWSTR="$(printf '%s\n' "$STR" | tr "[:upper:]" "[:lower:]")"
+  fi
+  [ "$STR" != "$NEWSTR" ] && ERR=0
+  say "$NEWSTR"
+done
+[ "$ERR" -eq 0 ] || exit "$ERR"

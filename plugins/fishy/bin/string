@@ -1,0 +1,60 @@
+#!/bin/sh
+# shellcheck disable=SC3043
+
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" 2>/dev/null && pwd)
+
+die()  { ERR=$1; shift; warn "$*"; exit "$ERR"; }
+warn() { printf '%s\n' "$*" >&2; }
+say()  { printf '%s\n' "$@"; }
+
+usage() {
+  say "NAME"
+  say "       string - manipulate strings"
+  say ""
+  say "SYNOPSIS"
+  # say "       string collect [-a | --allow-empty] [-N | --no-trim-newlines] [STRING ...]"
+  # say "       string escape [-n | --no-quoted] [--style=] [STRING ...]"
+  # say "       string join [-q | --quiet] [-n | --no-empty] SEP [STRING ...]"
+  # say "       string join0 [-q | --quiet] [STRING ...]"
+  # say "       string length [-q | --quiet] [STRING ...]"
+  say "       string lower [-q | --quiet] [STRING ...]"
+  # say "       string match [-a | --all] [-e | --entire] [-i | --ignore-case]"
+  # say "                    [-g | --groups-only] [-r | --regex] [-n | --index]"
+  # say "                    [-q | --quiet] [-v | --invert]"
+  # say "                    PATTERN [STRING ...]"
+  # say "       string pad [-r | --right] [(-c | --char) CHAR] [(-w | --width) INTEGER]"
+  # say "                  [STRING ...]"
+  # say "       string repeat [(-n | --count) COUNT] [(-m | --max) MAX] [-N | --no-newline]"
+  # say "                     [-q | --quiet] [STRING ...]"
+  # say "       string repeat [-N | --no-newline] [-q | --quiet] COUNT [STRING ...]"
+  # say "       string replace [-a | --all] [-f | --filter] [-i | --ignore-case]"
+  # say "                      [-r | --regex] [-q | --quiet] PATTERN REPLACE [STRING ...]"
+  # say "       string shorten [(-c | --char) CHARS] [(-m | --max) INTEGER]"
+  # say "                      [-N | --no-newline] [-l | --left] [-q | --quiet] [STRING ...]"
+  # say "       string split [(-f | --fields) FIELDS] [(-m | --max) MAX] [-n | --no-empty]"
+  # say "                    [-q | --quiet] [-r | --right] SEP [STRING ...]"
+  # say "       string split0 [(-f | --fields) FIELDS] [(-m | --max) MAX] [-n | --no-empty]"
+  # say "                     [-q | --quiet] [-r | --right] [STRING ...]"
+  # say "       string sub [(-s | --start) START] [(-e | --end) END] [(-l | --length) LENGTH]"
+  # say "                  [-q | --quiet] [STRING ...]"
+  # say "       string trim [-l | --left] [-r | --right] [(-c | --chars) CHARS]"
+  # say "                   [-q | --quiet] [STRING ...]"
+  # say "       string unescape [--style=] [STRING ...]"
+  say "       string upper [-q | --quiet] [STRING ...]"
+}
+
+# Check usage.
+if [ "$1" = -h ] || [ "$1" = --help ]; then
+  usage
+  exit 0
+elif [ -z "$1" ]; then
+  die 2 'string: missing subcommand'
+fi
+
+# Run string subcommand
+STRCMD="string-${1}"
+shift
+if [ ! -e "${SCRIPT_DIR}/${STRCMD}" ]; then
+  die 2 "string: invalid subcommand '${1}'."
+fi
+"${SCRIPT_DIR}/${STRCMD}" "$@" || exit $?
