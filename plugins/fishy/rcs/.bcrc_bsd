@@ -1,4 +1,9 @@
+# BSD and macOS bc utility
 # https://man.freebsd.org/cgi/man.cgi?query=bc&sektion=1
+
+pi=3.141592653589793
+tau=6.283185307179586
+e=2.718281828459045
 
 define npr(n, r) {
   return perm(n, r)
@@ -13,18 +18,61 @@ define fac(n) {
 }
 
 define floor(x) {
-  scale=0
-  return x/1
+  return floorf(x, 0)
 }
 
-define min(n, m) {
-  if (n < m) return n;
-  return m;
+define floorf(x, p) {
+  auto oldscale, y
+  oldscale = scale
+  scale = p
+  y = x/1
+  scale = oldscale
+  if (x < 0 && x != y) return y - 1
+  return y
 }
 
-define max(n, m) {
-  if (n < m) return (m);
-  return n;
+define ceil(x) {
+  return ceilf(x, 0)
+}
+
+define ceilf(x, p) {
+  auto oldscale, y
+  oldscale = scale
+  scale = p
+  y = x/1
+  scale = oldscale
+  if (x > 0 && x != y) return y + 1
+  return y
+}
+
+# round to nearest integer
+define round(x) {
+  return r(x, 0)
+}
+
+# round float to scale
+define roundf(x, p) {
+  return r(x, p)
+}
+
+define bitand(a, b) {
+  return band(a, b)
+}
+
+define bitor(a, b) {
+  return bor(a, b)
+}
+
+define bitxor(a, b) {
+  return bxor(a, b)
+}
+
+define log10(n) {
+  return l10(n)
+}
+
+define log2(n) {
+  return l2(n)
 }
 
 define pow(x, y) {

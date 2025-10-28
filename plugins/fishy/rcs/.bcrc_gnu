@@ -1,5 +1,172 @@
+# GNU
 # https://www.gnu.org/software/bc/manual/html_mono/bc.html
-# Define the bc functions that match Fish's math command
+
+# BSD's bc has a lot of helpers. Let's define those for GNU's bc
+#region end common bc funcs
+
+# Calculates x to the power of y, even if y is not an integer, and
+# returns the result to the current scale.
+define p(x, y) {
+  return x^y
+}
+
+# Returns x rounded to p decimal places according to the rounding
+# mode round half away from 0
+define r(x, p) {
+  auto m, old, ret
+  old=scale
+  scale=p
+  m = 10^p
+  if (x >= 0) {
+    ret = (x * m + 0.5) / m
+  } else {
+    ret = (x * m - 0.5) / m
+  }
+  scale=old
+  return ret
+}
+
+# Returns the factorial of the truncated absolute value of x.
+define f(n) {
+  if (n <= 1) return (1);
+  return (f(n-1) * n);
+}
+
+# Returns a if a is greater than b; otherwise, returns b.
+define max(a, b) {
+  if (a < b) return (b);
+  return a;
+}
+
+# Returns a if a is less than b; otherwise, returns b.
+define min(a, b) {
+  if (a < b) return a;
+  return b;
+}
+
+# Returns the permutation of the truncated absolute value of n of
+# the truncated absolute value of k, if k <= n. If not, it
+# returns 0.
+define perm(n, k) {
+  auto res, i
+  res = 1
+  for (i = n - k + 1; i <= n; i++) {
+    res *= i
+  }
+  return res
+}
+
+# Returns the combination of the truncated absolute value of n of
+# the truncated absolute value of k, if k <= n. If not, it
+# returns 0.
+define comb(n, r) {
+  auto num, den, i, g
+  if (r > n - r) r = n - r
+  num = 1
+  den = 1
+  for (i = 1; i <= r; i++) {
+    num *= n - r + i
+    den *= i
+    g = gcd(num, den)
+    if (g > 1) {
+      num /= g
+      den /= g
+    }
+  }
+  return num / den
+}
+
+# Returns the logarithm base 10 of x.
+define l10(x) {
+  return log(x, 10)
+}
+
+# Returns the logarithm base 2 of x.
+define l2(x) {
+  return log(x, 2)
+}
+
+# Returns the logarithm base b of x.
+define log(x, b) {
+  return l(x)/l(b)
+}
+
+# Returns the greatest common divisor (factor) of the truncated
+# absolute value of a and the truncated absolute value of b.
+define gcd(a, b) {
+  if (b == 0) return a;
+  return gcd(b, a % b);
+}
+
+# Takes the truncated absolute value of both a and b and
+# calculates and returns the result of the bitwise and operation
+# between them.
+define band(a, b) {
+  auto x, y, r, p, oldscale
+  oldscale = scale
+  scale = 0
+  x = a/1
+  y = b/1
+  r = 0
+  p = 1
+  while (x > 0 || y > 0) {
+    if ((x % 2 == 1) && (y % 2 == 1)) r += p
+    x /= 2
+    y /= 2
+    p *= 2
+  }
+  scale = oldscale
+  return r
+}
+
+# Takes the truncated absolute value of both a and b and
+# calculates and returns the result of the bitwise or operation
+# between them.
+define bor(a, b) {
+  auto x, y, r, p, oldscale
+  oldscale = scale
+  scale = 0
+  x = a/1
+  y = b/1
+  r = 0
+  p = 1
+  while (x > 0 || y > 0) {
+    if ((x % 2 == 1) || (y % 2 == 1)) r += p
+    x /= 2
+    y /= 2
+    p *= 2
+  }
+  scale = oldscale
+  return r
+}
+
+# Takes the truncated absolute value of both a and b and
+# calculates and returns the result of the bitwise xor operation
+# between them.
+define bxor(a, b) {
+  auto x, y, r, p, oldscale
+  oldscale = scale
+  scale = 0
+  x = a/1
+  y = b/1
+  r = 0
+  p = 1
+  while (x > 0 || y > 0) {
+    if ((x % 2) != (y % 2)) r += p
+    x /= 2
+    y /= 2
+    p *= 2
+  }
+  scale = oldscale
+  return r
+}
+#endregion common bc funcs
+
+# Define Fish-like function names
+
+pi=3.141592653589793
+tau=6.283185307179586
+e=2.718281828459045
 
 define npr(n, r) {
   return perm(n, r)
@@ -14,60 +181,61 @@ define fac(n) {
 }
 
 define floor(x) {
-  scale=0
-  return x/1
+  return floorf(x, 0)
 }
 
-define min(n, m) {
-  if (n < m) return n;
-  return m;
-}
-
-define max(n, m) {
-  if (n < m) return (m);
-  return n;
-}
-
-########################################################################################
-
-define pi(x) {
-  scale=x
-  return 4*a(1)
-}
-
-define ceil(x,y) {
-  scale=0
-  if (x == x/1) return(x)
-  return((x+1)/1)
-}
-
-define f(n) {
-  if (n <= 1) return (1);
-  return (f(n-1) * n);
-}
-
-define min(x,y) {
-  if (x<y) return x
+define floorf(x, p) {
+  auto oldscale, y
+  oldscale = scale
+  scale = p
+  y = x/1
+  scale = oldscale
+  if (x < 0 && x != y) return y - 1
   return y
 }
 
-define max(x,y) {
-  if (x<y) return y
-  return x
+define ceil(x) {
+  return ceilf(x, 0)
 }
 
-define comb(n, r) {
-  scale=0
-  return ( fac(n) / ( (fac(r)*fac(n-r) ) ) )
+define ceilf(x, p) {
+  auto oldscale, y
+  oldscale = scale
+  scale = p
+  y = x/1
+  scale = oldscale
+  if (x > 0 && x != y) return y + 1
+  return y
 }
 
-define perm(n, r) {
-  scale=0
-  return ( fac(n) / fac(n-r) )
+# round to nearest integer
+define round(x) {
+  return r(x, 0)
 }
 
-define sin(n) {
-  return (s(n));
+# round float to scale
+define roundf(x, p) {
+  return r(x, p)
+}
+
+define bitand(a, b) {
+  return band(a, b)
+}
+
+define bitor(a, b) {
+  return bor(a, b)
+}
+
+define bitxor(a, b) {
+  return bxor(a, b)
+}
+
+define log10(n) {
+  return l10(n)
+}
+
+define log2(n) {
+  return l2(n)
 }
 
 define pow(x, y) {
