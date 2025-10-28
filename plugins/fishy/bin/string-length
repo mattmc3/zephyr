@@ -1,0 +1,46 @@
+#!/bin/sh
+
+die()  { ERR=$1; shift; warn "$*"; exit "$ERR"; }
+warn() { printf '%s\n' "$*" >&2; }
+say()  { printf '%s\n' "$@"; }
+usage() {
+  say "string length [-h | --help] [-q | --quiet] [STRING ...]"
+}
+
+# Parse options.
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -h|--help)
+      usage
+      ;;
+    -q|--quiet)
+      say() { :; }
+      break
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      die 2 "string length: unknown option '$1'."
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+# Collect piped input
+if ! [ -t 0 ]; then
+  while IFS= read -r LINE || [ -n "$LINE" ]; do
+    set -- "$@" "$LINE"
+  done
+fi
+
+# Print lengths
+ERR=1
+for STR in "$@"; do
+  [ "${#STR}" -gt 0 ] && ERR=0
+  say "${#STR}"
+done
+[ "$ERR" -eq 0 ] || exit "$ERR"
