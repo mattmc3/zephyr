@@ -4,7 +4,7 @@
 #   A POSIX implementation of Fish's math utility
 #   https://fishshell.com/docs/current/cmds/math.html
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" 2>/dev/null && pwd)"
+PROJECT_DIR="$(cd -- "$(dirname -- "$0")/.." 2>/dev/null && pwd)"
 
 SCALE=
 BASE=
@@ -66,8 +66,9 @@ if [ -n "$SCALE" ]; then
   FORMULA="scale=$SCALE; $FORMULA"
 fi
 
-${BC_CMD:-bc} -V > /dev/null 2>&1 \
-&& BCRC="$SCRIPT_DIR"/.bcrc_bsd \
-|| BCRC="$SCRIPT_DIR"/.bcrc_gnu
+: "${BC_CMD:=bc}"
+"$BC_CMD" -V > /dev/null 2>&1 \
+&& BCRC="$PROJECT_DIR"/rcs/.bcrc_bsd \
+|| BCRC="$PROJECT_DIR"/rcs/.bcrc_gnu
 
-printf '%s\n' "$FORMULA" | bc -l "$BCRC"
+printf '%s\n' "$FORMULA" | "$BC_CMD" -l "$BCRC"
