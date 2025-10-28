@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC3043
 ##? math - perform mathematics calculations
 # Description:
 #   A POSIX implementation of Fish's math utility
@@ -6,69 +7,231 @@
 
 PROJECT_DIR="$(cd -- "$(dirname -- "$0")/.." 2>/dev/null && pwd)"
 
-SCALE=
-BASE=
+die()  { ERR=$1; shift; warn "$*"; exit "$ERR"; }
+warn() { printf '%s\n' "$*" >&2; }
+say()  { printf '%s\n' "$@"; }
 
-# Parse options
-while [ $# -gt 0 ]; do
-  case $1 in
-    --) shift; break ;;
-    -s|--scale)
-      shift
-      [ $# -gt 0 ] || { printf '%s\n' "math: missing argument for $1" >&2; exit 2; }
-      SCALE=$1
-      shift
-      ;;
-    -s[0-9]*)
-      SCALE=${1#-s}
-      shift
-      ;;
-    -s=*|--scale=*)
-      SCALE=${1#*=}
-      shift
-      ;;
-    -b|--base)
-      shift
-      [ $# -gt 0 ] || { printf '%s\n' "math: missing argument for $1" >&2; exit 2; }
-      BASE=$1
-      shift
-      ;;
-    -b[0-9]*)
-      BASE=${1#-b}
-      shift
-      ;;
-    -b=*|--base=*)
-      BASE=${1#*=}
-      shift
-      ;;
-    -*)
-      # Treat unknown -foo as start of expression (e.g., negative numbers).
-      break
-      ;;
-    *)
-      break
-      ;;
-  esac
-done
-
-# Collect piped input
-if ! [ -t 0 ]; then
-  while IFS= read -r LINE || [ -n "$LINE" ]; do
-    set -- "$@" "$LINE"
-  done
-fi
-
-FORMULA="$*"
-if [ -n "$BASE" ]; then
-  FORMULA="obase=$BASE; $FORMULA"
-fi
-if [ -n "$SCALE" ]; then
-  FORMULA="scale=$SCALE; $FORMULA"
-fi
-
+# Configure bc math functions based on capabilities.
 : "${BC_CMD:=bc}"
-"$BC_CMD" -V > /dev/null 2>&1 \
-&& BCRC="$PROJECT_DIR"/rcs/.bcrc_bsd \
-|| BCRC="$PROJECT_DIR"/rcs/.bcrc_gnu
+if command "$BC_CMD" -V > /dev/null 2>&1; then
+  BC_RC="$PROJECT_DIR/rcs/.bcrc_bsd"
+else
+  BC_RC="$PROJECT_DIR/rcs/.bcrc_gnu"
+fi
 
-printf '%s\n' "$FORMULA" | "$BC_CMD" -l "$BCRC"
+usage() {
+  say "math - perform mathematics calculations"
+  say ""
+  say "Usage:"
+  say "    math [(-s | --scale) N] [(-b | --base) BASE] EXPRESSION ..."
+  say ""
+  say "Options:"
+  say "-h, --help"
+  say "    Displays help about using this command."
+  say ""
+  say "-b, --base BASE"
+  say "    Sets the numeric base used for output."
+  say ""
+  say "-s, --scale N"
+  say "    Sets the scale of the result."
+  say ""
+  say "-m, --scale-mode MODE"
+  say "    Sets scale behavior. The MODE can be truncate, round, floor, ceiling. The default"
+  say "    value of scale mode is round with non zero scale and truncate with zero scale."
+}
+
+format_result() {
+  local obase formula_prefix
+  obase="$1"
+  [ -z "$obase" ] || formula_prefix="obase=${obase}; "
+
+  # Add a leading 0 before a decimal, strip trailing zeros, and don't use a
+  # decimal unless it's actually required
+  # Read from stdin, trim/format, and add base prefix if needed
+  while IFS= read -r line; do
+    # Clean up the number (strip trailing zeros, add leading zero if needed)
+    clean=$(printf '%s\n' "${formula_prefix}${line}" |
+      mybc |
+      sed -E \
+        -e 's/^\.([0-9]*)$/0.\1/' \
+        -e 's/(\.[0-9]*[1-9])0+$/\1/' \
+        -e 's/\.0*$//')
+    case "$obase" in
+      16)
+        case "$clean" in
+          -*) printf -- '-0x%s\n' "${clean#-}" ;;
+          *)  printf '0x%s\n' "$clean" ;;
+        esac
+        ;;
+      8)
+        case "$clean" in
+          -*) printf -- '-0%s\n' "${clean#-}" ;;
+          0*) printf '%s\n' "$clean" ;;
+          *)  printf '0%s\n' "$clean" ;;
+        esac
+        ;;
+      2)
+        case "$clean" in
+          -*) printf -- '-0b%s\n' "${clean#-}" ;;
+          *)  printf '0b%s\n' "$clean" ;;
+        esac
+        ;;
+      *)
+        printf '%s\n' "$clean"
+        ;;
+    esac
+  done
+}
+
+mybc() {
+  if [ -n "$1" ]; then
+    printf '%s\n' "$1" | command "$BC_CMD" -l "$BC_RC"
+  else
+    command "$BC_CMD" -l "$BC_RC"
+  fi
+}
+
+math() {
+  local o_scale o_scale_mode o_base
+  local formula_vars formula smooth_formula scale scale_mode err
+
+  # Option parsing loop
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      -b|--base)
+        o_base="$2"; shift 2
+        ;;
+      -b*)
+        o_base="${1#-b}"; shift
+        ;;
+      --base=*)
+        o_base="${1#*=}"; shift
+        ;;
+      -s|--scale)
+        o_scale="$2"; shift 2
+        ;;
+      -s*)
+        o_scale="${1#-s}"; shift
+        ;;
+      --scale=*)
+        o_scale="${1#*=}"; shift
+        ;;
+      -m|--scale-mode)
+        o_scale_mode="$2"; shift 2
+        ;;
+      -m*)
+        o_scale_mode="${1#-s}"; shift
+        ;;
+      --scale-mode=*)
+        o_scale_mode="${1#*=}"; shift
+        ;;
+      --)
+        shift; break
+        ;;
+      --*)
+        die 2 "math: unknown option '$1'."
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  # Set the scale mode.
+  if [ -n "$o_scale_mode"  ]; then
+    case "$o_scale_mode" in
+      truncate|round|floor|ceilings)
+        scale_mode="$o_scale_mode"
+        ;;
+      *)
+        die 2 "math: invalid mode '$o_scale_mode'."
+    esac
+  elif [ "${o_scale:-6}" = 0 ]; then
+    scale_mode=truncate
+  else
+    scale_mode=round
+  fi
+
+  # Set the scale.
+  scale=6
+  if [ "$o_scale" = max ]; then
+    scale=15
+  elif [ -n "$o_scale" ]; then
+    if ! [ "$o_scale" -ge 0 ] 2>/dev/null; then
+      printf >&2 'math: %s: invalid scale\n' "$o_scale"
+      return 2
+    fi
+    scale="$o_scale"
+  else
+    # modulo needs scale to be 0
+    case "$*" in
+      *%*) scale=0; scale_mode=truncate ;;
+    esac
+  fi
+
+  # Set scale variable. Add precision for now if rounding.
+  if [ -n "$scale" ]; then
+    if [ "$scale_mode" = round ]; then
+      formula_vars="scale=$((scale + 1)); ${formula_vars}"
+    else
+      formula_vars="scale=${scale}; ${formula_vars}"
+    fi
+  fi
+
+  # Set base.
+  if [ -n "$o_base" ]; then
+    case "$o_base" in
+      2|binary)
+        o_base=2
+        ;;
+      8|octal)
+        o_base=8
+        ;;
+      16|hex)
+        o_base=16
+        ;;
+      *)
+        die 2 "math: invalid base value '$o_base'."
+    esac
+  fi
+
+  # Contruct a formula from the remaining args.
+  if [ $# -eq 0 ]; then
+    die 1 "math: expected >= 1 arguments; got 0"
+  fi
+  formula="$*"
+
+  # Do math.
+  result="$(mybc "${formula_vars}${formula}" 2>&1)"
+  err=$?
+  case "$result" in
+    *error*|*illegal*) err=2 ;;
+  esac
+  if [ $err -ne 0 ]; then
+    printf "math: error in formula: '%s'\n" "$formula"
+    printf '%s\n' "$result"
+    return 1
+  fi
+
+  # Smooth the result.
+  if [ "$scale_mode" = round ]; then
+    # We got a real number, so now we need to round.
+    smooth_formula="roundf($result, ${scale:-0})"
+  elif [ "$scale_mode" = truncate ] && [ -n "$o_scale" ]; then
+    # A scale was provided, and bc only applies it on division. We may not have
+    # divided, so apply the scale now.
+    smooth_formula="scale=$scale; $result / 1.0"
+  fi
+
+  # Format the result.
+  if [ -n "$smooth_formula" ]; then
+    mybc "$smooth_formula" | format_result "$o_base"
+  else
+    printf '%s\n' "$result" | format_result "$o_base"
+  fi
+}
+math "$@"
