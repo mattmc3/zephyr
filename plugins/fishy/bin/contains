@@ -1,0 +1,28 @@
+#!/bin/sh
+##? contains - test if a word is present in a list
+# Description:
+#   A POSIX implementation of Fish's contains utility
+#   https://fishshell.com/docs/current/cmds/contains.html
+
+O_INDEX=
+if [ "$1" = "-i" ] || [ "$1" = "--index" ]; then
+  shift
+  O_INDEX=1
+fi
+
+if [ "$#" -eq 0 ]; then
+  printf '%s\n' "contains: key not specified" >&2
+  return 1
+fi
+
+KEY="$1"
+shift
+INDEX=0
+for VAL in "$@"; do
+  INDEX=$(( INDEX + 1 ))
+  if [ "$VAL" = "$KEY" ]; then
+    [ -n "$O_INDEX" ] && printf '%s\n' $INDEX
+    exit 0
+  fi
+done
+exit 1
