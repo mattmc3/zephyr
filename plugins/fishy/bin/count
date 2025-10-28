@@ -8,7 +8,7 @@ REPLY="$#"
 
 # count piped/redirected input
 if ! [ -t 0 ]; then
-  while IFS= read -r DATA || [ -n "$DATA" ]; do
+  while IFS= read -r _; do
     REPLY=$((REPLY + 1))
   done
 fi
