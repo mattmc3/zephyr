@@ -4,16 +4,49 @@
 #   A POSIX implementation of Fish's contains utility
 #   https://fishshell.com/docs/current/cmds/contains.html
 
-O_INDEX=
-if [ "$1" = "-i" ] || [ "$1" = "--index" ]; then
-  shift
-  O_INDEX=1
-fi
+die()  { ERR=$1; shift; warn "$*"; exit "$ERR"; }
+warn() { printf '%s\n' "$*" >&2; }
+say()  { printf '%s\n' "$@"; }
+usage() {
+  say "contains - test if a word is present in a list"
+  say ""
+  say "Usage:"
+  say "    contains [OPTIONS] KEY [VALUES ...]"
+  say ""
+  say "Options:"
+  say "-i, --index"
+  say "    Print the index (number of the element in the set) of the first matching element."
+  say ""
+  say "-h, --help"
+  say "    Displays help about using this command."
+}
 
-if [ "$#" -eq 0 ]; then
-  printf '%s\n' "contains: key not specified" >&2
-  return 1
-fi
+O_INDEX=
+# Parse options.
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    -i|--index)
+      O_INDEX=1
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      die 2 "string transform: unknown option '$1'."
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+[ "$#" -gt 0 ] || die 1 "contains: key not specified"
 
 KEY="$1"
 shift
@@ -21,7 +54,7 @@ INDEX=0
 for VAL in "$@"; do
   INDEX=$(( INDEX + 1 ))
   if [ "$VAL" = "$KEY" ]; then
-    [ -n "$O_INDEX" ] && printf '%s\n' $INDEX
+    [ -n "$O_INDEX" ] && say $INDEX
     exit 0
   fi
 done
