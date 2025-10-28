@@ -1,0 +1,134 @@
+#!/bin/sh
+
+die()  { ERR=$1; shift; warn "$*"; exit "$ERR"; }
+warn() { printf '%s\n' "$*" >&2; }
+say()  { printf '%s\n' "$@"; }
+usage() {
+  say "string match [-a | --all] [-e | --entire] [-i | --ignore-case]"
+  say "             [-g | --groups-only] [-r | --regex] [-n | --index]"
+  say "             [-q | --quiet] [-v | --invert]"
+  say "             PATTERN [STRING ...]"
+}
+
+# Grep wrapper (export GREP_CMD to override, defaults to grep)
+: "${GREP_CMD:=grep}"
+mygrep() {
+  command "$GREP_CMD" "$@"
+}
+
+# Convert glob pattern to extended regex
+glob_to_regex() {
+  # shellcheck disable=SC2016
+  # Escape special characters, convert * to .*, convert ? to .
+  printf '%s' "$1" | sed \
+    -e 's/[\.^$(){}+|\\]/\\&/g' \
+    -e 's/\*/\.\*/g' \
+    -e 's/?/\./g'
+}
+
+# Parse options.
+O_ALL=; O_ENTIRE=; O_HELP=; O_IGNORE_CASE=; O_GROUPS_ONLY=; O_REGEX=; O_INDEX=; O_INVERT=; O_QUIET=;
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --all)          O_ALL=1; shift; continue ;;
+    --entire)       O_ENTIRE=1; shift; continue ;;
+    --groups-only)  O_GROUPS_ONLY=1; shift; continue ;;
+    --help)         O_HELP=1; shift; continue ;;
+    --ignore-case)  O_IGNORE_CASE=1; shift; continue ;;
+    --index)        O_INDEX=1; shift; continue ;;
+    --invert)       O_INVERT=1; shift; continue ;;
+    --quiet)        O_QUIET=1; shift; continue ;;
+    --regex)        O_REGEX=1; shift; continue ;;
+    -[aeghinqrv]*)
+      OPTS=${1#-}
+      # Consume bundled short options like -ain
+      while [ -n "$OPTS" ]; do
+        c=$(printf '%.1s' "$OPTS")
+        case "$c" in
+          a) O_ALL=1 ;;
+          e) O_ENTIRE=1 ;;
+          g) O_GROUPS_ONLY=1 ;;
+          h) O_HELP=1 ;;
+          i) O_IGNORE_CASE=1 ;;
+          n) O_INDEX=1 ;;
+          q) O_QUIET=1 ;;
+          r) O_REGEX=1 ;;
+          v) O_INVERT=1 ;;
+          *) die 2 "string match: unknown option '-$c'." ;;
+        esac
+        OPTS=${OPTS#?}
+      done
+      shift
+      continue
+      ;;
+    --) shift; break ;;
+    -*) die 2 "string match: unknown option '$1'." ;;
+    *)  break ;;
+  esac
+done
+
+# Act on help/quiet flags
+[ -n "$O_HELP" ] && { usage; exit 0; }
+[ -n "$O_QUIET" ] && say() { :; }
+[ -z "$O_INDEX" ] || die 1 "-n/--index option not yet implemented."
+[ -z "$O_GROUPS_ONLY" ] || die 1 "-g/--groups-only option not yet implemented."
+
+# Collect piped input
+if ! [ -t 0 ]; then
+  while IFS= read -r LINE || [ -n "$LINE" ]; do
+    set -- "$@" "$LINE"
+  done
+fi
+
+# Must have at least a pattern
+[ $# -ge 1 ] || die 2 "string match: missing PATTERN."
+PATTERN=$1
+shift
+
+# Convert glob to regex if not using --regex
+if [ -z "$O_REGEX" ]; then
+  PATTERN=$(glob_to_regex "$PATTERN")
+fi
+
+# If no strings provided, nothing to match
+[ $# -ge 1 ] || exit 1
+
+# Build grep options
+GREP_OPTS="-E"
+[ -n "$O_IGNORE_CASE" ] && GREP_OPTS="$GREP_OPTS -i"
+[ -n "$O_INVERT" ] && GREP_OPTS="$GREP_OPTS -v"
+[ -n "$O_QUIET" ] && GREP_OPTS="$GREP_OPTS -q"
+
+# Process each string
+MATCH_FOUND=0
+for STR in "$@"; do
+  if [ -n "$O_ENTIRE" ]; then
+    # Match and print entire string (like grep without -o)
+    # shellcheck disable=SC2086
+    if echo "$STR" | mygrep $GREP_OPTS "$PATTERN" >/dev/null; then
+      MATCH_FOUND=1
+      [ -z "$O_QUIET" ] && say "$STR"
+    fi
+  else
+    # Match substring and print only matched portion (like grep -o)
+    # shellcheck disable=SC2086
+    if echo "$STR" | mygrep $GREP_OPTS "$PATTERN" >/dev/null; then
+      MATCH_FOUND=1
+      if [ -z "$O_QUIET" ]; then
+        # Extract and print only the matched portion
+        if [ -n "$O_ALL" ]; then
+          # Print all matches from this string
+          # shellcheck disable=SC2086
+          echo "$STR" | mygrep -o $GREP_OPTS "$PATTERN"
+        else
+          # Print first match from this string
+          # shellcheck disable=SC2086
+          echo "$STR" | mygrep -o $GREP_OPTS "$PATTERN" | head -n 1
+        fi
+      fi
+    fi
+  fi
+done
+
+# Exit with appropriate status
+[ "$MATCH_FOUND" -eq 1 ] && exit 0 || exit 1
