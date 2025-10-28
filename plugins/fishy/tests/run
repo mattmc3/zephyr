@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+T_PRJDIR="$(cd -- "$(dirname -- "$0")/.." 2>/dev/null && pwd)"
+cd "$T_PRJDIR" || exit 2
+
+if [ $# -eq 0 ]; then
+  set -- "$T_PRJDIR"/tests/test_*.md
+fi
+
+# example test command
+# bash -f -- clitest --list-run --progress dot --prompt '$' --color always "${T_PRJDIR:-.}"/tests/test_*.md
+
+# Use BASH_BINARY if set, otherwise fallback to default bash
+BASH="${BASH_BINARY:-bash}"
+
+# shellcheck disable=SC2016
+PATH="$PATH" PAGER=cat \
+  $BASH -f -- \
+  clitest \
+    --list-run --progress dot --prompt '$' \
+    --color always \
+    --pre-flight 'git --version; printf "%s %s %s %s %s\n" $T_PRJDIR $OSTYPE $BASH $BASH_VERSION "$(${BC_CMD:=bc} -v | head -n1)"' \
+    -- "$@"
