@@ -57,6 +57,38 @@ exit 0
 $
 ```
 
+Verify that we can correctly match strings.
+
+```sh
+$ string match "*" a
+a
+$ string match "a*b" axxb
+axxb
+$ string match -i "a**B" Axxb
+Axxb
+$ echo "ok?" | string match "*?"
+ok?
+$ string match -r "cat|dog|fish" "nice dog"
+dog
+$ string match -r "(\d\d?):(\d\d):(\d\d)" 2:34:56
+2:34:56
+2
+34
+56
+$ string match -r "^(\w{2,4})\g1\$" papa mud murmur
+papa
+pa
+murmur
+mur
+$ string match -r -a -n at ratatat
+2 2
+4 2
+6 2
+$ string match -r -i "0x[0-9a-f]{1,8}" "int magic = 0xBadC0de;"
+0xBadC0de
+$
+```
+
 Teardown
 
 ```sh
