@@ -216,6 +216,16 @@ $ echo "foo1x foo2x foo3x" | string match -arg 'foo(\d)x'
 $
 ```
 
+```sh
+$ printf "dog\ncat\nbat\ngnat\n" | string match -m2 "*at"
+cat
+bat
+$
+$ printf "dog\ncat\nbat\nhog\n" | string match -rvm1 'at$'
+dog
+$
+```
+
 Teardown
 
 ```sh

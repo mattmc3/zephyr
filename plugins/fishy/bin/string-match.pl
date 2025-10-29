@@ -17,6 +17,7 @@ package MatchOptions {
     sub ignore_case { $_[0]->{ignore_case} }
     sub index       { $_[0]->{index} }
     sub invert      { $_[0]->{invert} }
+    sub max_matches { $_[0]->{max_matches} }
     sub quiet       { $_[0]->{quiet} }
     sub regex       { $_[0]->{regex} }
 }
@@ -26,7 +27,7 @@ package main;
 sub usage {
     print "string match [-a | --all] [-e | --entire] [-i | --ignore-case]\n";
     print "             [-g | --groups-only] [-r | --regex] [-n | --index]\n";
-    print "             [-q | --quiet] [-v | --invert]\n";
+    print "             [-q | --quiet] [-v | --invert] [(-m | --max-matches) MAX]\n";
     print "             PATTERN [STRING ...]\n";
 }
 
@@ -181,21 +182,37 @@ sub do_match {
 my $opts = MatchOptions->new();
 
 GetOptions(
-    'a|all'         => \$opts->{all},
-    'e|entire'      => \$opts->{entire},
-    'g|groups-only' => \$opts->{groups_only},
-    'h|help'        => \$opts->{help},
-    'i|ignore-case' => \$opts->{ignore_case},
-    'n|index'       => \$opts->{index},
-    'q|quiet'       => \$opts->{quiet},
-    'r|regex'       => \$opts->{regex},
-    'v|invert'      => \$opts->{invert},
+    'a|all'           => \$opts->{all},
+    'e|entire'        => \$opts->{entire},
+    'g|groups-only'   => \$opts->{groups_only},
+    'h|help'          => \$opts->{help},
+    'i|ignore-case'   => \$opts->{ignore_case},
+    'n|index'         => \$opts->{index},
+    'm|max-matches=i' => \$opts->{max_matches},
+    'q|quiet'         => \$opts->{quiet},
+    'r|regex'         => \$opts->{regex},
+    'v|invert'        => \$opts->{invert},
 ) or die_err(2, "string match: invalid option");
 
 # Act on help flag
 if ($opts->help) {
     usage();
     exit 0;
+}
+
+# Check for invalid option combinations
+my @exclusive_pairs = (
+    ['entire', 'groups_only'],
+    ['invert', 'groups_only'],
+);
+
+for my $pair (@exclusive_pairs) {
+    my ($opt1, $opt2) = @$pair;
+    if ($opts->$opt1 && $opts->$opt2) {
+        my $flag1 = $opt1 =~ s/_/-/gr;
+        my $flag2 = $opt2 =~ s/_/-/gr;
+        die_err(2, "string match: invalid option combination, --$flag1 and --$flag2 are mutually exclusive");
+    }
 }
 
 # Check for unimplemented options
@@ -221,6 +238,7 @@ exit 1 if !$use_stdin && @ARGV == 0;
 
 # Process each string
 my $match_found = 0;
+my $matches_count = 0;
 
 # Set up input iterator
 my $get_next_str = $use_stdin
@@ -246,9 +264,17 @@ while (defined(my $str = $get_next_str->())) {
     next unless $matched;
 
     $match_found = 1;
+    $matches_count++;
 
     # With --quiet, exit immediately on first match
     exit 0 if $opts->quiet;
+
+    # Check if we've reached max matches
+    if ($opts->max_matches && $matches_count >= $opts->max_matches) {
+        # Print current result before exiting
+        print_results($str, \@result, $indices_ref, $pattern, $opts);
+        exit 0;
+    }
 
     # Print results and check if we actually printed anything (for --groups-only)
     my $printed = print_results($str, \@result, $indices_ref, $pattern, $opts);
@@ -256,6 +282,7 @@ while (defined(my $str = $get_next_str->())) {
     # If nothing was printed (e.g., no valid capture groups), don't count as match
     if (!$printed) {
         $match_found = 0;
+        $matches_count--;
         next;
     }
 }
