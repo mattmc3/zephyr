@@ -275,8 +275,11 @@ fi
 # Init
 #
 
-# Reset to default key bindings
-bindkey -d
+# https://github.com/mattmc3/zephyr/issues/40
+# Reset to default key bindings if we aren't using zsh-defer
+if (( ! $+zsh_defer_options )); then
+  bindkey -d
+fi
 
 #
 # Keybinds
