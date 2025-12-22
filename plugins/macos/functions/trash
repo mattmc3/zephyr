@@ -20,7 +20,7 @@ local file
 local -a files
 for file in $@; do
   if [[ -e $file ]]; then
-    files+=("the POSIX file \"${file:A}\"")
+    files+=("the POSIX file \"${file:a}\"")
   else
     print -ru2 -- "trash: No such file or directory '$file'."
     return 1
