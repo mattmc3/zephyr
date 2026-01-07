@@ -20,7 +20,12 @@ local file
 local -a files
 for file in $@; do
   if [[ -e $file ]]; then
-    files+=("the POSIX file \"${file:a}\"")
+    if [[ -L $file ]]; then
+      print -ru2 -- "trash: Cannot trash symbolic link '$file'."
+      return 1
+    else
+      files+=("the POSIX file \"${file:a}\"")
+    fi
   else
     print -ru2 -- "trash: No such file or directory '$file'."
     return 1
