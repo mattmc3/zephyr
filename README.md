@@ -81,19 +81,19 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 ## Plugins
 
-- **color** - Make terminal things more colorful
+- **[color](plugins/color/README.md)** - Make terminal things more colorful
 - **completion** - Load and initialize the built-in zsh completion system
 - **compstyle** - Load and initialize a completion style system
 - **confd** - Source a Fish-like `conf.d` directory
-- **directory** - Set options and aliases related to the dirstack and filesystem
-- **editor** - Override and fill in the gaps of the default keybinds
+- **[directory](plugins/directory/README.md)** - Set options and aliases related to the dirstack and filesystem
+- **[editor](plugins/editor/README.md)** - Override and fill in the gaps of the default keybinds
 - **environment** - Define common environment variables
 - **history** - Load and initialize the built-in zsh history system
-- **homebrew** - Functionality for users of Homebrew
-- **macos** - Functionality for macOS users
+- **[homebrew](plugins/homebrew/README.md)** - Functionality for users of Homebrew
+- **[macos](plugins/macos/README.md)** - Functionality for macOS users
 - **prompt** - Load and initialize the built-in zsh prompt system
 - **utility** - Common shell utilities, aimed at making cross platform work less painful
-- **zfunctions** - Lazy load a Fish-like functions directory
+- **[zfunctions](plugins/zfunctions/README.md)** - Lazy load a Fish-like functions directory
 
 ## Customization
 
