@@ -164,7 +164,7 @@ function dot-expansion {
     LBUFFER+='.'
   fi
 }
-zstyle -T ':zephyr:plugin:editor' 'dot-expansion' && zle -N dot-expansion
+zle -N dot-expansion
 
 # Inserts 'sudo ' at the beginning of the line.
 function prepend-sudo {
@@ -173,7 +173,7 @@ function prepend-sudo {
     (( CURSOR += 5 ))
   fi
 }
-zstyle -T ':zephyr:plugin:editor' 'prepend-sudo' && zle -N prepend-sudo
+zle -N prepend-sudo
 
 # Expand aliases
 function glob-alias {
@@ -191,7 +191,7 @@ function glob-alias {
   fi
   zle self-insert
 }
-zstyle -T ':zephyr:plugin:editor' 'glob-alias' && zle -N glob-alias
+zle -N glob-alias
 
 # Toggle the comment character at the start of the line. This is meant to work
 # around a buggy implementation of pound-insert in zsh.
@@ -212,7 +212,7 @@ function pound-toggle {
     (( CURSOR += 1 ))
   fi
 }
-zstyle -T ':zephyr:plugin:editor' 'pound-toggle' && zle -N pound-toggle
+zle -N pound-toggle
 
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/fancy-ctrl-z/fancy-ctrl-z.plugin.zsh
 # https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
@@ -225,7 +225,7 @@ function symmetric-ctrl-z {
     zle clear-screen -w
   fi
 }
-zstyle -T ':zephyr:plugin:editor' 'symmetric-ctrl-z' && zle -N symmetric-ctrl-z
+zle -N symmetric-ctrl-z
 
 # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/magic-enter
 (( $+functions[magic-enter-cmd] )) ||
@@ -250,7 +250,7 @@ function magic-enter {
   BUFFER=$(magic-enter-cmd)
 }
 
-if zstyle -T ':zephyr:plugin:editor' 'magic-enter'; then
+if zstyle -t ':zephyr:plugin:editor' 'magic-enter'; then
   # Wrapper for the accept-line zle widget (run when pressing Enter)
   # If the wrapper already exists don't redefine it
   if (( ! ${+functions[_magic-enter_accept-line]} )); then
@@ -286,59 +286,84 @@ fi
 #
 
 # Global keybinds
-typeset -gA global_keybinds
-global_keybinds=(
+typeset -gA _zph_global_keybinds
+_zph_global_keybinds=(
   "$key_info[Home]"   beginning-of-line
   "$key_info[End]"    end-of-line
   "$key_info[Delete]" delete-char
 )
 
 # emacs and vi insert mode keybinds
-typeset -gA viins_keybinds
-viins_keybinds=(
+typeset -gA _zph_viins_keybinds
+_zph_viins_keybinds=(
   "$key_info[Backspace]" backward-delete-char
   "$key_info[Control]W"  backward-kill-word
 )
 
 # vi command mode keybinds
-typeset -gA vicmd_keybinds
-vicmd_keybinds=(
+typeset -gA _zph_vicmd_keybinds
+_zph_vicmd_keybinds=(
   "$key_info[Delete]" delete-char
 )
 
 # Special case for ControlLeft and ControlRight because they have multiple
 # possible binds.
-for key in "${(s: :)key_info[ControlLeft]}" "${(s: :)key_info[AltLeft]}"; do
-  bindkey -M emacs "$key" emacs-backward-word
-  bindkey -M viins "$key" vi-backward-word
-  bindkey -M vicmd "$key" vi-backward-word
+for _zph_key in "${(s: :)key_info[ControlLeft]}" "${(s: :)key_info[AltLeft]}"; do
+  bindkey -M emacs "$_zph_key" emacs-backward-word
+  bindkey -M viins "$_zph_key" vi-backward-word
+  bindkey -M vicmd "$_zph_key" vi-backward-word
 done
-for key in "${(s: :)key_info[ControlRight]}" "${(s: :)key_info[AltRight]}"; do
-  bindkey -M emacs "$key" emacs-forward-word
-  bindkey -M viins "$key" vi-forward-word
-  bindkey -M vicmd "$key" vi-forward-word
+for _zph_key in "${(s: :)key_info[ControlRight]}" "${(s: :)key_info[AltRight]}"; do
+  bindkey -M emacs "$_zph_key" emacs-forward-word
+  bindkey -M viins "$_zph_key" vi-forward-word
+  bindkey -M vicmd "$_zph_key" vi-forward-word
 done
 
 # Bind all global and viins keys to the emacs keymap
-for key bind in ${(kv)global_keybinds} ${(kv)viins_keybinds}; do
-  bindkey -M emacs "$key" "$bind"
+for _zph_key _zph_bind in ${(kv)_zph_global_keybinds} ${(kv)_zph_viins_keybinds}; do
+  bindkey -M emacs "$_zph_key" "$_zph_bind"
 done
 
 # Bind all global, vi, and viins keys to the viins keymap
-for key bind in ${(kv)global_keybinds} ${(kv)viins_keybinds}; do
-  bindkey -M viins "$key" "$bind"
+for _zph_key _zph_bind in ${(kv)_zph_global_keybinds} ${(kv)_zph_viins_keybinds}; do
+  bindkey -M viins "$_zph_key" "$_zph_bind"
 done
 
 # Bind all global, vi, and vicmd keys to the vicmd keymap
-for key bind in ${(kv)global_keybinds} ${(kv)vicmd_keybinds}; do
-  bindkey -M vicmd "$key" "$bind"
+for _zph_key _zph_bind in ${(kv)_zph_global_keybinds} ${(kv)_zph_vicmd_keybinds}; do
+  bindkey -M vicmd "$_zph_key" "$_zph_bind"
 done
 
-# Keybinds for emacs and vi insert mode
-for keymap in 'emacs' 'viins'; do
-  # Expand .... to ../..
-  if zstyle -t ':zephyr:plugin:editor' dot-expansion; then
-    bindkey -M "$keymap" "." expand-dot-to-parent-directory-path
+# Toggle comment at the start of the line. Note that we use pound-toggle for emacs
+# mode, which is similar to pound insert, but meant to work around some bugs.
+bindkey -M emacs "$key_info[Escape];" pound-toggle
+bindkey -M vicmd "#" vi-pound-insert
+
+# Optional keybindings for emacs and viins keymaps
+typeset -A _zph_opt_in_keybinds _zph_opt_out_keybinds
+_zph_opt_in_keybinds=(
+  dot-expansion "."
+)
+_zph_opt_out_keybinds=(
+  symmetric-ctrl-z '^Z'
+  prepend-sudo     '^X^S'
+)
+
+# Opt-in features (disabled by default)
+for _zph_feature _zph_key in ${(kv)_zph_opt_in_keybinds}; do
+  if zstyle -t ':zephyr:plugin:editor' "$_zph_feature"; then
+    for _zph_keymap in 'emacs' 'viins'; do
+      bindkey -M "$_zph_keymap" "$_zph_key" "$_zph_feature"
+    done
+  fi
+done
+
+# Opt-out features (enabled by default)
+for _zph_feature _zph_key in ${(kv)_zph_opt_out_keybinds}; do
+  if zstyle -T ':zephyr:plugin:editor' "$_zph_feature"; then
+    for _zph_keymap in 'emacs' 'viins'; do
+      bindkey -M "$_zph_keymap" "$_zph_key" "$_zph_feature"
+    done
   fi
 done
 
@@ -347,29 +372,20 @@ if zstyle -t ':zephyr:plugin:editor' dot-expansion; then
   bindkey -M isearch . self-insert 2> /dev/null
 fi
 
-# Toggle comment at the start of the line. Note that we use pound-toggle for emacs
-# mode, which is similar to pount insert, but meant to work around some bugs.
-bindkey -M emacs "$key_info[Escape];" pound-toggle
-bindkey -M vicmd "#" vi-pound-insert
-
-# Expand aliases
-if zstyle -t ':zephyr:plugin:editor' glob-alias; then
-  # space expands all aliases, including global
-  bindkey -M emacs " " glob-alias
-  bindkey -M viins " " glob-alias
-
-  # control-space to make a normal space
-  bindkey -M emacs "^ " magic-space
-  bindkey -M viins "^ " magic-space
-
-  # normal space during searches
+# Expand aliases with space automatically (opt-in, overrides glob-alias)
+if zstyle -t ':zephyr:plugin:editor' automatic-glob-alias; then
+  for _zph_keymap in 'emacs' 'viins'; do
+    bindkey -M "$_zph_keymap" " " glob-alias
+    bindkey -M "$_zph_keymap" "^ " magic-space
+  done
   bindkey -M isearch " " magic-space
-fi
-
-# ctrl-z sends things to the background - make it also bring to forground
-if zstyle -t ':zephyr:plugin:editor' 'symmetric-ctrl-z'; then
-  bindkey -M emacs '^Z' symmetric-ctrl-z
-  bindkey -M viins '^Z' symmetric-ctrl-z
+# Expand aliases with ctrl-space (opt-out, enabled by default)
+elif zstyle -T ':zephyr:plugin:editor' glob-alias; then
+  for _zph_keymap in 'emacs' 'viins'; do
+    bindkey -M "$_zph_keymap" "^ " glob-alias
+    bindkey -M "$_zph_keymap" " " magic-space
+  done
+  bindkey -M isearch " " magic-space
 fi
 
 #
@@ -377,16 +393,21 @@ fi
 #
 
 # Set the key layout.
-zstyle -s ':zephyr:plugin:editor' key-bindings 'key_bindings'
-if [[ "$key_bindings" == (emacs|) ]]; then
+zstyle -s ':zephyr:plugin:editor' key-bindings '_zph_key_bindings'
+if [[ "$_zph_key_bindings" == (emacs|) ]]; then
   bindkey -e
-elif [[ "$key_bindings" == vi ]]; then
+elif [[ "$_zph_key_bindings" == vi ]]; then
   bindkey -v
 else
-  print "editor: invalid key bindings: $key_bindings" >&2
+  print "editor: invalid key bindings: $_zph_key_bindings" >&2
 fi
 
-unset bind key{,_bindings} {vicmd,viins,global}_keybinds
+#
+# Clean up
+#
+
+unset _zph_{bind,key{,_bindings},keymap,feature}
+unset _zph_{opt_in,opt_out}_keybinds _zph_{vicmd,viins,global}_keybinds
 
 #region MARK LOADED
 zstyle ':zephyr:plugin:editor' loaded 'yes'
