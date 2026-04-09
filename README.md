@@ -57,6 +57,27 @@ mattmc3/zephyr path:plugins/utility
 mattmc3/zephyr path:plugins/zfunctions
 ```
 
+Or, if you're running antidote >2.1, you can use the new `using` directive:
+
+```shell
+# .zsh_plugins.txt
+# pick only the plugins you want and remove the rest
+using:mattmc3/zephyr path:plugins
+color
+completion
+compstyle
+confd
+directory
+editor
+environment
+history
+homebrew
+macos
+prompt
+utility
+zfunctions
+```
+
 ### Manually
 
 Add the following snippet to your `.zshrc`:
