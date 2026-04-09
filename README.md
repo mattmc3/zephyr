@@ -103,17 +103,18 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 ## Plugins
 
 - **[color](plugins/color/README.md)** - Make terminal things more colorful
-- **completion** - Load and initialize the built-in zsh completion system
-- **compstyle** - Load and initialize a completion style system
-- **confd** - Source a Fish-like `conf.d` directory
+- **[completion](plugins/completion/README.md)** - Load and initialize the built-in zsh completion system
+- **[compstyle](plugins/compstyle/README.md)** - Load and initialize a completion style system
+- **[confd](plugins/confd/README.md)** - Source a Fish-like `conf.d` directory
 - **[directory](plugins/directory/README.md)** - Set options and aliases related to the dirstack and filesystem
 - **[editor](plugins/editor/README.md)** - Override and fill in the gaps of the default keybinds
-- **environment** - Define common environment variables
-- **history** - Load and initialize the built-in zsh history system
+- **[environment](plugins/environment/README.md)** - Define common environment variables
+- **[helper](plugins/helper/README.md)** - Add common helper functions
+- **[history](plugins/history/README.md)** - Load and initialize the built-in zsh history system
 - **[homebrew](plugins/homebrew/README.md)** - Functionality for users of Homebrew
 - **[macos](plugins/macos/README.md)** - Functionality for macOS users
-- **prompt** - Load and initialize the built-in zsh prompt system
-- **utility** - Common shell utilities, aimed at making cross platform work less painful
+- **[prompt](plugins/prompt/README.md)** - Load and initialize the built-in zsh prompt system
+- **[utility](plugins/utility/README.md)** - Common shell utilities, aimed at making cross platform work less painful
 - **[zfunctions](plugins/zfunctions/README.md)** - Lazy load a Fish-like functions directory
 
 ## Customization

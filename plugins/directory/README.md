@@ -14,7 +14,7 @@ This plugin sets the following Zsh options:
 | setopt   | [PUSHD_TO_HOME][16.2.1]  | Push to home directory when no argument is given.       |
 | setopt   | [EXTENDED_GLOB][16.2.3]  | Use extended chars (#,~,^) in globbing patterns.        |
 | setopt   | [GLOB_DOTS][16.2.3]      | Include dotfiles when globbing.                         |
-| unsetopt | [CLOBBER][16.2.6]        | Don't overwrite files with >. Use >\| to bypass.        |
+| unsetopt | [CLOBBER][16.2.6]        | Don't overwrite files with >. Use >! to bypass.         |
 | unsetopt | [RM_STAR_SILENT][16.2.6] | Ask for confirmation for `rm *' or `rm path/\*'         |
 | setopt   | [MULTIOS][16.2.9]        | Write to multiple descriptors.                          |
 
@@ -32,7 +32,7 @@ This plugin adds/modifies the following aliases:
 
 | alias         | description                                                   |
 | ------------- | ------------------------------------------------------------- |
-| `--`          | `cd -`: dirstack navigation                                   |
+| `-`           | `cd -`: dirstack navigation                                   |
 | `dirh`        | `dirs -v`: show the dirstack                                  |
 | `..1` - `..9` | suffix alias to perform actions up the dir tree (eg `ls ..3`) |
 | `1` - `9`     | `cd -9`: quickly navigate the dirstack                        |

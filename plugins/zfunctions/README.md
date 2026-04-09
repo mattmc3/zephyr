@@ -22,10 +22,12 @@ ZFUNCDIR=/path/to/my/lazy/zfunctions
 
 The following functions are defined by this plugin:
 
-| Functions | Arguments     | Description                                            |
-|:----------|:--------------|:-------------------------------------------------------|
-| funced    | \<func-name\> | edit the function specified                            |
-| funcsave  | \<func-name\> | save a function to your configured functions directory |
+| Functions    | Arguments     | Description                                            |
+| :----------- | :------------ | :----------------------------------------------------- |
+| autoload-dir | \<dir\>       | add a directory to fpath and autoload its functions    |
+| funced       | \<func-name\> | edit the function specified                            |
+| funcsave     | \<func-name\> | save a function to your configured functions directory |
+| funcfresh    | \<func-name\> | reload an autoloaded function                          |
 
 **Note:**
 Additionally, the built-in zsh `functions` command will list all the zsh functions that are defined.
@@ -42,6 +44,7 @@ zfuncions loaded
 ```
 
 Next, let's set a $ZFUNCDIR variable for our examples
+
 ```zsh
 ZFUNCDIR=${ZDOTDIR:-$HOME/.config/zsh}/functions
 ```
@@ -76,7 +79,7 @@ Now you should have a function file called "foo" in `$ZFUNCDIR`. Let's verify:
 cat $ZFUNCDIR/foo
 ```
 
-Notice that the function was reformatted and also that only the function *internals* are saved to the "foo" file, not the function name definition
+Notice that the function was reformatted and also that only the function _internals_ are saved to the "foo" file, not the function name definition
 (ie: the "`function foo() {`" part is purposely missing).
 
 ```zsh

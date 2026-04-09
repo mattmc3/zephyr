@@ -18,12 +18,13 @@ This plugin adds the following features:
 
 This plugin adds/modifies the following aliases:
 
-| alias      | description                               |
-| ---------- | ----------------------------------------- |
-| `diff`     | Adds `--color` flag                       |
-| `grep`     | Adds `--color=auto` flag                  |
-| `ls`       | Adds `--color=auto` flag                  |
-| `colormap` | Show a colormap with terminal color codes |
+| alias      | description                                           |
+| ---------- | ----------------------------------------------------- |
+| `diff`     | Adds `--color` flag                                   |
+| `grep`     | Adds `--color=auto` flag                              |
+| `ls`       | Adds `--color=auto` flag                              |
+| `gls`      | Adds `--color=auto` flag (only if `gls` is installed) |
+| `colormap` | Show a colormap with terminal color codes             |
 
 ## Variables
 
