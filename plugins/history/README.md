@@ -130,4 +130,13 @@ sqlite3 -column -header ~/.local/share/zsh/zsh_history.db "
   LIMIT  20;"
 ```
 
+**SQLite**: export as JSONL in the same format as the json backend:
+
+```sh
+sqlite3 ~/.local/share/zsh/zsh_history.db \
+  "SELECT json_object('sid',sid,'cwd',cwd,'cmd',cmd,'ret',ret,
+                      'pipestatus',pipestatus,'start_ts',start_ts,'end_ts',end_ts)
+   FROM zsh_history ORDER BY start_ts;"
+```
+
 [16.2.4]: https://zsh.sourceforge.io/Doc/Release/Options.html#History

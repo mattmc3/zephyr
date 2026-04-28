@@ -1,0 +1,69 @@
+#!/usr/bin/env zsh
+# Import a zsh HISTFILE into an aux history SQLite database.
+# Usage: zsh-hist-import <histfile> <db>
+
+emulate -L zsh
+setopt extended_glob
+
+(( $# == 2 )) || { print "usage: zsh-hist-import <histfile> <db>" >&2; exit 1 }
+
+local histfile="$1" db="$2"
+
+[[ -f "$histfile" ]] || { print "error: histfile not found: $histfile" >&2; exit 1 }
+[[ -f "$db"       ]] || { print "error: db not found: $db" >&2; exit 1 }
+(( $+commands[sqlite3] )) || { print "error: sqlite3 not found" >&2; exit 1 }
+
+# Detect format by inspecting the first non-empty line.
+local firstline
+while IFS= read -r firstline; do
+  [[ -n "$firstline" ]] && break
+done < "$histfile"
+
+local extended=0
+[[ "$firstline" == ': '[0-9]##':'[0-9]##';'* ]] && extended=1
+
+local q="'" line cmd ts elapsed end_ts rest
+local -i count=0
+
+local tmpfile=$(mktemp)
+trap "rm -f $tmpfile" EXIT
+
+print -r "BEGIN;" >> "$tmpfile"
+
+while IFS= read -r line; do
+  # Handle multi-line continuation (lines ending with \)
+  while [[ "$line" == *\\ ]]; do
+    line="${line%\\}"
+    local next=""
+    IFS= read -r next
+    line+=$'\n'"$next"
+  done
+
+  [[ -z "$line" ]] && continue
+
+  # Encode actual newlines so they don't break the SQL
+  cmd="${line//$'\n'/\\n}"
+
+  if (( extended )) && [[ "$line" == ': '[0-9]##':'[0-9]##';'* ]]; then
+    rest="${cmd#: }"
+    ts="${rest%%:*}"
+    rest="${rest#*:}"
+    elapsed="${rest%%;*}"
+    cmd="${rest#*;}"
+    end_ts=$(( ts + elapsed ))
+    print -r "INSERT INTO zsh_history(cmd,start_ts,end_ts)
+SELECT '${cmd//$q/$q$q}',${ts},${end_ts}
+WHERE NOT EXISTS (SELECT 1 FROM zsh_history WHERE cmd='${cmd//$q/$q$q}' AND start_ts=${ts});" >> "$tmpfile"
+  else
+    print -r "INSERT INTO zsh_history(cmd)
+SELECT '${cmd//$q/$q$q}'
+WHERE NOT EXISTS (SELECT 1 FROM zsh_history WHERE cmd='${cmd//$q/$q$q}' AND start_ts IS NULL);" >> "$tmpfile"
+  fi
+
+  (( count++ ))
+done < "$histfile"
+
+print -r "COMMIT;" >> "$tmpfile"
+
+sqlite3 "$db" < "$tmpfile"
+print "Processed $count records (format: ${extended:+extended}${extended:-plain})."
