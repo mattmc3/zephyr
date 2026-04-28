@@ -56,6 +56,12 @@ if ! zstyle -t ':zephyr:plugin:history:alias' skip; then
   alias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
 fi
 
+# Use auxiliary history backends if enabled.
+if zstyle -t ':zephyr:plugin:history:aux:sqlite' enable \
+   || zstyle -t ':zephyr:plugin:history:aux:json' enable; then
+  source ${0:a:h}/zsh_aux_history.zsh
+fi
+
 #region MARK LOADED
 zstyle ':zephyr:plugin:history' loaded 'yes'
 #endregion

@@ -62,6 +62,35 @@ function is-tmux {
   is-term-family tmux || [[ -n "$TMUX" ]]
 }
 
+# Generate a UUID v7 (time-ordered). Result is stored in REPLY.
+function gen-uuid7 {
+  emulate -L zsh
+  zmodload zsh/datetime 2>/dev/null
+
+  local uuid7
+  local now sec frac ms ts_hex rand_hex
+  local g1 g2 g3 g4 g5
+
+  now="$EPOCHREALTIME"
+  sec="${now%%.*}"
+  frac="${now#*.}"
+  [[ "$frac" == "$now" ]] && frac=0
+  frac="${frac}000000"
+  ms=$(( 10#${sec} * 1000 + 10#${frac[1,3]} ))
+  ts_hex="$(printf '%012x' "$ms")"
+
+  rand_hex=$(od -An -N10 -tx1 /dev/urandom | tr -d ' \n')
+
+  g1="${ts_hex[1,8]}"
+  g2="${ts_hex[9,12]}"
+  g3="7${rand_hex[1,3]}"
+  g4="$(printf '%x' $(( (16#${rand_hex[4]} & 3) | 8 )))${rand_hex[5,7]}"
+  g5="${rand_hex[8,19]}"
+
+  typeset -g REPLY="${g1}-${g2}-${g3}-${g4}-${g5}"
+  print -- "$REPLY"
+}
+
 #region MARK LOADED
 zstyle ':zephyr:plugin:helper' loaded 'yes'
 #endregion
