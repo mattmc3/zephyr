@@ -23,7 +23,7 @@ zle -N self-insert url-quote-magic
 alias help=run-help
 
 # Make ls more useful.
-if (( ! $+commands[dircolors] )) && [[ "$OSTYPE" != darwin* ]]; then
+if (( ! $+commands[dircolors] )) && [[ "$OSTYPE" != (darwin*|*bsd*) ]]; then
   # Group dirs first on non-BSD systems
   alias ls="${aliases[ls]:-ls} --group-directories-first"
 fi
