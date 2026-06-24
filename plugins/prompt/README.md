@@ -51,4 +51,8 @@ To cache the prompt initialization:
 
 `zstyle ':zephyr:plugin:prompt' 'use-cache' 'yes'`
 
+To always use the prompt, regardless of terminal type:
+
+`zstyle ':zephyr:plugin:prompt' 'always-use-prompt' 'yes'`
+
 [16.2.8]: https://zsh.sourceforge.io/Doc/Release/Options.html#Prompting

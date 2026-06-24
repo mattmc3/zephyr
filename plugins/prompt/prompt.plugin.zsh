@@ -82,7 +82,14 @@ function run_promptinit {
   zstyle -a ':zephyr:plugin:prompt' theme 'prompt_argv' \
     || prompt_argv=(starship zephyr)
   if [[ $TERM == (dumb|linux|*bsd*) ]]; then
-    prompt 'off'
+  	zstyle -b ':zephyr:plugin:prompt' 'always-use-theme' 'autheme'
+  	if [[ $autheme == "yes" ]]; then
+  	  if (( $#prompt_argv > 0 )); then
+  	    prompt "$prompt_argv[@]"
+	  fi
+	else
+      prompt 'off'
+    fi
   elif (( $#prompt_argv > 0 )); then
     prompt "$prompt_argv[@]"
   fi
