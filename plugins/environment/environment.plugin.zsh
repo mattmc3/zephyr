@@ -78,7 +78,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
 fi
 
 # Use `< file` to quickly view the contents of any file.
-[[ -z "$READNULLCMD" ]] || READNULLCMD=$PAGER
+[[ -n "$READNULLCMD" ]] || READNULLCMD=$PAGER
 
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
