@@ -1,0 +1,54 @@
+#!/bin/zsh
+##? contains - Test if a key is in a list of values.
+
+#function contains {
+
+emulate -L zsh
+setopt local_options extended_glob
+
+local -a help index
+
+zparseopts -D -F -- \
+  {h,-help}=help \
+  {i,-index}=index 2>/dev/null
+
+if (( $#help )); then
+  print -r -- 'Usage: contains [-h] [-i | --index] KEY [VALUE ...]'
+  print -r --
+  print -r -- 'Test whether KEY appears in the list of VALUEs.'
+  print -r -- 'VALUEs may also be read as lines from stdin.'
+  print -r -- 'Exits 0 if found, 1 if not.'
+  print -r --
+  print -r -- 'Options:'
+  print -r -- '  -h, --help    Show this help message'
+  print -r -- '  -i, --index   Print the 1-based index of the first match'
+  return 0
+fi
+
+if (( $# == 0 )); then
+  print -ru2 -- 'contains: KEY required'
+  return 2
+fi
+
+local key=$1
+shift
+
+# No VALUE args and stdin is piped: read values as lines from stdin.
+if (( $# == 0 )) && [[ ! -t 0 ]]; then
+  local line
+  while IFS= read -r line || [[ -n $line ]]; do
+    argv+=("$line")
+  done
+fi
+
+local i
+for (( i = 1; i <= $#; i++ )); do
+  if [[ $argv[i] == "$key" ]]; then
+    (( $#index )) && print -r -- $i
+    return 0
+  fi
+done
+
+return 1
+
+#}

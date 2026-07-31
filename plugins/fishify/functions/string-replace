@@ -1,0 +1,72 @@
+#!/bin/zsh
+##? string-replace - Replace literal substrings or regex matches (Fish-style).
+#
+# Default: replace the first literal occurrence of PATTERN (all with -a).
+# With -r/--regex, PATTERN is an extended regex (ERE, via sed -E) and
+# REPLACEMENT uses sed-style backreferences: \1..\9 for capture groups, &
+# for the whole match. (This differs from Fish's $1 / $0 PCRE syntax.)
+# Case-insensitive (-i) regex uses sed's I flag (works on GNU and BSD sed).
+
+#function string-replace {
+
+emulate -L zsh
+setopt local_options extended_glob
+
+local -a o_a o_f o_i o_r o_q
+zparseopts -D -F -- \
+  a=o_a -all=o_a \
+  f=o_f -filter=o_f \
+  i=o_i -ignore-case=o_i \
+  r=o_r -regex=o_r \
+  q=o_q -quiet=o_q 2>/dev/null \
+  || { print -ru2 -- 'string replace: invalid option'; return 2; }
+
+local all=$(( $#o_a > 0 )) filter=$(( $#o_f > 0 )) ic=$(( $#o_i > 0 ))
+local regex=$(( $#o_r > 0 )) quiet=$(( $#o_q > 0 ))
+
+if (( $# < 2 )); then
+  print -ru2 -- 'string replace: missing pattern and/or replacement'
+  return 2
+fi
+local pat=$1 rep=$2
+shift 2
+
+local -a inputs
+if (( $# > 0 )); then
+  inputs=("$@")
+elif [[ ! -t 0 ]]; then
+  local line
+  while IFS= read -r line || [[ -n $line ]]; do inputs+=("$line"); done
+fi
+
+local replaced_any=0 s out did
+
+if (( regex )); then
+  local SOH=$'\1' flag=""
+  (( all )) && flag+="g"
+  (( ic )) && flag+="I"
+  for s in "${inputs[@]}"; do
+    out=$(print -r -- "$s" | sed -E "s${SOH}${pat}${SOH}${rep}${SOH}${flag}")
+    [[ $out != "$s" ]] && { replaced_any=1; did=1 } || did=0
+    if (( quiet )); then :
+    elif (( filter )); then (( did )) && print -r -- "$out"
+    else print -r -- "$out"
+    fi
+  done
+else
+  # literal substring replace via (b)-quoted pattern
+  local esc=${(b)pat}
+  (( ic )) && esc="(#i)$esc"
+  for s in "${inputs[@]}"; do
+    if (( all )); then out=${s//${~esc}/$rep}; else out=${s/${~esc}/$rep}; fi
+    [[ $out != "$s" ]] && { replaced_any=1; did=1 } || did=0
+    if (( quiet )); then :
+    elif (( filter )); then (( did )) && print -r -- "$out"
+    else print -r -- "$out"
+    fi
+  done
+fi
+
+(( replaced_any ))
+
+#}

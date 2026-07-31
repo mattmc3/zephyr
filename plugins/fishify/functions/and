@@ -1,0 +1,22 @@
+#!/bin/zsh
+##? and - Run a command if the previous command succeeded.
+
+# Capture the previous exit status first, before anything resets it.
+local prev=$?
+
+#function and {
+
+emulate -L zsh
+setopt local_options
+
+if (( $# == 0 )); then
+  print -ru2 -- 'and: missing command'
+  return 2
+fi
+
+# Skip if the previous command failed, propagating its status.
+(( prev == 0 )) || return $prev
+
+"$@"
+
+#}

@@ -1,0 +1,135 @@
+#!/bin/zsh
+##? string-match - Match strings against a glob or regex pattern (Fish-style).
+#
+# Default PATTERN is a glob (anchored to the whole string). With -r/--regex,
+# PATTERN is an extended regex (ERE, via grep -E) matched anywhere. Note the
+# regex dialect is POSIX ERE, not Fish's PCRE2: \d \w (?:) and friends are not
+# supported; use [[:digit:]], [[:alnum:]], etc. Offsets are byte-based.
+# Case-insensitive (-i) uses grep -i and sed's I flag (GNU and BSD sed).
+
+#function string-match {
+
+emulate -L zsh
+setopt local_options extended_glob
+
+local -a o_a o_e o_i o_r o_n o_q o_v o_g
+zparseopts -D -F -- \
+  a=o_a -all=o_a \
+  e=o_e -entire=o_e \
+  i=o_i -ignore-case=o_i \
+  r=o_r -regex=o_r \
+  n=o_n -index=o_n \
+  q=o_q -quiet=o_q \
+  v=o_v -invert=o_v \
+  g=o_g -groups-only=o_g 2>/dev/null \
+  || { print -ru2 -- 'string match: invalid option'; return 2; }
+
+local all=$(( $#o_a > 0 )) entire=$(( $#o_e > 0 )) ic=$(( $#o_i > 0 ))
+local regex=$(( $#o_r > 0 )) index=$(( $#o_n > 0 )) quiet=$(( $#o_q > 0 ))
+local invert=$(( $#o_v > 0 )) groups=$(( $#o_g > 0 ))
+
+if (( $# == 0 )); then
+  print -ru2 -- 'string match: missing pattern'
+  return 2
+fi
+local pat=$1
+shift
+
+local -a inputs
+if (( $# > 0 )); then
+  inputs=("$@")
+elif [[ ! -t 0 ]]; then
+  local line
+  while IFS= read -r line || [[ -n $line ]]; do inputs+=("$line"); done
+fi
+
+# Count capturing groups: unescaped '(' outside bracket expressions.
+.sm_ngroups() {
+  local p=$1 i ch n=0 bs=0 inclass=0
+  for (( i = 1; i <= ${#p}; i++ )); do
+    ch=${p[i]}
+    if (( bs )); then bs=0; continue; fi
+    case $ch in
+      '\') bs=1 ;;
+      '[') (( inclass )) || inclass=1 ;;
+      ']') inclass=0 ;;
+      '(') (( inclass )) || (( n++ )) ;;
+    esac
+  done
+  print -r -- $n
+}
+
+local matched_any=0 s
+
+if (( ! regex )); then
+  # --- glob mode: anchored whole-string match ---------------------------
+  local gpat=$pat
+  (( ic )) && gpat="(#i)$pat"
+  for s in "${inputs[@]}"; do
+    local m=0
+    [[ $s == ${~gpat} ]] && m=1
+    if (( invert )); then
+      (( m )) && continue
+      matched_any=1
+      (( quiet )) && continue
+      print -r -- "$s"
+    else
+      (( m )) || continue
+      matched_any=1
+      (( quiet )) && continue
+      if (( index )); then
+        print -r -- "1 ${#s}"
+      else
+        print -r -- "$s"
+      fi
+    fi
+  done
+  (( matched_any ))
+  return
+fi
+
+# --- regex mode (grep -E / sed -E) --------------------------------------
+
+local ngroups=$(.sm_ngroups "$pat")
+local SOH=$'\1' sedflag=""
+local -a grepopt=(-boE) qopt=(-qE)
+(( ic )) && { grepopt=(-iboE); qopt=(-qiE); sedflag=I }
+
+local hit off m gi g
+local -a hits
+for s in "${inputs[@]}"; do
+  if (( invert )); then
+    if print -r -- "$s" | grep "${qopt[@]}" -e "$pat"; then
+      continue
+    fi
+    matched_any=1
+    (( quiet )) || print -r -- "$s"
+    continue
+  fi
+
+  hits=( ${(f)"$(print -r -- "$s" | grep "${grepopt[@]}" -e "$pat" 2>/dev/null)"} )
+  (( ${#hits} == 0 )) && continue
+  matched_any=1
+  (( all )) || hits=("${hits[1]}")
+  (( quiet )) && continue
+
+  for hit in "${hits[@]}"; do
+    off=${hit%%:*}
+    m=${hit#*:}
+    if (( entire )); then
+      print -r -- "$s"
+    elif (( index )); then
+      print -r -- "$(( off + 1 )) ${#m}"
+    else
+      (( groups )) || print -r -- "$m"
+      for (( gi = 1; gi <= ngroups; gi++ )); do
+        g=$(print -r -- "$m" | sed -E "s${SOH}^${pat}\$${SOH}\\${gi}${SOH}${sedflag}")
+        print -r -- "$g"
+      done
+    fi
+  done
+done
+
+(( matched_any ))
+
+#}

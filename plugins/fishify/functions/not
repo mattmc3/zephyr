@@ -1,0 +1,20 @@
+#!/bin/zsh
+##? not - Negate the exit status of a command.
+
+#function not {
+
+emulate -L zsh
+setopt local_options
+
+if (( $# == 0 )); then
+  print -ru2 -- 'not: missing command'
+  return 2
+fi
+
+if "$@"; then
+  return 1
+else
+  return 0
+fi
+
+#}

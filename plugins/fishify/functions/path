@@ -1,0 +1,193 @@
+#!/bin/zsh
+##? path - Manipulate and transform filesystem paths (Fish-style).
+
+#function path {
+
+emulate -L zsh
+setopt local_options extended_glob
+
+if (( $# == 0 )); then
+  print -ru2 -- 'path: missing subcommand'
+  return 2
+fi
+
+local cmd=$1
+shift
+
+# --- helpers -------------------------------------------------------------
+
+# Gather inputs from args, or read from stdin when none are given.
+# Sets the array `reply`. $1 = null_in flag (split stdin on NUL when set).
+.path_inputs() {
+  local nullin=$1
+  shift
+  reply=()
+  if (( $# > 0 )); then
+    reply=("$@")
+  elif [[ ! -t 0 ]]; then
+    local item
+    if (( nullin )); then
+      while IFS= read -r -d '' item; do reply+=("$item"); done
+    else
+      while IFS= read -r item || [[ -n $item ]]; do reply+=("$item"); done
+    fi
+  fi
+}
+
+# Print results. $1 = null_out, $2 = quiet, rest = items.
+.path_output() {
+  local nullout=$1 quiet=$2
+  shift 2
+  (( quiet )) && return 0
+  local x
+  if (( nullout )); then
+    for x in "$@"; do printf '%s\0' "$x"; done
+  else
+    for x in "$@"; do print -r -- "$x"; done
+  fi
+}
+
+# Strip trailing slashes from a path (but keep a bare "/").
+.path_trim() {
+  local p=$1
+  while [[ $p == */ && $p != / ]]; do p=${p%/}; done
+  print -r -- "$p"
+}
+
+# Lexically normalize a path: collapse //, drop . and resolve .. without
+# touching the filesystem. Leading .. is kept for relative paths.
+.path_normalize() {
+  local p=$1 abs=0 seg
+  local -a parts norm
+  [[ $p == /* ]] && abs=1
+  parts=("${(@s:/:)p}")
+  for seg in "${parts[@]}"; do
+    case $seg in
+      ''|.) ;;
+      ..)
+        if (( ${#norm} > 0 )) && [[ ${norm[-1]} != .. ]]; then
+          norm[-1]=()
+        elif (( ! abs )); then
+          norm+=..
+        fi
+        ;;
+      *) norm+="$seg" ;;
+    esac
+  done
+  local res=${(j:/:)norm}
+  if (( abs )); then
+    res="/$res"
+  elif [[ -z $res ]]; then
+    res="."
+  fi
+  print -r -- "$res"
+}
+
+# --- general options -----------------------------------------------------
+
+local -a o_z o_Z o_q
+zparseopts -D -F -- \
+  z=o_z -null-in=o_z \
+  Z=o_Z -null-out=o_Z \
+  q=o_q -quiet=o_q 2>/dev/null || {
+    print -ru2 -- "path $cmd: invalid option"
+    return 2
+  }
+
+local null_in=$(( $#o_z > 0 ))
+local null_out=$(( $#o_Z > 0 ))
+local quiet=$(( $#o_q > 0 ))
+
+local -a reply out
+local p trimmed base stem head
+local found=0
+
+case $cmd in
+  basename)
+    .path_inputs $null_in "$@"
+    for p in "${reply[@]}"; do
+      trimmed=$(.path_trim "$p")
+      if [[ $trimmed == / ]]; then
+        out+=(/)
+      else
+        out+=("${trimmed:t}")
+      fi
+      found=1
+    done
+    ;;
+
+  dirname)
+    .path_inputs $null_in "$@"
+    for p in "${reply[@]}"; do
+      trimmed=$(.path_trim "$p")
+      if [[ $trimmed != */* ]]; then
+        out+=(.)
+      else
+        head=${trimmed%/*}
+        [[ -z $head ]] && head=/
+        out+=("$head")
+      fi
+      found=1
+    done
+    ;;
+
+  extension)
+    .path_inputs $null_in "$@"
+    for p in "${reply[@]}"; do
+      trimmed=$(.path_trim "$p")
+      base=${trimmed:t}
+      if [[ $base == ?*.* ]]; then
+        out+=(".${base##*.}")
+        found=1
+      else
+        out+=("")
+      fi
+    done
+    ;;
+
+  change-extension)
+    if (( $# == 0 )); then
+      print -ru2 -- 'path change-extension: missing extension'
+      return 2
+    fi
+    local newext=$1
+    shift
+    [[ -n $newext && $newext != .* ]] && newext=".$newext"
+    .path_inputs $null_in "$@"
+    for p in "${reply[@]}"; do
+      trimmed=$(.path_trim "$p")
+      base=${trimmed:t}
+      head=${trimmed%"$base"}
+      stem=$base
+      [[ $base == ?*.* ]] && stem=${base%.*}
+      out+=("${head}${stem}${newext}")
+      found=1
+    done
+    ;;
+
+  normalize)
+    .path_inputs $null_in "$@"
+    for p in "${reply[@]}"; do
+      out+=("$(.path_normalize "$p")")
+      found=1
+    done
+    ;;
+
+  resolve)
+    .path_inputs $null_in "$@"
+    for p in "${reply[@]}"; do
+      out+=("${p:A}")
+      found=1
+    done
+    ;;
+
+  *)
+    print -ru2 -- "path: unknown subcommand: $cmd"
+    return 2
+    ;;
+esac
+
+.path_output $null_out $quiet "${out[@]}"
+(( found ))
+
+#}

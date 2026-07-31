@@ -1,0 +1,341 @@
+#!/bin/zsh
+##? string - Manipulate strings (Fish-style): length, sub, trim, split, join, etc.
+
+#function string {
+
+emulate -L zsh
+setopt local_options extended_glob
+
+if (( $# == 0 )); then
+  print -ru2 -- 'string: missing subcommand'
+  return 2
+fi
+
+local cmd=$1
+shift
+
+# --- helpers -------------------------------------------------------------
+
+# Gather inputs from args, or read from stdin when none are given.
+# Sets array `reply`. $1 = sep mode: "line" (default) or "null".
+.string_inputs() {
+  local mode=$1
+  shift
+  reply=()
+  if (( $# > 0 )); then
+    reply=("$@")
+  elif [[ ! -t 0 ]]; then
+    local item
+    if [[ $mode == null ]]; then
+      while IFS= read -r -d '' item; do reply+=("$item"); done
+    else
+      while IFS= read -r item || [[ -n $item ]]; do reply+=("$item"); done
+    fi
+  fi
+}
+
+# Print one item per line unless quiet.
+.string_print() {
+  local quiet=$1
+  shift
+  (( quiet )) && return 0
+  local x
+  for x in "$@"; do print -r -- "$x"; done
+}
+
+# Trim chars (in set $2) from the left of $1.
+.string_triml() {
+  local s=$1 set=$2
+  while [[ -n $s && $set == *"${s[1]}"* ]]; do s=${s[2,-1]}; done
+  print -r -- "$s"
+}
+
+# Trim chars (in set $2) from the right of $1.
+.string_trimr() {
+  local s=$1 set=$2
+  while [[ -n $s && $set == *"${s[-1]}"* ]]; do s=${s[1,-2]}; done
+  print -r -- "$s"
+}
+
+# --- dispatch ------------------------------------------------------------
+
+local -a reply out
+local s str
+local any=0 changed=0
+
+case $cmd in
+  length)
+    local -a o_q o_V
+    zparseopts -D -F -- q=o_q -quiet=o_q V=o_V -visible=o_V 2>/dev/null \
+      || { print -ru2 -- 'string length: invalid option'; return 2; }
+    local quiet=$(( $#o_q > 0 ))
+    .string_inputs line "$@"
+    for s in "${reply[@]}"; do
+      out+=("${#s}")
+      (( ${#s} > 0 )) && any=1
+    done
+    .string_print $quiet "${out[@]}"
+    (( any ))
+    ;;
+
+  upper|lower)
+    local -a o_q
+    zparseopts -D -F -- q=o_q -quiet=o_q 2>/dev/null \
+      || { print -ru2 -- "string $cmd: invalid option"; return 2; }
+    local quiet=$(( $#o_q > 0 ))
+    .string_inputs line "$@"
+    for s in "${reply[@]}"; do
+      if [[ $cmd == upper ]]; then str=${s:u}; else str=${s:l}; fi
+      out+=("$str")
+      [[ $str != "$s" ]] && changed=1
+    done
+    .string_print $quiet "${out[@]}"
+    (( changed ))
+    ;;
+
+  sub)
+    local -a o_s o_e o_l o_q
+    zparseopts -D -F -- \
+      s:=o_s -start:=o_s \
+      e:=o_e -end:=o_e \
+      l:=o_l -length:=o_l \
+      q=o_q -quiet=o_q 2>/dev/null \
+      || { print -ru2 -- 'string sub: invalid option'; return 2; }
+    local quiet=$(( $#o_q > 0 ))
+    local start=${${o_s[-1]:-1}#=} hasend=$(( $#o_e > 0 )) haslen=$(( $#o_l > 0 ))
+    local lenv=${o_l[-1]#=}
+    .string_inputs line "$@"
+    local len si ei
+    for s in "${reply[@]}"; do
+      len=${#s}
+      # resolve start (1-based; negative counts from end)
+      if (( start < 0 )); then si=$(( len + start + 1 )); else si=$start; fi
+      (( si < 1 )) && si=1
+      # resolve end
+      if (( haslen )); then
+        ei=$(( si + lenv - 1 ))
+      elif (( hasend )); then
+        local endv=${o_e[-1]#=}
+        if (( endv < 0 )); then ei=$(( len + endv )); else ei=$endv; fi
+      else
+        ei=$len
+      fi
+      (( ei > len )) && ei=$len
+      if (( si > ei || si > len )); then
+        out+=("")
+      else
+        out+=("${s[si,ei]}")
+      fi
+      any=1
+    done
+    .string_print $quiet "${out[@]}"
+    (( any ))
+    ;;
+
+  trim)
+    local -a o_l o_r o_c o_q
+    zparseopts -D -F -- \
+      l=o_l -left=o_l \
+      r=o_r -right=o_r \
+      c:=o_c -chars:=o_c \
+      q=o_q -quiet=o_q 2>/dev/null \
+      || { print -ru2 -- 'string trim: invalid option'; return 2; }
+    local quiet=$(( $#o_q > 0 ))
+    local set=${${o_c[-1]:-$' \t\n\r\v\f'}#=}
+    local doL=$(( $#o_l > 0 )) doR=$(( $#o_r > 0 ))
+    (( ! doL && ! doR )) && { doL=1; doR=1; }
+    .string_inputs line "$@"
+    for s in "${reply[@]}"; do
+      str=$s
+      (( doL )) && str=$(.string_triml "$str" "$set")
+      (( doR )) && str=$(.string_trimr "$str" "$set")
+      out+=("$str")
+      [[ $str != "$s" ]] && changed=1
+    done
+    .string_print $quiet "${out[@]}"
+    (( changed ))
+    ;;
+
+  pad)
+    local -a o_r o_c o_w o_q
+    zparseopts -D -F -- \
+      r=o_r -right=o_r \
+      c:=o_c -char:=o_c \
+      w:=o_w -width:=o_w \
+      q=o_q -quiet=o_q 2>/dev/null \
+      || { print -ru2 -- 'string pad: invalid option'; return 2; }
+    local quiet=$(( $#o_q > 0 ))
+    local padchar=${${o_c[-1]:- }#=}
+    local padright=$(( $#o_r > 0 ))
+    .string_inputs line "$@"
+    # width: explicit, else longest input
+    local width=${${o_w[-1]:-0}#=}
+    if (( $#o_w == 0 )); then
+      for s in "${reply[@]}"; do (( ${#s} > width )) && width=${#s}; done
+    fi
+    for s in "${reply[@]}"; do
+      # (l)/(r) pad the string to width with padchar; longer strings unchanged.
+      if (( ${#s} >= width )); then out+=("$s")
+      elif (( padright )); then out+=("${(pr:width::$padchar:)s}")
+      else out+=("${(pl:width::$padchar:)s}")
+      fi
+      any=1
+    done
+    .string_print $quiet "${out[@]}"
+    (( any ))
+    ;;
+
+  repeat)
+    local -a o_n o_m o_N o_q
+    zparseopts -D -F -- \
+      n:=o_n -count:=o_n \
+      m:=o_m -max:=o_m \
+      N=o_N -no-newline=o_N \
+      q=o_q -quiet=o_q 2>/dev/null \
+      || { print -ru2 -- 'string repeat: invalid option'; return 2; }
+    local quiet=$(( $#o_q > 0 )) nonl=$(( $#o_N > 0 ))
+    local hasN=$(( $#o_n > 0 )) hasM=$(( $#o_m > 0 ))
+    if (( ! hasN && ! hasM )); then
+      print -ru2 -- 'string repeat: missing --count or --max'
+      return 2
+    fi
+    local count=${${o_n[-1]:-0}#=} max=${${o_m[-1]:-0}#=}
+    .string_inputs line "$@"
+    local width result e=""
+    for s in "${reply[@]}"; do
+      # Target width in chars: count*len capped by max (whichever applies).
+      if (( hasN )); then width=$(( count * ${#s} )); else width=$(( max )); fi
+      (( hasM && (! hasN || max < width) )) && width=$max
+      # (pr:W::s:) right-fills an empty string with s, repeating then truncating.
+      (( width > 0 && ${#s} > 0 )) && result=${(pr:width::$s:)e} || result=""
+      out+=("$result")
+      [[ -n $result ]] && any=1
+    done
+    if (( quiet )); then
+      :
+    elif (( nonl )); then
+      print -rn -- "${(j:\n:)out}"
+    else
+      .string_print 0 "${out[@]}"
+    fi
+    (( any ))
+    ;;
+
+  split|split0)
+    local -a o_m o_n o_r o_f o_q
+    zparseopts -D -F -- \
+      m:=o_m -max:=o_m \
+      n=o_n -no-empty=o_n \
+      r=o_r -right=o_r \
+      f:=o_f -fields:=o_f \
+      q=o_q -quiet=o_q 2>/dev/null \
+      || { print -ru2 -- "string $cmd: invalid option"; return 2; }
+    local quiet=$(( $#o_q > 0 ))
+    local noempty=$(( $#o_n > 0 )) fromright=$(( $#o_r > 0 ))
+    local hasmax=$(( $#o_m > 0 )) max=${${o_m[-1]:-0}#=}
+    local sep
+    if [[ $cmd == split0 ]]; then
+      sep=$'\0'
+      .string_inputs null "$@"
+    else
+      if (( $# == 0 )); then
+        print -ru2 -- 'string split: missing separator'
+        return 2
+      fi
+      sep=$1
+      shift
+      .string_inputs line "$@"
+    fi
+    local -a parts
+    for s in "${reply[@]}"; do
+      # Split natively: empty sep -> characters, else literal split on sep.
+      if [[ -z $sep ]]; then parts=(${(s::)s}); else parts=("${(@ps:$sep:)s}"); fi
+      # Honor --max by re-joining the overflow on the limited side.
+      if (( hasmax )) && (( ${#parts} > max + 1 )); then
+        if (( max == 0 )); then
+          parts=("$s")
+        elif (( fromright )); then
+          parts=("${(pj:$sep:)parts[1,-max-1]}" "${(@)parts[-max,-1]}")
+        else
+          parts=("${(@)parts[1,max]}" "${(pj:$sep:)parts[max+1,-1]}")
+        fi
+      fi
+      (( ${#parts} > 1 )) && any=1
+      # --fields: keep only the requested 1-based fields (ints and M..N ranges).
+      if (( $#o_f )); then
+        local -a sel idx
+        local tok lo hi j
+        for tok in "${(@s:,:)${o_f[-1]#=}}"; do
+          if [[ $tok == *..* ]]; then
+            lo=${tok%%..*}; hi=${tok##*..}
+            for (( j = lo; j <= hi; j++ )); do idx+=($j); done
+          else
+            idx+=($tok)
+          fi
+        done
+        for j in "${idx[@]}"; do
+          (( j >= 1 && j <= ${#parts} )) && sel+=("${parts[j]}")
+        done
+        parts=("${sel[@]}")
+      fi
+      (( noempty )) && parts=("${(@)parts:#}")
+      out+=("${parts[@]}")
+    done
+    .string_print $quiet "${out[@]}"
+    (( any ))
+    ;;
+
+  join|join0)
+    local -a o_n o_q
+    zparseopts -D -F -- n=o_n -no-empty=o_n q=o_q -quiet=o_q 2>/dev/null \
+      || { print -ru2 -- "string $cmd: invalid option"; return 2; }
+    local quiet=$(( $#o_q > 0 )) noempty=$(( $#o_n > 0 ))
+    local sep
+    if [[ $cmd == join0 ]]; then
+      sep=$'\0'
+    else
+      if (( $# == 0 )); then
+        print -ru2 -- 'string join: missing separator'
+        return 2
+      fi
+      sep=$1
+      shift
+    fi
+    .string_inputs line "$@"
+    local -a items
+    items=("${reply[@]}")
+    (( noempty )) && items=("${(@)items:#}")
+    # status: 0 if there was something to join (>= 2 items)
+    (( ${#items} >= 2 )) && any=1
+    if (( ! quiet )); then
+      if [[ $cmd == join0 ]]; then
+        local first=1 it
+        for it in "${items[@]}"; do
+          (( first )) || printf '\0'
+          printf '%s' "$it"
+          first=0
+        done
+      else
+        print -r -- "${(pj:$sep:)items}"
+      fi
+    fi
+    (( any ))
+    ;;
+
+  match)
+    string-match "$@"
+    return
+    ;;
+
+  replace)
+    string-replace "$@"
+    return
+    ;;
+
+  *)
+    print -ru2 -- "string: unknown subcommand: $cmd"
+    return 2
+    ;;
+esac
+
+#}

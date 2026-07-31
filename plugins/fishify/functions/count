@@ -1,0 +1,31 @@
+#!/bin/zsh
+##? count - Print the number of arguments.
+
+#function count {
+
+emulate -L zsh
+setopt local_options
+
+# With arguments, count them. Note: like Fish, count has no options, so
+# flags are counted as ordinary arguments (eg: `count -h` prints 1).
+if (( $# > 0 )); then
+  print -r -- $#
+  (( $# > 0 ))
+  return
+fi
+
+# No arguments and stdin is piped: count lines from stdin.
+if [[ ! -t 0 ]]; then
+  local n=0 line
+  while IFS= read -r line || [[ -n $line ]]; do
+    (( n++ ))
+  done
+  print -r -- $n
+  (( n > 0 ))
+  return
+fi
+
+print -r -- 0
+return 1
+
+#}
