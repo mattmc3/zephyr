@@ -8,51 +8,47 @@ add_newline = false
 format = """$python$directory$character"""
 
 # move the rest of the prompt to the right
-#right_format = """$status$git_branch${custom.git_status_dirty}$git_status"""
-right_format = """$status$cmd_duration$git_branch${custom.git_status_dirty}$git_status"""
+right_format = """$status$cmd_duration$git_branch$git_status"""
 
-palette="wombat"
+# Timeout for commands executed by starship (in milliseconds)
+command_timeout = 2000
 
-# Define custom colors
-[palettes.tokyo_night]
-black = '#15161e'
-blue = '#7aa2f7'
-cyan = '#7dcfff'
-green = '#9ece6a'
-purple = '#bb9af7'
-red = '#f7768e'
-white = '#a9b1d6'
-yellow = '#e0af68'
+# Set the palette.
+palette = "blue_matrix"
 
-[palettes.tokyo_night_256]
-black = '16'
-blue = '111'
-cyan = '117'
-green = '149'
-purple = '141'
-red = '210'
-white = '146'
-yellow = '179'
+[profiles]
+# Drawn by starship-ftl before the real prompt is ready. Same shape as `format`
+# and `right_format`, minus anything that has to shell out (git especially), so
+# the cost stays flat no matter how big the repo is.
+ftl-prompt = """$python$directory$character"""
+ftl-rprompt = ""
+transient = '$time[❯](bold cyan) '
+transient_success = '$time[❯](bold green) '
+transient_error = '$status'
 
-[palettes.wombat]
-black = '#000000'
-blue = '#5da9f6'
-cyan = '#82fff7'
-green = '#b1e969'
-purple = '#e86aff'
-red = '#ff615a'
-white = '#dedacf'
-yellow = '#ebd99c'
-
-[palettes.wombat_256]
-black = '0'
-blue = '75'
-cyan = '123'
-green = '149'
-purple = '171'
-red = '203'
-white = '188'
-yellow = '223'
+[palettes.blue_matrix]
+black = '#101116'
+red = '#ff5680'
+green = '#00ff9c'
+yellow = '#fffc58'
+blue = '#00b0ff'
+purple = '#d57bff'
+cyan = '#76c1ff'
+white = '#c7c7c7'
+brblack = '#686868'
+brred = '#ff6e67'
+brgreen = '#5ffa68'
+bryellow = '#fffc67'
+brblue = '#6871ff'
+brpurple = '#d682ec'
+brcyan = '#60fdff'
+brwhite = '#ffffff'
+background = '#101116'
+foreground = '#00a2ff'
+cursor-color = '#76ff9f'
+cursor-text = '#a6a6a6'
+selection-background = '#c1deff'
+selection-foreground = '#000000'
 
 [character]
 success_symbol = "[❯](purple)[❯](cyan)"
@@ -74,19 +70,24 @@ fish_style_pwd_dir_length = 1
 format = ' [$branch]($style)'
 style = 'green'
 
+# Dirty flag rides on git_status: the group only renders when a state fires, so
+# `*` shows for any dirt. Symbols are U+034F combining grapheme joiners, which
+# attach to the `*` and are the invisible char zsh's RPROMPT math counts as
+# zero-width (it counts U+200B as one, which walks the cursor left).
 [git_status]
-format = '( [\[$ahead_behind$stashed\]]($style))'
+format = '([•$conflicted$deleted$renamed$modified$typechanged$staged$untracked](white))([\[$ahead_behind$stashed\]]($style))'
 style = "cyan"
 stashed = "≡"
+conflicted = "͏"
+deleted = "͏"
+renamed = "͏"
+modified = "͏"
+typechanged = "͏"
+staged = "͏"
+untracked = "͏"
 ahead = "⇡${count}"
 behind = "⇣${count}"
-
-[custom.git_status_dirty]
-when = 'test -n "$(git status --porcelain 2>/dev/null)"'
-symbol = "•"
-style = "white"
-format="[$symbol]($style)"
-shell = ["sh"]
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
 
 [cmd_duration]
 format = ' [$duration]($style)'
@@ -96,4 +97,13 @@ disabled = true
 
 [status]
 disabled = false
-symbol = ' ✘'
+pipestatus = true
+format = '[($symbol$int)]($style)'
+symbol = '✘'
+pipestatus_format = '\[$pipestatus\]($style)'
+
+[time]
+disabled = false
+format = '[$time]($style) '
+time_format = '%H:%M:%S'
+style = 'brblack'
