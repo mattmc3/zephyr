@@ -15,19 +15,53 @@ function mkdirvar {
 
 # Cache the results of an eval command
 function cached-eval {
-  emulate -L zsh; setopt local_options extended_glob
-  (( $# >= 2 )) || return 1
+  local sourcefile=''
 
-  : ${__zsh_cache_dir:=${XDG_CACHE_HOME:-$HOME/.cache}/zsh}
-  local cmdname=$1; shift
-  local cachefile=$__zsh_cache_dir/cached-eval/${cmdname}.zsh
-  local -a cached=($cachefile(Nmh-20))
-  # If the file has no size (is empty), or is older than 20 hours re-gen the cache.
-  if [[ ! -s $cachefile ]] || (( ! ${#cached} )); then
-    mkdir -p ${cachefile:h}
-    "$@" >| $cachefile
-  fi
-  source $cachefile
+  # Refresh under our options, source under yours, so a cached file can setopt.
+  () {
+    emulate -L zsh
+    setopt local_options extended_glob
+
+    : ${__zsh_cache_dir:=${XDG_CACHE_HOME:-$HOME/.cache}/zsh}
+    local cachedir=$__zsh_cache_dir/cached-eval
+
+    local -i clear=0
+    [[ "$1" == --clear ]] && { clear=1; shift }
+
+    if (( clear && ! $# )); then
+      command rm -f $cachedir/*(N.)
+      return
+    fi
+    (( $# )) || return 1
+
+    # Hash the whole command line, so different args get different caches.
+    local c
+    local -i hash=5381
+    for c in ${(s::)${(j: :)@}}; do
+      (( hash = (hash * 33 + #c) % 4294967296 ))
+    done
+    local cachefile=$cachedir/${1:t}-${hash}.zsh
+
+    if (( clear )); then
+      command rm -f $cachefile
+      return
+    fi
+
+    # Rebuild via a temp file so a failed command doesn't poison the cache.
+    if [[ -z $cachefile(#qNmh-20) ]]; then
+      mkdir -p $cachefile:h
+      if ! "$@" >| $cachefile.$$; then
+        command rm -f $cachefile.$$
+        return 1
+      fi
+      command mv -f $cachefile.$$ $cachefile
+    fi
+
+    sourcefile=$cachefile
+  } "$@" || return 1
+
+  [[ -n "$sourcefile" ]] || return 0  # --clear leaves nothing to source
+  source $sourcefile
 }
 
 # Check if a file can be autoloaded by trying to load it in a subshell.

@@ -12,7 +12,7 @@ This plugin adds the following functions:
 
 | function                   | description                                                                        |
 | -------------------------- | ---------------------------------------------------------------------------------- |
-| `cached-eval <name> <cmd>` | Cache the output of a command and source it, refreshing after 20 hours.            |
+| `cached-eval <cmd> [args]` | Cache the output of a command and source it, refreshing after 20 hours.            |
 | `mkdirvar <varname>`       | Create a directory from the value of a variable name.                              |
 | `is-autoloadable <func>`   | Checks if a function can be autoloaded by trying to load it in a subshell.         |
 | `is-callable <name>`       | Checks if a name is a command, function, or alias.                                 |

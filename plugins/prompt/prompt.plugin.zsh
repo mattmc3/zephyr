@@ -44,7 +44,7 @@ function prompt_starship_setup {
 
   # Initialize starship.
   if zstyle -t ':zephyr:plugin:prompt' 'use-cache'; then
-    cached-eval 'starship-init-zsh' starship init zsh
+    cached-eval starship init zsh
   else
     source <(starship init zsh)
   fi
