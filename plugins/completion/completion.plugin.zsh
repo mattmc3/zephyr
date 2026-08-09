@@ -70,29 +70,28 @@ function run_compinit {
   # Initialize completions
   autoload -Uz compinit
   if zstyle -t ':zephyr:plugin:completion' 'use-cache'; then
-    # Load and initialize the completion system ignoring insecure directories with a
-    # cache time of 20 hours, so it should almost always regenerate the first time a
-    # shell is opened each day.
-    local zcompdump_cache=($ZSH_COMPDUMP(Nmh-20))
-    if (( $#zcompdump_cache )); then
+    # Cache for 20 hours, so it regenerates the first time a shell opens each day.
+    # A changed fpath also has to invalidate, or new completions stay missing for
+    # those 20 hours. Stamp fpath before compinit, since -i prunes insecure dirs
+    # from it and the next startup would never match a post-compinit stamp.
+    local stampfile=$ZSH_COMPDUMP.fpath stamped= wanted="$fpath"
+    [[ -r $stampfile ]] && stamped="$(<$stampfile)"
+    [[ "$wanted" == "$stamped" ]] || command rm -f "$ZSH_COMPDUMP" "$ZSH_COMPDUMP.zwc"
+
+    if [[ -n $ZSH_COMPDUMP(#qNmh-20) ]]; then
       compinit -C $compinit_flags
     else
       compinit $compinit_flags
+      print -r -- "$wanted" >| $stampfile
       touch "$ZSH_COMPDUMP"  # Ensure timestamp updates to reset the cache timeout.
     fi
   else
     compinit $compinit_flags
   fi
 
-  # Compile ZSH_COMPDUMP, if modified, in background to increase startup speed.
-  {
-    if [[ -s "$ZSH_COMPDUMP" && (! -s "${ZSH_COMPDUMP}.zwc" || "$ZSH_COMPDUMP" -nt "${ZSH_COMPDUMP}.zwc") ]]; then
-      if command mkdir "${ZSH_COMPDUMP}.zwc.lock" 2>/dev/null; then
-        zcompile "$ZSH_COMPDUMP"
-        command rmdir  "${ZSH_COMPDUMP}.zwc.lock" 2>/dev/null
-      fi
-    fi
-  } &!
+  # Recompiles only if stale, and renames atomically, so concurrent shells are safe.
+  autoload -Uz zrecompile
+  zrecompile -q -p "$ZSH_COMPDUMP" &!
 }
 
 # Let's talk about compinit for a second...
@@ -107,9 +106,7 @@ function run_compinit {
 # That way when the real compinit is called, we can execute the queue.
 typeset -gHa __compdef_queue=()
 function compdef {
-  (( $# )) || return
-  local compdef_args=("${@[@]}")
-  __compdef_queue+=("$(typeset -p compdef_args)")
+  (( $# )) && __compdef_queue+=("${(j: :)${(@q+)@}}")
 }
 
 # Wrap compinit temporarily so that when the real compinit call happens, the
@@ -119,10 +116,9 @@ function compinit {
   autoload -Uz compinit && compinit "$@"
 
   # Apply all the queued compdefs.
-  local typedef_compdef_args
-  for typedef_compdef_args in $__compdef_queue; do
-    eval $typedef_compdef_args
-    compdef "$compdef_args[@]"
+  local entry
+  for entry in "${__compdef_queue[@]}"; do
+    eval "compdef $entry"
   done
   unset __compdef_queue
 
