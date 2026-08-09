@@ -51,17 +51,38 @@ if ! zstyle -t ':zephyr:plugin:color:alias' skip; then
   alias colormap='for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+"\n"}; done'
 
   # Set colors for grep.
-  alias grep="${aliases[grep]:-grep} --color=auto"
+  [[ "$aliases[grep]" == *--color* ]] || alias grep="${aliases[grep]:-grep} --color=auto"
 
-  # Set colors for ls.
-  alias ls="${aliases[ls]:-ls} --color=auto"
+  # Set colors for ls. GNU wants --color, BSD wants -G, and an old BSD ls dies on
+  # --color. Having dircolors means coreutils, so it answers which ls this is.
+  if (( $+commands[dircolors] )); then
+    [[ "$aliases[ls]" == *(--color|-G)* ]] || alias ls="${aliases[ls]:-ls} --color=auto"
+  elif [[ "$aliases[ls]" != *(--color|-G)* ]]; then
+    # Only real BSD ls takes -G. eza reads it as --grid, so check what runs.
+    if [[ "${${aliases[ls]:-ls}%% *}" == ls ]]; then
+      alias ls="${aliases[ls]:-ls} -G"
+    else
+      alias ls="${aliases[ls]} --color=auto"
+    fi
+  fi
   if (( $+commands[gls] )); then
-    alias gls="${aliases[gls]:-gls} --color=auto"
+    [[ "$aliases[gls]" == *--color* ]] || alias gls="${aliases[gls]:-gls} --color=auto"
   fi
 
-  # Set colors for diff.
-  if command diff --color /dev/null{,} &>/dev/null; then
-    alias diff="${aliases[diff]:-diff} --color"
+  # Set colors for diff. Old BSD diff has no --color, and asking costs a fork,
+  # so ask on first use.
+  if [[ -z "$aliases[diff]" ]]; then
+    function diff {
+      unfunction diff
+      if command diff --color /dev/null{,} &>/dev/null; then
+        alias diff='diff --color'
+        command diff --color "$@"
+      else
+        command diff "$@"
+      fi
+    }
+  elif [[ "$aliases[diff]" != *--color* ]] && command diff --color /dev/null{,} &>/dev/null; then
+    alias diff="$aliases[diff] --color"
   fi
 fi
 
