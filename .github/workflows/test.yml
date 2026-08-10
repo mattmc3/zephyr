@@ -1,0 +1,28 @@
+name: test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      # Report both platforms. Zephyr cares about the BSD/GNU split: the color
+      # plugin picks the ls and diff flags from what the host actually ships.
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    # tests/run can only cap individual tests where a `timeout` binary exists,
+    # which on macOS it does not. This stops a hung test from running for hours.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - run: sudo apt-get update && sudo apt-get install -y zsh bats parallel
+        if: ${{ runner.os == 'Linux' }}
+      # Deliberately no coreutils: GNU ls and dircolors on PATH would make the
+      # macOS runner stop looking like a BSD host.
+      - run: brew install bats-core parallel
+        if: ${{ runner.os == 'macOS' }}
+      - run: ./tests/run

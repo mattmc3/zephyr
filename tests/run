@@ -30,9 +30,10 @@ if (( $+commands[parallel] )); then
   jobflag=(--jobs ${BATS_JOBS:-4})
 fi
 
-# A wedged test should fail, not hang the suite. bats needs the `timeout` binary
-# for this, so only ask for it when one is around.
-if (( $+commands[timeout] || $+commands[gtimeout] )); then
+# Cap each test so one that hangs fails instead of stopping the whole suite. bats
+# runs `timeout` by that name, so gtimeout on its own does not help: asking for a
+# timeout bats cannot honor is an error, not a safety net.
+if (( $+commands[timeout] )); then
   export BATS_TEST_TIMEOUT=${BATS_TEST_TIMEOUT:-30}
 fi
 
