@@ -136,6 +136,18 @@ EOS
   assert_line "first: custom"
 }
 
+@test "a prepath zstyle expands a leading tilde" {
+  zephyr_zsh <<'EOS'
+mkdir -p $HOME/custom
+zstyle ':zephyr:plugin:environment' prepath '~/custom'
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/environment/environment.plugin.zsh
+print "first: ${path[1]#$HOME/}"
+EOS
+  assert_success
+  assert_line "first: custom"
+}
+
 @test "path arrays hold no duplicates" {
   zephyr_plugin environment <<'EOS'
 path=($HOME/bin $HOME/bin $HOME/bin $path)

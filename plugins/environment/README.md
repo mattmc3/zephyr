@@ -68,6 +68,8 @@ zstyle ':zephyr:plugin:environment' 'prepath' \
   $HOME/.local/bin
 ```
 
+A leading `~` is expanded, so `'~/bin'` works as well as `$HOME/bin`.
+
 [16.2.3]: https://zsh.sourceforge.io/Doc/Release/Options.html#Expansion-and-Globbing
 [16.2.6]: https://zsh.sourceforge.io/Doc/Release/Options.html#Input_002fOutput
 [16.2.7]: https://zsh.sourceforge.io/Doc/Release/Options.html#Job-Control

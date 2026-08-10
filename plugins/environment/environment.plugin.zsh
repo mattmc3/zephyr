@@ -97,6 +97,8 @@ if (( ! $#prepath )); then
     $HOME/{,s}bin(N)
     $HOME/.local/{,s}bin(N)
   )
+  # A zstyle is a literal string, so a leading '~' arrives unexpanded.
+  prepath=(${~prepath})
 fi
 path=(
   $prepath
