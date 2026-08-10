@@ -88,7 +88,9 @@ function run_compinit {
   fi
   compinit_flags+=(-d "$ZSH_COMPDUMP")
 
-  # Initialize completions
+  # Initialize completions. Whether compinit audited the completion directories
+  # decides if there is anything to report afterwards.
+  local -i audited=0
   autoload -Uz compinit
   if zstyle -t ':zephyr:plugin:completion' 'use-cache'; then
     # Cache for 20 hours, so it regenerates the first time a shell opens each day.
@@ -99,18 +101,35 @@ function run_compinit {
     [[ -r $stampfile ]] && stamped="$(<$stampfile)"
     [[ "$wanted" == "$stamped" ]] || command rm -f "$ZSH_COMPDUMP" "$ZSH_COMPDUMP.zwc"
 
+    # Installing a tool drops a completion into a directory already on fpath, which
+    # leaves fpath itself unchanged. Adding or removing a file bumps the directory's
+    # mtime, so a directory newer than the dumpfile means there is something new to
+    # pick up. All builtin tests, no forks.
+    local dir
+    for dir in $fpath; do
+      [[ -e $ZSH_COMPDUMP && $dir -nt $ZSH_COMPDUMP ]] || continue
+      command rm -f "$ZSH_COMPDUMP" "$ZSH_COMPDUMP.zwc"
+      break
+    done
+
     if [[ -n $ZSH_COMPDUMP(#qNmh-20) ]]; then
       compinit -C $compinit_flags
     else
       compinit $compinit_flags
+      audited=1
       print -r -- "$wanted" >| $stampfile
       touch "$ZSH_COMPDUMP"  # Ensure timestamp updates to reset the cache timeout.
     fi
   else
     compinit $compinit_flags
+    audited=1
   fi
 
-  if [[ "$compinit_flags[1]" == -i ]] && ! zstyle -t ':zephyr:plugin:completion:compaudit' quiet; then
+  # Only report when compinit actually audited. compaudit is the expensive part of a
+  # cold compinit, so running it again on a cached startup would hand back the time
+  # the cache just saved, to say nothing new.
+  if (( audited )) && [[ "$compinit_flags[1]" == -i ]] \
+     && ! zstyle -t ':zephyr:plugin:completion:compaudit' quiet; then
     zephyr-compaudit-warn &!
   fi
 

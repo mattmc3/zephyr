@@ -183,6 +183,38 @@ EOS
   assert_line "settled after change: yes"
 }
 
+# Installing a tool drops a completion into a directory already on fpath, so fpath
+# does not change and the stamp still matches. Without a staleness check the new
+# completion would stay invisible until the 20 hour cache expired.
+#
+# Across shells, like its neighbour above: compinit -i prunes insecure directories out
+# of $fpath, so a second run_compinit in the same shell never matches the stamp.
+@test "a completion added to a directory already on fpath rebuilds the dumpfile" {
+  mkdir -p "$TEST_HOME/comps"
+  write_file "$TEST_HOME/warm.zsh" \
+    'zstyle ":zephyr:plugin:completion" use-cache yes' \
+    'fpath=($HOME/comps $fpath)' \
+    'source $ZEPHYR_HOME/lib/bootstrap.zsh' \
+    'source $ZEPHYR_HOME/plugins/completion/completion.plugin.zsh' \
+    'run_compinit'
+  zephyr_plugin completion <<'EOS'
+dump=$XDG_CACHE_HOME/zsh/zcompdump
+zsh -f $HOME/warm.zsh >/dev/null
+print '# SENTINEL' >>$dump
+
+zsh -f $HOME/warm.zsh >/dev/null
+print "unchanged reuses: $([[ "$(<$dump)" == *SENTINEL* ]] && print yes || print no)"
+
+# A tool installs its completion into a directory that is already on fpath.
+print '#compdef newtool' >$HOME/comps/_newtool
+zsh -f $HOME/warm.zsh >/dev/null
+print "rebuilt after install: $([[ "$(<$dump)" == *SENTINEL* ]] && print no || print yes)"
+EOS
+  assert_success
+  assert_line "unchanged reuses: yes"
+  assert_line "rebuilt after install: yes"
+}
+
 @test "run_compinit -f forces a rebuild" {
   zephyr_plugin completion <<'EOS'
 zstyle ':zephyr:plugin:completion' use-cache yes
@@ -227,6 +259,30 @@ EOS
   assert_success
   assert_line "exit: 0"
   refute_output_contains "ignoring insecure"
+}
+
+# compaudit is the expensive half of a cold compinit, so a cached startup must not
+# run it again just to report what it already knows. The stub counts calls, and
+# returning non-zero keeps compinit on the same path it would have taken anyway.
+@test "a cached startup does not run compaudit again" {
+  zephyr_plugin completion <<'EOS'
+zstyle ':zephyr:plugin:completion' use-cache yes
+tally=$XDG_CACHE_HOME/audits
+: >$tally
+functions[compaudit]='print x >>'$tally'; return 1'
+
+run_compinit                 # cold: builds the dump, audits
+wait 2>/dev/null
+print "cold audits: $(wc -l <$tally | tr -d ' ')"
+
+: >$tally
+run_compinit                 # warm: -C fast path, must not audit
+wait 2>/dev/null
+print "warm audits: $(wc -l <$tally | tr -d ' ')"
+EOS
+  assert_success
+  assert_line "cold audits: 1"
+  assert_line "warm audits: 0"
 }
 
 @test "the compaudit quiet zstyle is honored" {

@@ -54,6 +54,10 @@ To keep skipping insecure directories, but stop reporting them:
 
 `zstyle ':zephyr:plugin:completion:compaudit' 'quiet' 'yes'`
 
+The report only runs on a startup that rebuilt the dumpfile. `compaudit` is the
+expensive part of a cold `compinit`, so a cached startup skips it rather than spend
+the time the cache just saved.
+
 To run compinit immediately instead of deferring until after `.zshrc`:
 
 `zstyle ':zephyr:plugin:completion' 'immediate' 'yes'`
