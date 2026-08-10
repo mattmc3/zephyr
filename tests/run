@@ -1,0 +1,47 @@
+#!/usr/bin/env zsh
+# Zephyr test runner.
+#
+# usage: tests/run [file...]
+#   (no args)  every file in tests/bats
+#   file...    only those files
+#
+# BATS_JOBS controls bats concurrency (default 4), where GNU parallel exists.
+# BATS_TEST_TIMEOUT caps a single test in seconds (default 30).
+
+0=${(%):-%x}
+setopt extended_glob
+
+local prjdir=${0:A:h:h}
+cd $prjdir || exit 1
+
+(( $+commands[bats] )) || {
+  print -ru2 "tests/run: fatal: bats not found. brew install bats-core"
+  exit 127
+}
+
+# bats --jobs shells out to GNU parallel, so a machine without it runs the suite
+# serially. Where it is installed, point its state at a scratch dir so it never
+# writes to the user's $HOME, and pre-answer the citation notice older versions
+# print on first run.
+local -a jobflag
+if (( $+commands[parallel] )); then
+  export PARALLEL_HOME="${TMPDIR:-/tmp}/zephyr-tests-parallel"
+  mkdir -p "$PARALLEL_HOME" && : >> "$PARALLEL_HOME/will-cite"
+  jobflag=(--jobs ${BATS_JOBS:-4})
+fi
+
+# A wedged test should fail, not hang the suite. bats needs the `timeout` binary
+# for this, so only ask for it when one is around.
+if (( $+commands[timeout] || $+commands[gtimeout] )); then
+  export BATS_TEST_TIMEOUT=${BATS_TEST_TIMEOUT:-30}
+fi
+
+local -a testfiles=($@)
+(( $#testfiles )) || testfiles=($prjdir/tests/bats/*.bats(N))
+
+(( $#testfiles )) || {
+  print -ru2 "tests/run: no test files found"
+  exit 1
+}
+
+exec bats $jobflag $testfiles
