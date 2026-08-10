@@ -66,7 +66,9 @@ function run_compinit {
   fi
 
   # Make sure ZSH_COMPDUMP's directory exists and doesnt' have a leading tilde.
-  ZSH_COMPDUMP="${~ZSH_COMPDUMP}"
+  # Unquoted on purpose: double quotes suppress the tilde expansion the ~ flag
+  # asks for.
+  ZSH_COMPDUMP=${~ZSH_COMPDUMP}
   [[ -d $ZSH_COMPDUMP:h ]] || mkdir -p $ZSH_COMPDUMP:h
 
   # `run_compinit -f` forces a cache reset.

@@ -30,7 +30,7 @@ setopt NO_share_history        # Don't share history between all sessions.
 # Set the path to the default history file.
 if zstyle -s ':zephyr:plugin:history' histfile 'HISTFILE'; then
   # Make sure the user didn't store a HISTFILE with a leading '~'.
-  HISTFILE="${~HISTFILE}"
+  HISTFILE=${~HISTFILE}
 else
   if zstyle -T ':zephyr:plugin:history' use-xdg-basedirs; then
     HISTFILE="${__zsh_user_data_dir}/zsh_history"
