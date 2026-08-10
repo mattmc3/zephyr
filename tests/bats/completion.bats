@@ -131,15 +131,17 @@ EOS
 # Dumpfile caching
 #
 
+# Rebuilds are detected with a sentinel comment appended to the dumpfile: it
+# survives a reuse and is gone after a regeneration. Neither timestamp nor inode
+# works here. mtime has one-second granularity, and Linux happily reuses the inode
+# of the file that was just removed.
 @test "the cache zstyle reuses a warm dumpfile" {
   zephyr_plugin completion <<'EOS'
-zmodload zsh/stat
 zstyle ':zephyr:plugin:completion' use-cache yes
 run_compinit
-before=$(zstat +mtime $ZSH_COMPDUMP)
+print '# SENTINEL' >>$ZSH_COMPDUMP
 run_compinit
-after=$(zstat +mtime $ZSH_COMPDUMP)
-print "reused: $([[ $before == $after ]] && print yes || print no)"
+print "reused: $([[ "$(<$ZSH_COMPDUMP)" == *SENTINEL* ]] && print yes || print no)"
 EOS
   assert_success
   assert_line "reused: yes"
@@ -160,37 +162,46 @@ EOS
   assert_line "matches: yes"
 }
 
-@test "a changed fpath rebuilds the dumpfile instead of waiting out the cache" {
+# Checked across shells, which is how the cache is actually used: one compinit per
+# startup, each snapshotting $fpath before compinit prunes it. Repeated calls inside
+# one shell are not a real scenario, and cannot work on Debian, where compinit does
+# not hand $fpath back byte-identical.
+@test "an unchanged fpath reuses the cache on the next shell, a changed one rebuilds" {
+  write_file "$TEST_HOME/warm.zsh" \
+    'zstyle ":zephyr:plugin:completion" use-cache yes' \
+    '[[ -n $EXTRA ]] && fpath=($EXTRA $fpath)' \
+    'source $ZEPHYR_HOME/lib/bootstrap.zsh' \
+    'source $ZEPHYR_HOME/plugins/completion/completion.plugin.zsh' \
+    'run_compinit'
   zephyr_plugin completion <<'EOS'
-zmodload zsh/stat
-zstyle ':zephyr:plugin:completion' use-cache yes
-run_compinit
-before=$(zstat +mtime $ZSH_COMPDUMP)
-sleep 1
+dump=$XDG_CACHE_HOME/zsh/zcompdump
+zsh -f $HOME/warm.zsh
+print '# SENTINEL' >>$dump
+
+zsh -f $HOME/warm.zsh
+print "reused next shell: $([[ "$(<$dump)" == *SENTINEL* ]] && print yes || print no)"
+
 mkdir -p $HOME/newcomps
-fpath=($HOME/newcomps $fpath)
-run_compinit
-after=$(zstat +mtime $ZSH_COMPDUMP)
-print "rebuilt: $([[ $before != $after ]] && print yes || print no)"
-run_compinit
-again=$(zstat +mtime $ZSH_COMPDUMP)
-print "settled: $([[ $after == $again ]] && print yes || print no)"
+EXTRA=$HOME/newcomps zsh -f $HOME/warm.zsh
+print "rebuilt on fpath change: $([[ "$(<$dump)" == *SENTINEL* ]] && print no || print yes)"
+
+print '# SENTINEL' >>$dump
+EXTRA=$HOME/newcomps zsh -f $HOME/warm.zsh
+print "settled after change: $([[ "$(<$dump)" == *SENTINEL* ]] && print yes || print no)"
 EOS
   assert_success
-  assert_line "rebuilt: yes"
-  assert_line "settled: yes"
+  assert_line "reused next shell: yes"
+  assert_line "rebuilt on fpath change: yes"
+  assert_line "settled after change: yes"
 }
 
 @test "run_compinit -f forces a rebuild" {
   zephyr_plugin completion <<'EOS'
-zmodload zsh/stat
 zstyle ':zephyr:plugin:completion' use-cache yes
 run_compinit
-before=$(zstat +mtime $ZSH_COMPDUMP)
-sleep 1
+print '# SENTINEL' >>$ZSH_COMPDUMP
 run_compinit -f
-after=$(zstat +mtime $ZSH_COMPDUMP)
-print "rebuilt: $([[ $before != $after ]] && print yes || print no)"
+print "rebuilt: $([[ "$(<$ZSH_COMPDUMP)" == *SENTINEL* ]] && print no || print yes)"
 EOS
   assert_success
   assert_line "rebuilt: yes"
@@ -214,8 +225,17 @@ EOS
   assert_output_contains "compaudit | xargs chmod g-w,o-w"
 }
 
+# fpath is replaced with one directory we know the permissions of. The host's own
+# fpath is not usable here: Debian ships /usr/share/zsh group-writable, so compaudit
+# has something to report before the test adds anything.
 @test "a clean fpath reports nothing" {
-  zephyr_plugin completion 'zephyr-compaudit-warn; print "exit: $?"'
+  mkdir -p "$TEST_HOME/clean"
+  chmod g-w,o-w "$TEST_HOME/clean" "$TEST_HOME"
+  zephyr_plugin completion <<'EOS'
+fpath=($HOME/clean)
+zephyr-compaudit-warn
+print "exit: $?"
+EOS
   assert_success
   assert_line "exit: 0"
   refute_output_contains "ignoring insecure"

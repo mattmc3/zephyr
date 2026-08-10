@@ -54,11 +54,14 @@ EOS
   assert_output_contains "-h"
 }
 
+# $path is narrowed to the stub dir alone, so `python` and `pip` are genuinely
+# absent. The GitHub Linux runners ship both, which would otherwise suppress the
+# aliases. Nothing past this point runs an external command.
 @test "python and pip fall back to their 3 spellings" {
   stub_command python3 'print py3'
   stub_command pip3 'print pip3'
   zephyr_zsh <<'EOS'
-path=($HOME/bin /usr/bin /bin); rehash
+path=($HOME/bin); rehash
 source $ZEPHYR_HOME/lib/bootstrap.zsh
 source $ZEPHYR_HOME/plugins/utility/utility.plugin.zsh
 print "python: ${aliases[python]:-unset}"
@@ -77,10 +80,11 @@ EOS
   assert_line "python: unset"
 }
 
+# Debian ships an `hd` of its own, so the stub dir has to be the whole of $path.
 @test "hd falls back to hexdump" {
   stub_command hexdump 'print hd'
   zephyr_zsh <<'EOS'
-path=($HOME/bin /usr/bin /bin); rehash
+path=($HOME/bin); rehash
 source $ZEPHYR_HOME/lib/bootstrap.zsh
 source $ZEPHYR_HOME/plugins/utility/utility.plugin.zsh
 print "hd: ${aliases[hd]:-unset}"

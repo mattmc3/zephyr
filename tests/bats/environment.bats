@@ -39,19 +39,27 @@ EOS
   assert_line "LESS: -g -i -M -R -S -w -z-4"
 }
 
-# Zsh presets both of these, so the `${VAR:-default}` and `[[ -n $VAR ]]` guards
-# in the plugin never fire and the intended values are never applied. These
-# assertions record what actually happens today, not what was meant: KEYTIMEOUT
-# stays at Zsh's 40 rather than dropping to 1, and READNULLCMD stays `more`
-# rather than following $PAGER.
+# Zsh presets both of these, so the `${VAR:-default}` and `[[ -n $VAR ]]` guards in
+# the plugin never fire and the intended values are never applied. This records
+# what actually happens today, not what was meant: KEYTIMEOUT never drops to 1 and
+# READNULLCMD never follows $PAGER. Compared against the value the shell started
+# with, since the preset differs by platform: `more` on macOS, `pager` on Debian.
 @test "KEYTIMEOUT and READNULLCMD keep the Zsh preset values" {
-  zephyr_plugin environment <<'EOS'
-print "KEYTIMEOUT: $KEYTIMEOUT"
-print "READNULLCMD: $READNULLCMD"
+  zephyr_zsh <<'EOS'
+before_keytimeout=$KEYTIMEOUT
+before_readnullcmd=$READNULLCMD
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/environment/environment.plugin.zsh
+print "keytimeout unchanged: $([[ $KEYTIMEOUT == $before_keytimeout ]] && print yes || print no)"
+print "readnullcmd unchanged: $([[ $READNULLCMD == $before_readnullcmd ]] && print yes || print no)"
+print "keytimeout is 1: $([[ $KEYTIMEOUT == 1 ]] && print yes || print no)"
+print "readnullcmd follows pager: $([[ $READNULLCMD == $PAGER ]] && print yes || print no)"
 EOS
   assert_success
-  assert_line "KEYTIMEOUT: 40"
-  assert_line "READNULLCMD: more"
+  assert_line "keytimeout unchanged: yes"
+  assert_line "readnullcmd unchanged: yes"
+  assert_line "keytimeout is 1: no"
+  assert_line "readnullcmd follows pager: no"
 }
 
 @test "an existing value is never overwritten" {
