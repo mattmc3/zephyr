@@ -93,7 +93,7 @@ function run_promptinit {
 if zstyle -t ':zephyr:plugin:prompt' immediate; then
   run_promptinit || return 1
 else
-  post_zshrc_hook+=(run_promptinit)
+  add-post-zshrc-hook run_promptinit
 fi
 
 #region MARK LOADED

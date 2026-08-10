@@ -141,7 +141,7 @@ unset zcompstyle
 if zstyle -t ':zephyr:plugin:completion' immediate; then
   run_compinit || return 1
 else
-  post_zshrc_hook+=(run_compinit)
+  add-post-zshrc-hook run_compinit
 fi
 
 #region MARK LOADED

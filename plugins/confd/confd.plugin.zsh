@@ -45,7 +45,7 @@ function run_confd {
 if zstyle -t ':zephyr:plugin:confd' immediate; then
   run_confd || return 1
 else
-  post_zshrc_hook+=(run_confd)
+  add-post-zshrc-hook run_confd
 fi
 
 #region MARK LOADED

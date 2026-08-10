@@ -86,6 +86,7 @@ function t_teardown {
   local -a globalvars=(
     post_zshrc
     post_zshrc_hook
+    post_zshrc_done
     completion_styles
     completion_style
     key_info

@@ -25,8 +25,10 @@ typeset -gx __zsh_{config,cache,user_data}_dir
 # play well with a plugin), they can run it themselves manually at the very end of
 # their .zshrc, and then it unregisters the precmd event.
 
-# Define a variable to hold actions run during the post_zshrc event.
+# Define a variable to hold actions run during the post_zshrc event, and a flag
+# recording whether the event has fired yet.
 typeset -ga post_zshrc_hook
+typeset -gi post_zshrc_done=0
 
 # Add our new event.
 function run_post_zshrc {
@@ -38,11 +40,26 @@ function run_post_zshrc {
     "${=fn}"
   done
 
-  # Now delete the precmd hook and self-remove this function and its list var so
-  # that it only runs once, and doesn't keep running on every future precmd event.
+  # Now delete the precmd hook and drain the list so that this only runs once, and
+  # doesn't keep running on every future precmd event. This function and its list
+  # var stay defined so that add-post-zshrc-hook still works afterwards.
+  post_zshrc_hook=()
+  post_zshrc_done=1
   add-zsh-hook -d precmd run_post_zshrc
-  unfunction -- run_post_zshrc
-  unset -- post_zshrc_hook
+}
+
+# Attach a function to the post_zshrc event. Adding one after the event already
+# fired runs it immediately, rather than dropping it on the floor.
+function add-post-zshrc-hook {
+  if (( ! post_zshrc_done )); then
+    post_zshrc_hook+=("$@")
+    return
+  fi
+
+  local fn
+  for fn in "$@"; do
+    "${=fn}"
+  done
 }
 
 # Attach run_post_zshrc to built-in precmd.
