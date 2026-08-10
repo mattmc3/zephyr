@@ -29,7 +29,7 @@ function run_confd {
   fi
 
   # Sort and source all scripts in conf.d.
-  local rc; local -a rcs=(${confd}/*.{z,}sh(N))
+  local rc; local -a rcs=(${confd}/*.{z,}sh(N-.))
   for rc in ${(o)rcs}; do
     # ignore files that begin with ~
     [[ "${rc:t}" != '~'* ]] || continue
