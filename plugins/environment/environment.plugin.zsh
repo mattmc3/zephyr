@@ -82,7 +82,7 @@ fi
 [[ -n "$READNULLCMD" ]] || READNULLCMD=$PAGER
 
 # Ensure path arrays do not contain duplicates.
-typeset -gU cdpath fpath mailpath path
+typeset -gU cdpath fpath mailpath path prepath
 
 # Add /usr/local/bin to path.
 path=(/usr/local/{,s}bin(N) $path)
@@ -103,6 +103,11 @@ path=(
   /usr/local/{,s}bin(N)
   $path
 )
+
+# Anything that prepends to path leaves it out of order. This puts it back.
+function repath {
+  path=($prepath $path)
+}
 
 #region MARK LOADED
 zstyle ':zephyr:plugin:environment' loaded 'yes'

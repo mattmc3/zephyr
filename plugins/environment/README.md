@@ -24,7 +24,11 @@ This plugin sets the following Zsh options:
 
 ## Functions
 
-This plugin sets no functions.
+This plugin adds the following functions:
+
+| function | description                                                                 |
+| -------- | --------------------------------------------------------------------------- |
+| `repath` | Put `$prepath` back at the front of `$path` after something prepends to it. |
 
 ## Aliases
 
