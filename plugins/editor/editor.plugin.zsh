@@ -111,22 +111,28 @@ function update-cursor-style {
     return
   fi
 
-  local style
+  # zle reports insert mode as `main`, which is viins under `bindkey -v` and the
+  # emacs keymap otherwise. Name it for the mode so the styles read plainly.
+  local mode=${KEYMAP:-main} layout
+  if [[ "$mode" == main ]]; then
+    zstyle -s ':zephyr:plugin:editor' key-bindings layout
+    [[ "$layout" == vi ]] && mode=viins || mode=emacs
+  fi
 
   # Try to get style for the current keymap, fallback to sensible defaults
-  zstyle -s ":zephyr:plugin:editor:$KEYMAP" cursor style
-  if [[ -z "$style" ]]; then
-    case "$KEYMAP" in
-      main|emacs|viins) style=line ;;
-      *)                style=block ;;
-    esac
+  local style
+  if ! zstyle -s ":zephyr:plugin:editor:$mode" cursor style; then
+    [[ "$mode" == vicmd ]] && style=block || style=line
   fi
 
   # Print the cursor style, or do nothing and use the default.
   case $style in
-    block)      printf '\e[2 q' ;;
-    underscore) printf '\e[4 q' ;;
-    line)       printf '\e[6 q' ;;
+    block-blink)      printf '\e[1 q' ;;
+    block)            printf '\e[2 q' ;;
+    underscore-blink) printf '\e[3 q' ;;
+    underscore)       printf '\e[4 q' ;;
+    line-blink)       printf '\e[5 q' ;;
+    line)             printf '\e[6 q' ;;
   esac
 }
 zle -N update-cursor-style
@@ -188,17 +194,21 @@ zle -N prepend-sudo
 
 # Expand aliases
 function glob-alias {
-  local -a noexpand_aliases
-  zstyle -a ':zephyr:plugin:editor:glob-alias' 'noexpand' 'noexpand_aliases' \
-    || noexpand_aliases=()
+  local -a noexpand_aliases expand_aliases
+  zstyle -a ':zephyr:plugin:editor:glob-alias' 'noexpand' 'noexpand_aliases'
+  zstyle -a ':zephyr:plugin:editor:glob-alias' 'expand' 'expand_aliases'
 
   # Get last word to the left of the cursor:
   # (A) makes it an array even if there's only one element
   # (z) splits into words using shell parsing
   local word=${${(Az)LBUFFER}[-1]}
-  if [[ $noexpand_aliases[(Ie)$word] -eq 0 ]]; then
-    zle _expand_alias
-    # zle expand-word
+
+  # Global aliases always expand. A plain one only expands when it isn't also a
+  # command name, so ls='ls --color' is left alone. The two lists override that
+  # both ways, noexpand first.
+  if (( ! $noexpand_aliases[(Ie)$word] )); then
+    (( $expand_aliases[(Ie)$word] || $+galiases[$word] || ! $+commands[$word] )) \
+      && zle _expand_alias
   fi
   zle self-insert
 }
