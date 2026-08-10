@@ -27,10 +27,29 @@ setopt auto_param_slash     # If completed parameter is a directory, add a trail
 setopt complete_in_word     # Complete from both ends of a word.
 setopt path_dirs            # Perform path search even on command names with slashes.
 setopt NO_flow_control      # Disable start/stop characters in shell editor.
+setopt NO_list_beep         # Do not beep on ambiguous completion.
 setopt NO_menu_complete     # Do not autoselect the first completion entry.
+
+# Needed by the menu-select styles the compstyles set.
+zmodload zsh/complist
 
 # Allow Fish-like user contributed completions.
 fpath=($__zsh_config_dir/completions(-/FN) $fpath)
+
+# Print the completion directories compaudit objects to, and how to fix them.
+# compinit -i skips them silently, and asking instead would stall a shell that
+# has no terminal to answer with.
+function zephyr-compaudit-warn {
+  emulate -L zsh
+  autoload -Uz compaudit
+
+  local -a insecure=(${(f)"$(compaudit 2>/dev/null)"})
+  (( $#insecure )) || return 0
+
+  print -u2 "zephyr: ignoring insecure completion directories:"
+  print -lu2 -- $insecure
+  print -u2 "zephyr: fix by running: compaudit | xargs chmod g-w,o-w"
+}
 
 function run_compinit {
   emulate -L zsh
@@ -87,6 +106,10 @@ function run_compinit {
     fi
   else
     compinit $compinit_flags
+  fi
+
+  if [[ "$compinit_flags[1]" == -i ]] && ! zstyle -t ':zephyr:plugin:completion:compaudit' quiet; then
+    zephyr-compaudit-warn &!
   fi
 
   # Recompiles only if stale, and renames atomically, so concurrent shells are safe.

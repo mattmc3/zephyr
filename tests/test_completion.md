@@ -42,6 +42,7 @@ interactivecomments   on
 nocaseglob            on
 noflowcontrol         on
 nohashdirs            on
+nolistbeep            on
 norcs                 on
 pathdirs              on
 %

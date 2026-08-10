@@ -15,16 +15,18 @@ This plugin sets the following Zsh options:
 | setopt   | [COMPLETE_IN_WORD][16.2.2] | Complete from both ends of a word.                           |
 | setopt   | [PATH_DIRS][16.2.2]        | Perform path search even on command names with slashes.      |
 | unsetopt | [FLOW_CONTROL][16.2.6]     | Disable start/stop characters in shell editor.               |
+| unsetopt | [LIST_BEEP][16.2.2]        | Do not beep on ambiguous completion.                         |
 | unsetopt | [MENU_COMPLETE][16.2.2]    | Do not autoselect the first completion entry.                |
 
 ## Functions
 
 This plugin adds the following functions:
 
-| function          | description                                                  |
-| ----------------- | ------------------------------------------------------------ |
-| `run_compinit`    | Initialize the Zsh completion system, with optional caching. |
-| `run_compinit -f` | Force a cache reset and reinitialize completions.            |
+| function                 | description                                                       |
+| ------------------------ | ----------------------------------------------------------------- |
+| `run_compinit`           | Initialize the Zsh completion system, with optional caching.      |
+| `run_compinit -f`        | Force a cache reset and reinitialize completions.                 |
+| `zephyr-compaudit-warn`  | Report the insecure completion directories compinit is ignoring.  |
 
 ## Aliases
 
@@ -47,6 +49,10 @@ To cache compinit results (regenerated at most once per day):
 To allow insecure directories in fpath without warning:
 
 `zstyle ':zephyr:plugin:completion' 'disable-compfix' 'yes'`
+
+To keep skipping insecure directories, but stop reporting them:
+
+`zstyle ':zephyr:plugin:completion:compaudit' 'quiet' 'yes'`
 
 To run compinit immediately instead of deferring until after `.zshrc`:
 
