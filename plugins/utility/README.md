@@ -10,9 +10,11 @@ This plugin sets no Zsh options.
 
 This plugin adds the following functions:
 
-| function      | description                                                   |
-| ------------- | ------------------------------------------------------------- |
-| `sedi <args>` | Cross-platform `sed -i` that works on both GNU and BSD `sed`. |
+| function          | description                                                   |
+| ----------------- | ------------------------------------------------------------- |
+| `sedi <args>`     | Cross-platform `sed -i` that works on both GNU and BSD `sed`. |
+| `copyfile <file>` | Copy a file's contents to the clipboard.                      |
+| `copypath [path]` | Copy an absolute path to the clipboard, defaulting to `$PWD`. |
 
 ## Aliases
 

@@ -81,6 +81,20 @@ if ! (( $+commands[pbcopy] )); then
   fi
 fi
 
+# Copy a file's contents to the clipboard.
+function copyfile {
+  emulate -L zsh
+  [[ -f "$1" ]] || { print -ru2 -- "copyfile: not a file: ${1:-}"; return 1 }
+  pbcopy < "$1"
+}
+
+# Copy a path to the clipboard, made absolute. Defaults to $PWD.
+function copypath {
+  emulate -L zsh
+  local file=${1:-$PWD}
+  print -rn -- "${file:a}" | pbcopy
+}
+
 # Cross platform `sed -i` syntax.
 function sedi {
   # GNU/BSD
