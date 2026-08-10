@@ -78,6 +78,23 @@ EOS
   assert_line "from deepfn"
 }
 
+@test "deeply nested subdirectories are autoloaded too" {
+  write_file "$TEST_HOME/.config/zsh/functions/git/helpers/deepestfn" 'print "from deepestfn"'
+  zephyr_plugin zfunctions <<'EOS'
+print "autoloadable: $+functions[deepestfn]"
+deepestfn
+EOS
+  assert_success
+  assert_line "autoloadable: 1"
+  assert_line "from deepestfn"
+}
+
+@test "ZFUNCDIR is exported" {
+  zephyr_plugin zfunctions 'print "exported: $(typeset -p ZFUNCDIR | grep -c export)"'
+  assert_success
+  assert_line "exported: 1"
+}
+
 # Completion functions belong to compinit, not here.
 @test "underscore-prefixed files are not autoloaded" {
   write_file "$TEST_HOME/.config/zsh/functions/_mycomp" 'print nope'

@@ -18,6 +18,9 @@ However, you can optionally override the path by setting the `$ZFUNCDIR` value:
 ZFUNCDIR=/path/to/my/lazy/zfunctions
 ```
 
+Subdirectories are picked up too, at any depth, so functions can be filed into
+folders (eg: `$ZFUNCDIR/git/helpers/gitclean`).
+
 ## Features
 
 The following functions are defined by this plugin:

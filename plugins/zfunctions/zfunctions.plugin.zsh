@@ -102,10 +102,13 @@ if [[ -z "$ZFUNCDIR" ]]; then
   || ZFUNCDIR="$__zsh_config_dir/functions"
   ZFUNCDIR=${~ZFUNCDIR}
 fi
+export ZFUNCDIR
 
-# Autoload ZFUNCDIR.
+# Autoload ZFUNCDIR, and every subdirectory below it, so functions can be filed
+# away in folders. '***' follows symlinks; the qualifiers keep it to directories
+# that hold something.
 if [[ -d "${ZFUNCDIR:A}" ]]; then
-  autoload-dir ${ZFUNCDIR:A} ${ZFUNCDIR:A}/*(N)
+  autoload-dir ${ZFUNCDIR:A} ${ZFUNCDIR:A}/***/*(-/FN)
 fi
 
 #region MARK LOADED
