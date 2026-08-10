@@ -18,7 +18,7 @@ function autoload-dir {
     zdir="${zdir:A}"
     [[ -d "$zdir" ]] || continue
     fpath=("$zdir" $fpath)
-    zautoloads=($zdir/*~_*(N.:t))
+    zautoloads=($zdir/*~*/_*(N.:t))
     (( $#zautoloads > 0 )) && autoload -Uz $zautoloads
   done
 }
