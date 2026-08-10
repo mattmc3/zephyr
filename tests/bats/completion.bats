@@ -131,22 +131,6 @@ EOS
 # Dumpfile caching
 #
 
-# Rebuilds are detected with a sentinel comment appended to the dumpfile: it
-# survives a reuse and is gone after a regeneration. Neither timestamp nor inode
-# works here. mtime has one-second granularity, and Linux happily reuses the inode
-# of the file that was just removed.
-@test "the cache zstyle reuses a warm dumpfile" {
-  zephyr_plugin completion <<'EOS'
-zstyle ':zephyr:plugin:completion' use-cache yes
-run_compinit
-print '# SENTINEL' >>$ZSH_COMPDUMP
-run_compinit
-print "reused: $([[ "$(<$ZSH_COMPDUMP)" == *SENTINEL* ]] && print yes || print no)"
-EOS
-  assert_success
-  assert_line "reused: yes"
-}
-
 # An age check alone would hide a new completion directory for 20 hours, so the
 # fpath the dumpfile was built from is stamped beside it.
 @test "the fpath stamp is written next to the dumpfile" {
@@ -162,6 +146,10 @@ EOS
   assert_line "matches: yes"
 }
 
+# Rebuilds are detected with a sentinel comment appended to the dumpfile: it
+# survives a reuse and is gone after a regeneration. mtime is only second-accurate
+# and Linux reuses the inode of a file just removed, so neither works here.
+#
 # Checked across shells, which is how the cache is actually used: one compinit per
 # startup, each snapshotting $fpath before compinit prunes it. Repeated calls inside
 # one shell are not a real scenario, and cannot work on Debian, where compinit does
