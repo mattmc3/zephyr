@@ -81,16 +81,17 @@ fi
 # Use `< file` to quickly view the contents of any file.
 [[ -n "$READNULLCMD" ]] || READNULLCMD=$PAGER
 
-# Ensure path arrays do not contain duplicates.
-typeset -gU cdpath fpath mailpath path prepath
+# Ensure path arrays do not contain duplicates. prepath is not already an array,
+# so it needs -a of its own.
+typeset -gaU cdpath fpath mailpath path prepath
 
 # Add /usr/local/bin to path.
 path=(/usr/local/{,s}bin(N) $path)
 
-# Set the list of directories that Zsh searches for programs.
-if [[ ! -v prepath ]]; then
-  typeset -ga prepath
-  # If path ever gets out of order, you can use `path=($prepath $path)` to reset it.
+# Set the list of directories that Zsh searches for programs. Declaring prepath
+# above makes it exist, so go by whether it holds anything rather than by -v.
+if (( ! $#prepath )); then
+  # If path ever gets out of order, you can use `repath` to reset it.
   zstyle -a ':zephyr:plugin:environment' 'prepath' 'prepath' \
   || prepath=(
     $HOME/{,s}bin(N)
