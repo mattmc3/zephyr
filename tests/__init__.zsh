@@ -87,6 +87,7 @@ function t_teardown {
     post_zshrc
     post_zshrc_hook
     post_zshrc_done
+    accept_line_hook
     completion_styles
     completion_style
     key_info

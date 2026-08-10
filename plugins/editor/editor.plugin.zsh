@@ -258,6 +258,16 @@ zle -N symmetric-ctrl-z
 (( $+functions[magic-enter-cmd] )) ||
 function magic-enter-cmd {
   local cmd
+
+  # jj goes first, so a colocated repo gets the jj command. No fork unless the
+  # style is set, since jj is the rarer tool.
+  if (( $+commands[jj] )) \
+     && zstyle -s ':zephyr:plugin:editor:magic-enter' jj-command 'cmd' \
+     && command jj st &>/dev/null; then
+    echo $cmd
+    return
+  fi
+
   zstyle -s ':zephyr:plugin:editor:magic-enter' command 'cmd' ||
     cmd="ls ."
 
@@ -275,28 +285,104 @@ function magic-enter {
     return
   fi
   BUFFER=$(magic-enter-cmd)
+
+  # A leading space keeps it out of history, given hist_ignore_space.
+  [[ -n "$BUFFER" ]] && BUFFER=" $BUFFER"
+  CURSOR=$#BUFFER
 }
 
-if zstyle -t ':zephyr:plugin:editor' 'magic-enter'; then
-  # Wrapper for the accept-line zle widget (run when pressing Enter)
-  # If the wrapper already exists don't redefine it
-  if (( ! ${+functions[_magic-enter_accept-line]} )); then
-    case "$widgets[accept-line]" in
-      # Override the current accept-line widget, calling the old one
-      user:*) zle -N _magic-enter_orig_accept-line "${widgets[accept-line]#user:}"
-        function _magic-enter_accept-line {
-          magic-enter
-          zle _magic-enter_orig_accept-line -- "$@"
-        } ;;
-      # If no user widget defined, call the original accept-line widget
-      builtin) function _magic-enter_accept-line {
-          magic-enter
-          zle .accept-line
-        } ;;
-    esac
-    zle -N accept-line _magic-enter_accept-line
+#
+# Accept-line hooks
+#
+
+# Functions to run when Enter accepts a line, in the order added. They run inside
+# a widget, so BUFFER, CURSOR, and zle all work normally.
+typeset -ga accept_line_hook
+
+# Attach a function to the accept-line event, or with -d, detach one. Adding the
+# same one twice is a no-op, and the name need not be defined yet.
+function add-accept-line-hook {
+  local fn
+  if [[ "$1" == -d ]]; then
+    shift
+    for fn in "$@"; do accept_line_hook=(${accept_line_hook:#$fn}); done
+    return
   fi
+  for fn in "$@"; do
+    (( $accept_line_hook[(Ie)$fn] )) || accept_line_hook+=("$fn")
+  done
+}
+
+# A hook that went away is skipped rather than spelled out to the terminal on
+# every keypress. The loop variable is named oddly so hooks can use their own.
+function run-accept-line-hooks {
+  local _zph_hook
+  for _zph_hook in $accept_line_hook; do
+    (( $+functions[${_zph_hook%% *}] )) && "${=_zph_hook}"
+  done
+  return 0
+}
+
+# Wrap the widget rather than rebind Enter, so ^M, ^J, vicmd Enter, and widgets
+# calling accept-line themselves all go through it. Whoever wrapped it first keeps
+# their turn. The guard stops a re-source wrapping our own wrapper.
+if (( ! $+functions[accept-line-with-hooks] )); then
+  case "$widgets[accept-line]" in
+    user:*)
+      zle -N accept-line-orig "${widgets[accept-line]#user:}"
+      function accept-line-with-hooks {
+        run-accept-line-hooks
+        zle accept-line-orig -- "$@"
+      } ;;
+    *)
+      function accept-line-with-hooks {
+        run-accept-line-hooks
+        zle .accept-line
+      } ;;
+  esac
+  zle -N accept-line accept-line-with-hooks
 fi
+
+if zstyle -t ':zephyr:plugin:editor' 'magic-enter'; then
+  add-accept-line-hook magic-enter
+fi
+
+# True when $1 is a command ready to run. Compiling it as a function body is the
+# test, so there is no subshell and nothing runs. Options stay the caller's here,
+# or the answer would not be the one the prompt would give.
+function command-is-complete {
+  setopt local_options no_err_return no_err_exit
+  local f=-zephyr-command-test
+
+  # An odd number of trailing backslashes continues the line.
+  (( ${#${1##*[^\\]}} % 2 )) && return 1
+
+  unfunction -- $f 2>/dev/null
+  functions[$f]="$1" 2>/dev/null || return 1
+  [[ -v functions[$f] ]]         || return 1
+  unfunction -- $f
+
+  # `for x` and `cat <<END` are legal function bodies but unfinished commands.
+  # If do/done finishes them, the command was waiting for more.
+  functions[$f]="$1"$'\ndo\ndone' 2>/dev/null || return 0
+  [[ -v functions[$f] ]]                      || return 0
+  unfunction -- $f
+  return 1
+}
+
+# Enter runs a finished command and opens a new line in an unfinished one, so a
+# multi-line command is edited in one buffer rather than at a PS2 prompt. A
+# command too broken to parse counts as unfinished, leaving room to fix it.
+function accept-line-or-newline {
+  if command-is-complete "$PREBUFFER$BUFFER"; then
+    zle accept-line
+  else
+    # self-insert-unmeta rather than a newline of our own, so zsh-autosuggestions
+    # sees the keypress. It is also why this belongs on Enter and nowhere else.
+    zle self-insert-unmeta
+  fi
+}
+zle -N accept-line-or-newline
 
 #
 # Init
@@ -379,6 +465,15 @@ for _zph_keymap in emacs viins vicmd; do
   bindkey -M "$_zph_keymap" '^X^X' hist-complete
   bindkey -M "$_zph_keymap" '^X^C' copybuffer
 done
+
+# Enter opens a new line in an unfinished command instead of dropping to a PS2
+# prompt. Hijacking Enter is not polite, so this one is opt-in.
+if zstyle -t ':zephyr:plugin:editor' accept-line-or-newline; then
+  for _zph_keymap in emacs viins; do
+    bindkey -M "$_zph_keymap" '^M' accept-line-or-newline
+    bindkey -M "$_zph_keymap" '^J' accept-line-or-newline
+  done
+fi
 
 # Optional keybindings for emacs and viins keymaps
 typeset -A _zph_opt_in_keybinds _zph_opt_out_keybinds
