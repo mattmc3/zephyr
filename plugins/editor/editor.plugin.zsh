@@ -94,6 +94,17 @@ function bindkey-all {
   done
 }
 
+# Binds one widget to several key sequences, skipping the ones a terminal
+# doesn't report. Takes an optional leading -M <keymap>.
+function bindkey-multiple {
+  local -a keymap=()
+  [[ "$1" == -M ]] && { keymap=(-M "$2"); shift 2 }
+  local widget=$1 seq; shift
+  for seq in "$@"; do
+    [[ -n "$seq" ]] && bindkey $keymap "$seq" "$widget"
+  done
+}
+
 function update-cursor-style {
   # We currently only support the xterm family of terminals
   if ! is-term-family xterm && ! is-term-family rxvt && ! is-tmux; then
@@ -214,6 +225,22 @@ function pound-toggle {
 }
 zle -N pound-toggle
 
+# Copy the line being edited to the clipboard, PS2 continuation lines included.
+function copybuffer {
+  (( $+commands[pbcopy] || $+aliases[pbcopy] || $+functions[pbcopy] )) ||
+    { zle -M "copybuffer: pbcopy not found"; return 1 }
+  print -rn -- "$PREBUFFER$BUFFER" | pbcopy
+}
+zle -N copybuffer
+
+# Edit the current command in $EDITOR.
+autoload -Uz edit-command-line
+zle -N edit-command-line
+
+# Complete the word under the cursor from history rather than the filesystem.
+# The compstyles point this context at the _history completer.
+zle -C hist-complete complete-word _generic
+
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/fancy-ctrl-z/fancy-ctrl-z.plugin.zsh
 # https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
 function symmetric-ctrl-z {
@@ -281,6 +308,11 @@ if (( ! $+zsh_defer_options )); then
   bindkey -d
 fi
 
+# Free up Ctrl+S/Ctrl+Q from terminal flow control so zsh can bind them.
+if [[ -o interactive && -r "${TTY:-}" && -w "${TTY:-}" ]] && (( $+commands[stty] )); then
+  stty -ixon <"$TTY" >"$TTY"
+fi
+
 #
 # Keybinds
 #
@@ -338,6 +370,15 @@ done
 # mode, which is similar to pound insert, but meant to work around some bugs.
 bindkey -M emacs "$key_info[Escape];" pound-toggle
 bindkey -M vicmd "#" vi-pound-insert
+
+# Edit the command in $EDITOR, complete from history, and copy the line to the
+# clipboard. Ctrl+X Ctrl+C is unbound by default, unlike the Ctrl+O other configs
+# use, which is accept-line-and-down-history.
+for _zph_keymap in emacs viins vicmd; do
+  bindkey -M "$_zph_keymap" '^X^E' edit-command-line
+  bindkey -M "$_zph_keymap" '^X^X' hist-complete
+  bindkey -M "$_zph_keymap" '^X^C' copybuffer
+done
 
 # Optional keybindings for emacs and viins keymaps
 typeset -A _zph_opt_in_keybinds _zph_opt_out_keybinds
