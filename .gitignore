@@ -8,3 +8,7 @@ prompts/*/
 !prompts/functions
 .cache/
 .foo/
+.*
+!.gitignore
+!.editorconfig
+!.github
