@@ -30,6 +30,20 @@ EOS
   assert_line "p10k setup: 1"
 }
 
+@test "a user prompts directory joins fpath and its themes register" {
+  write_file "$TEST_HOME/.config/zsh/prompts/prompt_mytheme_setup" 'PS1="mytheme> "'
+  zephyr_plugin prompt <<'EOS'
+local -a m=(${(M)fpath:#$__zsh_config_dir/prompts})
+print "in fpath: $#m"
+promptinit
+local -a t=(${(M)prompt_themes:#mytheme})
+print "registered: $#t"
+EOS
+  assert_success
+  assert_line "in fpath: 1"
+  assert_line "registered: 1"
+}
+
 @test "promptinit is deferred to post_zshrc by default" {
   zephyr_plugin prompt 'print "queued: ${post_zshrc_hook[(r)run_promptinit]:-none}"'
   assert_success

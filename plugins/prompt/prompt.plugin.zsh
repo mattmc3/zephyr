@@ -18,6 +18,14 @@ setopt prompt_subst       # Expand parameters in prompt variables.
 # overridden by a prompt or plugin, but is a better default than Zsh's.
 PS2='${${${(%):-%_}//[^ ]}// /  }    '
 
+# Let the built-in prompt system find prompt_*_setup functions: yours first, then
+# any that ship with Zephyr. Both vanish when the directory is absent or empty.
+fpath=(
+  $__zsh_config_dir/themes(-/FN)
+  $ZEPHYR_HOME/plugins/prompt/themes(-/FN)
+  $fpath
+)
+
 # Wrap powerlevel10k prompt to support themes directory
 function prompt_p10k_setup {
   if [[ -n "$1" ]]; then
