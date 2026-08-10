@@ -1,6 +1,6 @@
 0=${(%):-%N}
 if (( ! ${+functions[gen-uuid7]} )); then
-  source ${0:A:h:h}/helper/helper.plugin.zsh
+  zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:A:h:h:h}/lib/bootstrap.zsh
 fi
 
 zmodload zsh/datetime 2>/dev/null

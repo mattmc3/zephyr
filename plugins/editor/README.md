@@ -33,8 +33,20 @@ This plugin adds the following functions:
 | ------------------------------- | ---------------------------------------------------------------------- |
 | `bindkey-all <args>`            | Run `bindkey` against every keymap.                                    |
 | `bindkey-multiple [-M <keymap>] <widget> <seq>...` | Bind one widget to several key sequences, skipping empty ones. |
-| `add-accept-line-hook [-d] <fn>...` | Attach a function to run when Enter accepts a line, or detach it with `-d`. |
 | `command-is-complete <string>`  | True when the string is a command ready to run, without running it.    |
+
+This plugin runs the functions in `$accept_line_hook` when Enter accepts a line. Add
+one with `add-accept-line-hook`, which comes from `lib/bootstrap.zsh` so it works
+whether or not this plugin has loaded:
+
+```zsh
+function my-hook { print -s "$BUFFER" }
+add-accept-line-hook my-hook
+add-accept-line-hook -d my-hook   # detach
+```
+
+Hooks run in the order added, inside the widget, so `BUFFER`, `CURSOR` and `zle` all
+work normally. A hook whose function no longer exists is skipped.
 
 ## Aliases
 
@@ -105,6 +117,13 @@ is left alone:
 ```zsh
 zstyle ':zephyr:plugin:editor:glob-alias' noexpand 'ls' 'rm'
 zstyle ':zephyr:plugin:editor:glob-alias' expand 'vim' 'cat'
+```
+
+Also expand the alias when you press Enter, not just the expansion key (default: no).
+This rewrites the line before it runs:
+
+```zsh
+zstyle ':zephyr:plugin:editor:glob-alias' on-accept 'yes'
 ```
 
 Set the cursor style per keymap. Styles are `block`, `underscore`, and `line`, each

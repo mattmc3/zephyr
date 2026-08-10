@@ -192,8 +192,9 @@ function prepend-sudo {
 }
 zle -N prepend-sudo
 
-# Expand aliases
-function glob-alias {
+# Expand the alias under the cursor. Kept apart from the widget below so it can also
+# run as an accept-line hook, where inserting a character would be wrong.
+function glob-alias-word {
   local -a noexpand_aliases expand_aliases
   zstyle -a ':zephyr:plugin:editor:glob-alias' 'noexpand' 'noexpand_aliases'
   zstyle -a ':zephyr:plugin:editor:glob-alias' 'expand' 'expand_aliases'
@@ -210,6 +211,11 @@ function glob-alias {
     (( $expand_aliases[(Ie)$word] || $+galiases[$word] || ! $+commands[$word] )) \
       && zle _expand_alias
   fi
+}
+
+# Expand aliases, then insert the key that got us here.
+function glob-alias {
+  glob-alias-word
   zle self-insert
 }
 zle -N glob-alias
@@ -305,24 +311,10 @@ function magic-enter {
 # Accept-line hooks
 #
 
-# Functions to run when Enter accepts a line, in the order added. They run inside
-# a widget, so BUFFER, CURSOR, and zle all work normally.
-typeset -ga accept_line_hook
-
-# Attach a function to the accept-line event, or with -d, detach one. Adding the
-# same one twice is a no-op, and the name need not be defined yet.
-function add-accept-line-hook {
-  local fn
-  if [[ "$1" == -d ]]; then
-    shift
-    for fn in "$@"; do accept_line_hook=(${accept_line_hook:#$fn}); done
-    return
-  fi
-  for fn in "$@"; do
-    (( $accept_line_hook[(Ie)$fn] )) || accept_line_hook+=("$fn")
-  done
-}
-
+# $accept_line_hook and add-accept-line-hook come from lib/bootstrap.zsh, so a plugin
+# can register a hook whether or not this one has loaded yet. What lives here is the
+# widget that runs them.
+#
 # A hook that went away is skipped rather than spelled out to the terminal on
 # every keypress. The loop variable is named oddly so hooks can use their own.
 function run-accept-line-hooks {
@@ -355,6 +347,14 @@ fi
 
 if zstyle -t ':zephyr:plugin:editor' 'magic-enter'; then
   add-accept-line-hook magic-enter
+fi
+
+# Expand the alias under the cursor on Enter as well, not only on the expansion key:
+#   zstyle ':zephyr:plugin:editor:glob-alias' on-accept 'yes'
+# Off by default. It rewrites the line you are about to run, which is a bigger ask
+# than expanding when you press a key for it.
+if zstyle -t ':zephyr:plugin:editor:glob-alias' on-accept; then
+  add-accept-line-hook glob-alias-word
 fi
 
 # True when $1 is a command ready to run. Compiling it as a function body is the

@@ -386,6 +386,44 @@ EOS
   assert_output_contains "EXPAND"
 }
 
+# glob-alias-word is the decision, without the keypress. Splitting them lets the same
+# logic run as an accept-line hook, where inserting a character would be wrong.
+@test "glob-alias-word expands without inserting a character" {
+  zephyr_plugin editor <<'EOS'
+function zle { print -n "[$1]" }
+alias gs='git status'
+LBUFFER='gs'; glob-alias-word; print
+EOS
+  assert_success
+  assert_line "[_expand_alias]"
+}
+
+@test "glob-alias expands and then inserts the key" {
+  zephyr_plugin editor <<'EOS'
+function zle { print -n "[$1]" }
+alias gs='git status'
+LBUFFER='gs'; glob-alias; print
+EOS
+  assert_success
+  assert_line "[_expand_alias][self-insert]"
+}
+
+# Expanding on Enter rewrites the line about to run, so it is opt-in.
+@test "expanding on accept-line is off by default and opt-in" {
+  zephyr_plugin editor 'print "hooks: ${accept_line_hook:-none}"'
+  assert_success
+  assert_line "hooks: none"
+
+  zephyr_zsh <<'EOS'
+zstyle ':zephyr:plugin:editor:glob-alias' on-accept yes
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/editor/editor.plugin.zsh
+print "hooks: $accept_line_hook"
+EOS
+  assert_success
+  assert_line "hooks: glob-alias-word"
+}
+
 #
 # accept-line hooks
 #
@@ -417,6 +455,23 @@ EOS
   assert_line "after two: one two"
   assert_line "no dupe: one two"
   assert_line "after detach: two"
+}
+
+# The list and the register function live in lib/bootstrap.zsh, so a plugin can
+# register before the editor plugin loads, or without it at all.
+@test "a hook can be registered before the editor plugin loads" {
+  zephyr_zsh <<'EOS'
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+print "api without editor: $+functions[add-accept-line-hook]"
+add-accept-line-hook early-bird
+source $ZEPHYR_HOME/plugins/editor/editor.plugin.zsh
+print "kept: $accept_line_hook"
+print "wrapper: $widgets[accept-line]"
+EOS
+  assert_success
+  assert_line "api without editor: 1"
+  assert_line "kept: early-bird"
+  assert_line "wrapper: user:accept-line-with-hooks"
 }
 
 @test "hooks run in the order added, and a missing one is skipped" {

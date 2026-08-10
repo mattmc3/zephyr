@@ -109,7 +109,6 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 - **[directory](plugins/directory/README.md)** - Set options and aliases related to the dirstack and filesystem
 - **[editor](plugins/editor/README.md)** - Override and fill in the gaps of the default keybinds
 - **[environment](plugins/environment/README.md)** - Define common environment variables
-- **[helper](plugins/helper/README.md)** - Add common helper functions
 - **[history](plugins/history/README.md)** - Load and initialize the built-in zsh history system
 - **[homebrew](plugins/homebrew/README.md)** - Functionality for users of Homebrew
 - **[macos](plugins/macos/README.md)** - Functionality for macOS users
@@ -138,7 +137,6 @@ zstyle ':zephyr:load' plugins \
   completion \
   directory \
   editor \
-  helper \
   history \
   prompt \
   utility \

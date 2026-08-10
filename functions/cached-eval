@@ -1,0 +1,56 @@
+#!/bin/zsh
+
+### Source a command's Zsh output, caching it in $__zsh_cache_dir for 20 hours.
+### Only for commands with stable output.
+###   cached-eval brew shellenv
+###   cached-eval --clear brew shellenv  # clear one
+###   cached-eval --clear                # clear all
+#function cached-eval {
+  local sourcefile=''
+
+  # Refresh under our options, source under yours, so a cached file can setopt.
+  () {
+    emulate -L zsh
+    setopt local_options extended_glob
+
+    : ${__zsh_cache_dir:=${XDG_CACHE_HOME:-$HOME/.cache}/zsh}
+    local cachedir=$__zsh_cache_dir/cached-eval
+
+    local -i clear=0
+    [[ "$1" == --clear ]] && { clear=1; shift }
+
+    if (( clear && ! $# )); then
+      command rm -f $cachedir/*(N.)
+      return
+    fi
+    (( $# )) || return 1
+
+    # Hash the whole command line, so different args get different caches.
+    local c
+    local -i hash=5381
+    for c in ${(s::)${(j: :)@}}; do
+      (( hash = (hash * 33 + #c) % 4294967296 ))
+    done
+    local cachefile=$cachedir/${1:t}-${hash}.zsh
+
+    if (( clear )); then
+      command rm -f $cachefile
+      return
+    fi
+
+    # Rebuild via a temp file so a failed command doesn't poison the cache.
+    if [[ -z $cachefile(#qNmh-20) ]]; then
+      mkdir -p $cachefile:h
+      if ! "$@" >| $cachefile.$$; then
+        command rm -f $cachefile.$$
+        return 1
+      fi
+      command mv -f $cachefile.$$ $cachefile
+    fi
+
+    sourcefile=$cachefile
+  } "$@" || return 1
+
+  [[ -n "$sourcefile" ]] || return 0  # --clear leaves nothing to source
+  source $sourcefile
+#}

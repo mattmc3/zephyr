@@ -17,7 +17,6 @@ zstyle -a ':zephyr:load' plugins '_zephyr_plugins' ||
     completion
     directory
     editor
-    helper
     history
     prompt
     utility

@@ -1,38 +1,34 @@
-# Helper
+# helper
 
-> Add common helper functions.
+> Deprecated. Nothing to load.
 
-## Options
+The shared functions moved out of this plugin. They now come with Zephyr's bootstrap,
+so any plugin has them and there is nothing to add to your plugin list.
 
-This plugin sets no Zsh options.
+The one-line predicates are defined in [lib/bootstrap.zsh](../../lib/bootstrap.zsh):
 
-## Functions
+| function                 | description                                                            |
+| ------------------------ | ---------------------------------------------------------------------- |
+| `is-autoloadable <func>` | Checks if a function can be autoloaded by trying it in a subshell.     |
+| `is-callable <name>`     | Checks if a name is a command, function, alias, or builtin.            |
+| `is-true <value>`        | Checks if a value spells true (1, y, yes, t, true, o, on).             |
+| `is-term-family <term>`  | Checks if `$TERM` matches the given terminal family.                   |
+| `is-tmux`                | Checks if running inside tmux.                                         |
+| `is-macos`               | Checks if the OS is macOS.                                             |
+| `is-linux`               | Checks if the OS is Linux.                                            |
+| `is-bsd`                 | Checks if the OS is BSD.                                               |
+| `is-cygwin`              | Checks if the OS is Cygwin.                                            |
+| `is-termux`              | Checks if the OS is Termux.                                            |
 
-This plugin adds the following functions:
+The two with real bodies are autoloaded from [functions/](../../functions), so they
+cost nothing until you call them:
 
-| function                   | description                                                                        |
-| -------------------------- | ---------------------------------------------------------------------------------- |
-| `cached-eval <cmd> [args]` | Cache the output of a command and source it, refreshing after 20 hours.            |
-| `mkdirvar <varname>`       | Create a directory from the value of a variable name.                              |
-| `is-autoloadable <func>`   | Checks if a function can be autoloaded by trying to load it in a subshell.         |
-| `is-callable <name>`       | Checks if a name is a command, function, or alias.                                 |
-| `is-true <value>`          | Checks if a value is a string representation of true (eg: 1, yes, y, t, on, etc.). |
-| `is-term-family <term>`    | Checks if `$TERM` matches the given terminal family.                               |
-| `is-tmux`                  | Checks if running inside tmux.                                                     |
-| `is-macos`                 | Checks if the OS is macOS.                                                         |
-| `is-linux`                 | Checks if the OS is Linux.                                                         |
-| `is-bsd`                   | Checks if the OS is BSD.                                                           |
-| `is-cygwin`                | Checks if the OS is Cygwin.                                                        |
-| `is-termux`                | Checks if the OS is Android/Termux.                                                |
+| function                   | description                                                                                                                   |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `cached-eval <cmd> [args]` | Cache the output of a command and source it, refreshing after 20 hours. `--clear` first drops one cache, or all with no command. |
+| `gen-uuid7`                | Generate a time-ordered UUID v7 into `$REPLY`.                                                                                |
 
-## Aliases
+`mkdirvar` is gone. It never worked, and nothing used it.
 
-This plugin sets no aliases.
-
-## Variables
-
-This plugin sets no variables.
-
-## Customizations
-
-This plugin does not have any zstyles for customization.
+This directory stays so that bundling `path:plugins/helper` keeps working: the plugin
+file now just sources the bootstrap.
