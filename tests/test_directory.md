@@ -40,6 +40,7 @@ extendedglob          on
 globdots              on
 nohashdirs            on
 norcs                 on
+pushdignoredups       on
 pushdminus            on
 pushdsilent           on
 pushdtohome           on

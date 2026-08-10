@@ -6,17 +6,18 @@
 
 This plugin sets the following Zsh options:
 
-| action   | option                   | description                                             |
-| -------- | ------------------------ | ------------------------------------------------------- |
-| setopt   | [AUTO_PUSHD][16.2.1]     | Make cd push the old directory onto the dirstack.       |
-| setopt   | [PUSHD_MINUS][16.2.1]    | Exchanges meanings of +/- when navigating the dirstack. |
-| setopt   | [PUSHD_SILENT][16.2.1]   | Do not print the directory stack after pushd or popd.   |
-| setopt   | [PUSHD_TO_HOME][16.2.1]  | Push to home directory when no argument is given.       |
-| setopt   | [EXTENDED_GLOB][16.2.3]  | Use extended chars (#,~,^) in globbing patterns.        |
-| setopt   | [GLOB_DOTS][16.2.3]      | Include dotfiles when globbing.                         |
-| unsetopt | [CLOBBER][16.2.6]        | Don't overwrite files with >. Use >! to bypass.         |
-| unsetopt | [RM_STAR_SILENT][16.2.6] | Ask for confirmation for `rm *' or `rm path/\*'         |
-| setopt   | [MULTIOS][16.2.9]        | Write to multiple descriptors.                          |
+| action   | option                      | description                                                  |
+| -------- | --------------------------- | ------------------------------------------------------------ |
+| setopt   | [AUTO_PUSHD][16.2.1]        | Make cd push the old directory onto the dirstack.            |
+| setopt   | [PUSHD_IGNORE_DUPS][16.2.1] | Don't push multiple copies of a directory onto the dirstack. |
+| setopt   | [PUSHD_MINUS][16.2.1]       | Exchanges meanings of +/- when navigating the dirstack.      |
+| setopt   | [PUSHD_SILENT][16.2.1]      | Do not print the directory stack after pushd or popd.        |
+| setopt   | [PUSHD_TO_HOME][16.2.1]     | Push to home directory when no argument is given.            |
+| setopt   | [EXTENDED_GLOB][16.2.3]     | Use extended chars (#,~,^) in globbing patterns.             |
+| setopt   | [GLOB_DOTS][16.2.3]         | Include dotfiles when globbing.                              |
+| unsetopt | [CLOBBER][16.2.6]           | Don't overwrite files with >. Use >! to bypass.              |
+| unsetopt | [RM_STAR_SILENT][16.2.6]    | Ask for confirmation for `rm *' or `rm path/\*'              |
+| setopt   | [MULTIOS][16.2.9]           | Write to multiple descriptors.                               |
 
 ## Functions
 
