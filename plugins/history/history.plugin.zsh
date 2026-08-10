@@ -42,17 +42,22 @@ fi
 # Make sure the HISTFILE's directory exists.
 [[ -d "${HISTFILE:h}" ]] || mkdir -p "${HISTFILE:h}"
 
-# Set history file size.
-zstyle -s ':zephyr:plugin:history' savehist 'SAVEHIST' \
-  || SAVEHIST=100000
+# Set the history file and session sizes. HISTSIZE and SAVEHIST always have a value
+# in Zsh, so absent a zstyle these only grow, and never shrink a larger existing
+# value.
+[[ "$SAVEHIST" -gt 100000 ]] || SAVEHIST=100000
+[[ "$HISTSIZE" -gt  20000 ]] || HISTSIZE=20000
 
-# Set session history size.
-zstyle -s ':zephyr:plugin:history' histsize 'HISTSIZE' \
-  || HISTSIZE=20000
+# A zstyle wins outright. Assign via a temp, because `zstyle -s` empties its target
+# variable when the style isn't set.
+zstyle -s ':zephyr:plugin:history' savehist '_zph_val' && SAVEHIST=$_zph_val
+zstyle -s ':zephyr:plugin:history' histsize '_zph_val' && HISTSIZE=$_zph_val
+unset _zph_val
 
 # Set history aliases.
 if ! zstyle -t ':zephyr:plugin:history:alias' skip; then
   alias hist='fc -li'
+  alias histsync='fc -RI'
   alias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
 fi
 

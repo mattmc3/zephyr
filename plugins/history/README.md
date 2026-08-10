@@ -33,6 +33,7 @@ This plugin adds the following aliases:
 | alias          | description                                    |
 | -------------- | ---------------------------------------------- |
 | `hist`         | `fc -li`: show history with timestamps         |
+| `histsync`     | `fc -RI`: read new events from the history file |
 | `history-stat` | Show the most frequently used history commands |
 
 ## Variables
@@ -44,6 +45,9 @@ This plugin sets the following variables:
 | `HISTFILE` | Path to the history file (default: `~/.zsh_history`)            |
 | `SAVEHIST` | Number of events to save to the history file (default: 100000)  |
 | `HISTSIZE` | Number of events to keep in memory per session (default: 20000) |
+
+Absent a zstyle, the defaults only raise `SAVEHIST` and `HISTSIZE`. A larger value
+set before this plugin loads is left alone.
 
 ## Customizations
 
