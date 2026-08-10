@@ -90,6 +90,80 @@ EOS
   assert_line "bindkey -A viins main"
 }
 
+# `existing` is for people who ran `bindkey -v` themselves, or load something like
+# zsh-vi-mode: the plugin binds its keys but leaves the choice of keymap alone.
+@test "key-bindings existing leaves a vi choice alone" {
+  zephyr_zsh <<'EOS'
+zstyle ':zephyr:plugin:editor' key-bindings existing
+bindkey -v
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/editor/editor.plugin.zsh
+bindkey -lL main
+print "layout: $_zph_editor_layout"
+EOS
+  assert_success
+  assert_line "bindkey -A viins main"
+  assert_line "layout: vi"
+}
+
+@test "key-bindings existing leaves an emacs choice alone" {
+  zephyr_zsh <<'EOS'
+zstyle ':zephyr:plugin:editor' key-bindings existing
+bindkey -e
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/editor/editor.plugin.zsh
+bindkey -lL main
+print "layout: $_zph_editor_layout"
+EOS
+  assert_success
+  assert_line "bindkey -A emacs main"
+  assert_line "layout: emacs"
+}
+
+# Choosing emacs or vi outright orphans a binding made beforehand with a bare
+# `bindkey`: it stays in the keymap it landed in, which main no longer points at.
+@test "key-bindings existing keeps earlier bare bindkeys reachable" {
+  zephyr_zsh <<'EOS'
+zstyle ':zephyr:plugin:editor' key-bindings existing
+bindkey -v
+bindkey '^Y' beep
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/editor/editor.plugin.zsh
+print "reachable: $(bindkey '^Y' | awk '{print $2}')"
+EOS
+  assert_success
+  assert_line "reachable: beep"
+}
+
+@test "choosing emacs orphans an earlier vi-mode bare bindkey" {
+  zephyr_zsh <<'EOS'
+bindkey -v
+bindkey '^Y' beep
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/editor/editor.plugin.zsh
+print "main: $(bindkey '^Y' | awk '{print $2}')"
+print "still in viins: $(bindkey -M viins '^Y' | awk '{print $2}')"
+EOS
+  assert_success
+  assert_line "main: yank"
+  assert_line "still in viins: beep"
+}
+
+# The cursor styles are named for the mode, so under `existing` the layout has to be
+# resolved from what is actually linked rather than assumed to be emacs.
+@test "the cursor follows the resolved layout under existing" {
+  zephyr_zsh <<'EOS'
+zstyle ':zephyr:plugin:editor' key-bindings existing
+zstyle ':zephyr:plugin:editor:viins' cursor underscore-blink
+bindkey -v
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/editor/editor.plugin.zsh
+printf 'viins: '; KEYMAP=main update-cursor-style | cat -v; print
+EOS
+  assert_success
+  assert_line 'viins: ^[[3 q'
+}
+
 @test "an invalid key-bindings value complains" {
   zephyr_zsh <<'EOS'
 zstyle ':zephyr:plugin:editor' key-bindings nonsense
@@ -152,6 +226,52 @@ print "dot: $(bindkey -M emacs '.' | awk '{print $2}')"
 EOS
   assert_success
   assert_line "dot: dot-expansion"
+}
+
+# Resetting keymaps is off by default: it discards bindings made before the plugin
+# loads, and deleting keymaps from a deferred call segfaults Zsh (issue #40).
+@test "keymaps are not reset by default" {
+  zephyr_zsh <<'EOS'
+bindkey -N mycustom
+bindkey -M emacs '^Y' beep
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/editor/editor.plugin.zsh
+print "earlier binding: $(bindkey -M emacs '^Y' | awk '{print $2}')"
+print "custom keymap: $(bindkey -l | grep -c mycustom)"
+EOS
+  assert_success
+  assert_line "earlier binding: beep"
+  assert_line "custom keymap: 1"
+}
+
+@test "reset-keymaps restores the defaults and drops custom keymaps" {
+  zephyr_zsh <<'EOS'
+zstyle ':zephyr:plugin:editor' reset-keymaps yes
+bindkey -N mycustom
+bindkey -M emacs '^A' beep
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/editor/editor.plugin.zsh
+print "clobbered default: $(bindkey -M emacs '^A' | awk '{print $2}')"
+print "custom keymap: $(bindkey -l | grep -c mycustom)"
+EOS
+  assert_success
+  assert_line "clobbered default: beginning-of-line"
+  assert_line "custom keymap: 0"
+}
+
+# Deleting keymaps from a deferred call segfaults Zsh, so the reset is skipped when
+# zsh-defer is in play even if it was asked for.
+@test "reset-keymaps is skipped under zsh-defer" {
+  zephyr_zsh <<'EOS'
+zstyle ':zephyr:plugin:editor' reset-keymaps yes
+typeset -ga zsh_defer_options=()
+bindkey -M emacs '^A' beep
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/editor/editor.plugin.zsh
+print "left alone: $(bindkey -M emacs '^A' | awk '{print $2}')"
+EOS
+  assert_success
+  assert_line "left alone: beep"
 }
 
 @test "bindkey-multiple skips sequences the terminal does not report" {

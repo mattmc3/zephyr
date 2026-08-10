@@ -111,12 +111,12 @@ function update-cursor-style {
     return
   fi
 
-  # zle reports insert mode as `main`, which is viins under `bindkey -v` and the
-  # emacs keymap otherwise. Name it for the mode so the styles read plainly.
-  local mode=${KEYMAP:-main} layout
+  # zle reports insert mode as `main`, which is viins under vi bindings and the
+  # emacs keymap otherwise. Name it for the mode so the styles read plainly. The
+  # layout was worked out once when the plugin loaded.
+  local mode=${KEYMAP:-main}
   if [[ "$mode" == main ]]; then
-    zstyle -s ':zephyr:plugin:editor' key-bindings layout
-    [[ "$layout" == vi ]] && mode=viins || mode=emacs
+    [[ "$_zph_editor_layout" == vi ]] && mode=viins || mode=emacs
   fi
 
   # Try to get style for the current keymap, fallback to sensible defaults
@@ -400,7 +400,7 @@ zle -N accept-line-or-newline
 
 # https://github.com/mattmc3/zephyr/issues/40
 # Reset to default key bindings if we aren't using zsh-defer
-if (( ! $+zsh_defer_options )); then
+if zstyle -t ':zephyr:plugin:editor' reset-keymaps && (( ! $+zsh_defer_options )); then
   bindkey -d
 fi
 
@@ -538,15 +538,32 @@ fi
 # Layout
 #
 
-# Set the key layout.
+# Set the key layout: emacs, vi, or existing.
+#   zstyle ':zephyr:plugin:editor' key-bindings 'existing'
+# `existing` leaves whatever keymap is already linked to main, for people who ran
+# `bindkey -v` themselves or load something like zsh-vi-mode. Choosing emacs or vi
+# overrides that, and orphans anything bound with a bare `bindkey` beforehand: the
+# binding stays in the old keymap, which is no longer the one main points at.
+#
+# $_zph_editor_layout records which of the two we ended up in, so
+# update-cursor-style can name its styles for the mode without asking again. Under
+# `existing` that costs one subshell, paid only by those who ask for it.
+typeset -g _zph_editor_layout
 zstyle -s ':zephyr:plugin:editor' key-bindings '_zph_key_bindings'
-if [[ "$_zph_key_bindings" == (emacs|) ]]; then
-  bindkey -e
-elif [[ "$_zph_key_bindings" == vi ]]; then
-  bindkey -v
-else
-  print "editor: invalid key bindings: $_zph_key_bindings" >&2
-fi
+case "$_zph_key_bindings" in
+  emacs|'')
+    bindkey -e
+    _zph_editor_layout=emacs ;;
+  vi)
+    bindkey -v
+    _zph_editor_layout=vi ;;
+  existing)
+    [[ "$(bindkey -lL main)" == *viins* ]] && _zph_editor_layout=vi \
+                                           || _zph_editor_layout=emacs ;;
+  *)
+    print "editor: invalid key bindings: $_zph_key_bindings" >&2
+    _zph_editor_layout=emacs ;;
+esac
 
 #
 # Clean up

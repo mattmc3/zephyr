@@ -69,6 +69,26 @@ zstyle ':zephyr:plugin:editor' automatic-glob-alias yes
 zstyle ':zephyr:plugin:editor' accept-line-or-newline yes
 ```
 
+Set the key layout - `emacs`, `vi`, or `existing` (default: `emacs`):
+
+```zsh
+zstyle ':zephyr:plugin:editor' key-bindings 'existing'
+```
+
+`existing` keeps whatever keymap is already linked to `main`. Use it if you set
+`bindkey -v` yourself, or load a plugin like zsh-vi-mode.
+
+Reset all keymaps to Zsh defaults before binding (default: no):
+
+```zsh
+zstyle ':zephyr:plugin:editor' reset-keymaps 'yes'
+```
+
+This discards keybindings set before Zephyr loads, and deletes keymaps made with
+`bindkey -N`. Skipped under `zsh-defer`, where it segfaults Zsh ([#40]).
+
+[#40]: https://github.com/mattmc3/zephyr/issues/40
+
 Set custom magic-enter commands. The `jj-command` only applies inside a jj repo, and
 beats `git-command` in a colocated one:
 
