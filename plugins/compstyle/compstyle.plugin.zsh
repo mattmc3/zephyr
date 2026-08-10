@@ -16,7 +16,7 @@ zstyle -t ':zephyr:plugin:compstyle' loaded && return 1
 ! zstyle -t ":zephyr:plugin:compstyle" skip || return 0
 
 function compstyle_zephyr_help {
-  echo "A composite of the grml, prezto, and ohmyzsh completions."
+  echo "A composite of good baseline completions for Zephyr."
   echo "You can invoke it with the following command:"
   echo
   echo "  compstyle zephyr"
@@ -37,8 +37,10 @@ function compstyle_zephyr_setup {
   zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 
   # Use caching to make completion for commands such as dpkg and apt usable.
+  # Version the cache the way the compdump is versioned, since its contents are
+  # only good for the Zsh that wrote them.
   zstyle ':completion::complete:*' use-cache on
-  zstyle ':completion::complete:*' cache-path "$__zsh_cache_dir/zcompcache"
+  zstyle ':completion::complete:*' cache-path "$__zsh_cache_dir/zcompcache-${ZSH_VERSION}"
 
   # Case-insensitive (all), partial-word, and then substring completion.
   if zstyle -t ':zephyr:plugin:compstyle:*' case-sensitive; then
@@ -62,10 +64,15 @@ function compstyle_zephyr_setup {
   zstyle ':completion:*' group-name ''
   zstyle ':completion:*' verbose yes
 
-  # Fuzzy match mistyped completions.
-  zstyle ':completion:*' completer _complete _match _approximate
+  # Escalate only as far as needed: normal matches, then the ones ignored-patterns
+  # held back, then the word as a pattern, then typos.
+  zstyle ':completion:*' completer _complete _ignored _match _approximate
   zstyle ':completion:*:match:*' original only
   zstyle ':completion:*:approximate:*' max-errors 1 numeric
+
+  # A guess belongs in the list, never on the line.
+  zstyle ':completion:*:(approximate|correct)*:*' original true
+  zstyle ':completion:*:(approximate|correct)*:*' insert-unambiguous true
 
   # Increase the number of errors based on the length of the typed word. But make
   # sure to cap (at 7) the max-errors to avoid hanging.
@@ -84,7 +91,8 @@ function compstyle_zephyr_setup {
   zstyle ':completion:*' squeeze-slashes true
   zstyle ':completion:*' special-dirs ..
 
-  # History
+  # History. Feeds the hist-complete widget the editor plugin binds.
+  zstyle ':completion:hist-complete:*' completer _history
   zstyle ':completion:*:history-words' stop yes
   zstyle ':completion:*:history-words' remove-all-dups yes
   zstyle ':completion:*:history-words' list false
