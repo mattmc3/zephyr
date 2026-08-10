@@ -30,10 +30,10 @@ EOS
   assert_line "p10k setup: 1"
 }
 
-@test "a user prompts directory joins fpath and its themes register" {
-  write_file "$TEST_HOME/.config/zsh/prompts/prompt_mytheme_setup" 'PS1="mytheme> "'
+@test "a user themes directory joins fpath and its themes register" {
+  write_file "$TEST_HOME/.config/zsh/themes/prompt_mytheme_setup" 'PS1="mytheme> "'
   zephyr_plugin prompt <<'EOS'
-local -a m=(${(M)fpath:#$__zsh_config_dir/prompts})
+local -a m=(${(M)fpath:#$__zsh_config_dir/themes})
 print "in fpath: $#m"
 promptinit
 local -a t=(${(M)prompt_themes:#mytheme})
