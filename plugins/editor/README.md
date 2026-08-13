@@ -4,7 +4,8 @@ Zsh line editor configuration and keybindings.
 
 ## Features
 
-**Ctrl-Z** - Push current command to background, or bring back with Ctrl-Z on empty line (enabled by default)
+**Ctrl-Z** - Push current command to background, or bring back with Ctrl-Z on empty line
+(enabled by default)
 
 **Ctrl-X Ctrl-S** - Add `sudo` to the beginning of the line (enabled by default)
 
@@ -18,9 +19,11 @@ Zsh line editor configuration and keybindings.
 
 **Space** - Expand aliases automatically as you type (disabled by default)
 
-**Dot expansion** - Type `...` to expand to `../..`, `....` to `../../..`, etc (disabled by default)
+**Dot expansion** - Type `...` to expand to `../..`, `....` to `../../..`, etc (disabled
+by default)
 
-**Magic enter** - Press enter on empty line to run `ls` or `git status` if in a git repo (disabled by default)
+**Magic enter** - Press enter on empty line to run `ls` or `git status` if in a git repo
+(disabled by default)
 
 **Accept line or newline** - Press enter on an unfinished command to open a new line
 instead of dropping to a `PS2` prompt (disabled by default)
@@ -29,15 +32,15 @@ instead of dropping to a `PS2` prompt (disabled by default)
 
 This plugin adds the following functions:
 
-| function                        | description                                                            |
-| ------------------------------- | ---------------------------------------------------------------------- |
-| `bindkey-all <args>`            | Run `bindkey` against every keymap.                                    |
-| `bindkey-multiple [-M <keymap>] <widget> <seq>...` | Bind one widget to several key sequences, skipping empty ones. |
-| `command-is-complete <string>`  | True when the string is a command ready to run, without running it.    |
+| function                                           | description                                                         |
+| -------------------------------------------------- | ------------------------------------------------------------------- |
+| `bindkey-all <args>`                               | Run `bindkey` against every keymap.                                 |
+| `bindkey-multiple [-M <keymap>] <widget> <seq>...` | Bind one widget to several key sequences, skipping empty ones.      |
+| `command-is-complete <string>`                     | True when the string is a command ready to run, without running it. |
 
-This plugin runs the functions in `$accept_line_hook` when Enter accepts a line. Add
-one with `add-accept-line-hook`, which comes from `lib/bootstrap.zsh` so it works
-whether or not this plugin has loaded:
+This plugin runs the functions in `$accept_line_hook` when Enter accepts a line. Add one
+with `add-accept-line-hook`, which comes from `lib/bootstrap.zsh` so it works whether or
+not this plugin has loaded:
 
 ```zsh
 function my-hook { print -s "$BUFFER" }
@@ -56,11 +59,11 @@ This plugin sets no aliases.
 
 This plugin sets the following variables:
 
-| variable            | description                                              |
-| ------------------- | -------------------------------------------------------- |
-| `WORDCHARS`         | Characters treated as part of a word.                    |
-| `key_info`          | Human-friendly names for terminal key sequences.         |
-| `accept_line_hook`  | Functions to run when Enter accepts a line.              |
+| variable           | description                                      |
+| ------------------ | ------------------------------------------------ |
+| `WORDCHARS`        | Characters treated as part of a word.            |
+| `key_info`         | Human-friendly names for terminal key sequences. |
+| `accept_line_hook` | Functions to run when Enter accepts a line.      |
 
 ## Configuration
 
@@ -110,9 +113,9 @@ zstyle ':zephyr:plugin:editor:magic-enter' git-command 'git status'
 zstyle ':zephyr:plugin:editor:magic-enter' jj-command 'jj st'
 ```
 
-Force alias expansion on, or off, for specific words. A global alias always expands,
-and a plain alias only expands when it isn't also a command name, so `ls='ls --color'`
-is left alone:
+Force alias expansion on, or off, for specific words. A global alias always expands, and
+a plain alias only expands when it isn't also a command name, so `ls='ls --color'` is
+left alone:
 
 ```zsh
 zstyle ':zephyr:plugin:editor:glob-alias' noexpand 'ls' 'rm'
@@ -126,8 +129,8 @@ This rewrites the line before it runs:
 zstyle ':zephyr:plugin:editor:glob-alias' on-accept 'yes'
 ```
 
-Set the cursor style per keymap. Styles are `block`, `underscore`, and `line`, each
-also with a `-blink` suffix:
+Set the cursor style per keymap. Styles are `block`, `underscore`, and `line`, each also
+with a `-blink` suffix:
 
 ```zsh
 zstyle ':zephyr:plugin:editor:vicmd' cursor 'block'

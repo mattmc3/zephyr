@@ -6,7 +6,7 @@
 
 .DEFAULT_GOAL := help
 all : build help test submodules
-.PHONY : all build test testfile submodules help
+.PHONY : all build test testfile format submodules help
 
 # Concurrent bats jobs, and the per-test timeout in seconds.
 # Override like: make BATS_JOBS=1 test
@@ -27,6 +27,11 @@ test:
 testfile:
 	@test -n "$(FILE)" || { echo "usage: make testfile FILE=tests/bats/<name>.bats" >&2; exit 2; }
 	./tests/run $(FILE)
+
+##?   format      run prettier over the markdown files
+format:
+	@command -v npx >/dev/null || { echo "make format: npx not found" >&2; exit 127; }
+	npx --yes prettier --write --print-width 88 --prose-wrap always $$(git ls-files '*.md')
 
 ##?   submodules  update all submodules
 submodules:

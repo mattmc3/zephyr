@@ -2,9 +2,9 @@
 
 > Suggest commands from history as you type.
 
-Type part of a command and the most recent history entry starting with it is shown
-after the cursor, dimmed. Right arrow or Ctrl+E takes all of it, Alt+F takes a word,
-and anything else ignores it.
+Type part of a command and the most recent history entry starting with it is shown after
+the cursor, dimmed. Right arrow or Ctrl+E takes all of it, Alt+F takes a word, and
+anything else ignores it.
 
 The suggestion lives in `POSTDISPLAY`, not in the line, and is recomputed on every
 redraw rather than by wrapping the editing widgets, so widgets added later need no
@@ -33,17 +33,17 @@ This plugin sets no Zsh options.
 
 This plugin adds the following functions:
 
-| function                    | description                                                    |
-| --------------------------- | -------------------------------------------------------------- |
-| `autosuggest-forward-char`  | Widget: take the suggestion, or move the cursor forward.       |
-| `autosuggest-end-of-line`   | Widget: take the suggestion, or move to the end of the line.   |
-| `autosuggest-forward-word`  | Widget: take one word of the suggestion, or move a word.       |
-| `autosuggest-history`       | The default strategy: newest history entry starting with `$1`. |
-| `autosuggest-bindkeys`      | Bind the take keys in the emacs and viins keymaps.             |
+| function                   | description                                                    |
+| -------------------------- | -------------------------------------------------------------- |
+| `autosuggest-forward-char` | Widget: take the suggestion, or move the cursor forward.       |
+| `autosuggest-end-of-line`  | Widget: take the suggestion, or move to the end of the line.   |
+| `autosuggest-forward-word` | Widget: take one word of the suggestion, or move a word.       |
+| `autosuggest-history`      | The default strategy: newest history entry starting with `$1`. |
+| `autosuggest-bindkeys`     | Bind the take keys in the emacs and viins keymaps.             |
 
 The rest are internal, and all share the `autosuggest-` prefix:
-`autosuggest-suppressed`, `autosuggest-fetch`, `autosuggest-take`,
-`autosuggest-clear`, and `autosuggest-highlight-last`.
+`autosuggest-suppressed`, `autosuggest-fetch`, `autosuggest-take`, `autosuggest-clear`,
+and `autosuggest-highlight-last`.
 
 ## Aliases
 

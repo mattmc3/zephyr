@@ -4,8 +4,8 @@
 
 ## Description
 
-Sources all `.sh` and `.zsh` files from a `conf.d` directory after `.zshrc` loads.
-Files are sourced in alphabetical order. Files with a name beginning with `~` are ignored.
+Sources all `.sh` and `.zsh` files from a `conf.d` directory after `.zshrc` loads. Files
+are sourced in alphabetical order. Files with a name beginning with `~` are ignored.
 
 The default directory is searched in this order:
 

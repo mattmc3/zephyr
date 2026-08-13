@@ -22,11 +22,11 @@ This plugin sets the following Zsh options:
 
 This plugin adds the following functions:
 
-| function                 | description                                                       |
-| ------------------------ | ----------------------------------------------------------------- |
-| `run_compinit`           | Initialize the Zsh completion system, with optional caching.      |
-| `run_compinit -f`        | Force a cache reset and reinitialize completions.                 |
-| `zephyr-compaudit-warn`  | Report the insecure completion directories compinit is ignoring.  |
+| function                | description                                                      |
+| ----------------------- | ---------------------------------------------------------------- |
+| `run_compinit`          | Initialize the Zsh completion system, with optional caching.     |
+| `run_compinit -f`       | Force a cache reset and reinitialize completions.                |
+| `zephyr-compaudit-warn` | Report the insecure completion directories compinit is ignoring. |
 
 ## Aliases
 
@@ -55,8 +55,8 @@ To keep skipping insecure directories, but stop reporting them:
 `zstyle ':zephyr:plugin:completion:compaudit' 'quiet' 'yes'`
 
 The report only runs on a startup that rebuilt the dumpfile. `compaudit` is the
-expensive part of a cold `compinit`, so a cached startup skips it rather than spend
-the time the cache just saved.
+expensive part of a cold `compinit`, so a cached startup skips it rather than spend the
+time the cache just saved.
 
 To run compinit immediately instead of deferring until after `.zshrc`:
 

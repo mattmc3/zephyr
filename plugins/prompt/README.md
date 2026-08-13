@@ -35,8 +35,8 @@ This plugin sets the following variables:
 
 ## Customizations
 
-Your own prompts live in `$ZDOTDIR/themes`. A `prompt_mytheme_setup` file there
-is picked up by the prompt system, and can then be set as the theme:
+Your own prompts live in `$ZDOTDIR/themes`. A `prompt_mytheme_setup` file there is
+picked up by the prompt system, and can then be set as the theme:
 
 ```zsh
 zstyle ':zephyr:plugin:prompt' 'theme' 'mytheme'

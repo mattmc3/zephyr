@@ -11,9 +11,9 @@ removes bloat and dependencies, and prioritizes speed and simplicity.
 Zephyr can be thought of as a fast, lightweight set of independent Zsh features, and is
 designed to be one of the first things you load to build your ideal Zsh config.
 
-Combine Zephyr with a [plugin manager][antidote] and some [awesome
-plugins](https://github.com/unixorn/awesome-zsh-plugins) and you'll have a powerful Zsh
-setup that rivals anything out there.
+Combine Zephyr with a [plugin manager][antidote] and some
+[awesome plugins](https://github.com/unixorn/awesome-zsh-plugins) and you'll have a
+powerful Zsh setup that rivals anything out there.
 
 ## Project goals
 
@@ -37,7 +37,8 @@ Zephyr comes with an (optional) [Starship][starship] prompt config.
 
 If your plugin manager supports using sub-plugins, you can load Zephyr that way as well.
 
-[Antidote][antidote] is one such plugin manager. You can load only the parts of Zephyr you need like so:
+[Antidote][antidote] is one such plugin manager. You can load only the parts of Zephyr
+you need like so:
 
 ```shell
 # .zsh_plugins.txt
@@ -102,23 +103,37 @@ source ${ZDOTDIR:-~}/.zephyr/zephyr.zsh
 
 ## Plugins
 
+- **[autosuggest](plugins/autosuggest/README.md)** - Suggest commands from history as
+  you type
 - **[color](plugins/color/README.md)** - Make terminal things more colorful
-- **[completion](plugins/completion/README.md)** - Load and initialize the built-in zsh completion system
-- **[compstyle](plugins/compstyle/README.md)** - Load and initialize a completion style system
+- **[completion](plugins/completion/README.md)** - Load and initialize the built-in zsh
+  completion system
+- **[compstyle](plugins/compstyle/README.md)** - Load and initialize a completion style
+  system
 - **[confd](plugins/confd/README.md)** - Source a Fish-like `conf.d` directory
-- **[directory](plugins/directory/README.md)** - Set options and aliases related to the dirstack and filesystem
-- **[editor](plugins/editor/README.md)** - Override and fill in the gaps of the default keybinds
+- **[directory](plugins/directory/README.md)** - Set options and aliases related to the
+  dirstack and filesystem
+- **[editor](plugins/editor/README.md)** - Override and fill in the gaps of the default
+  keybinds
 - **[environment](plugins/environment/README.md)** - Define common environment variables
-- **[history](plugins/history/README.md)** - Load and initialize the built-in zsh history system
+- **[history](plugins/history/README.md)** - Load and initialize the built-in zsh
+  history system
+- **[history-search](plugins/history-search/README.md)** - Search history from Up and
+  Down using what's already typed
 - **[homebrew](plugins/homebrew/README.md)** - Functionality for users of Homebrew
 - **[macos](plugins/macos/README.md)** - Functionality for macOS users
-- **[prompt](plugins/prompt/README.md)** - Load and initialize the built-in zsh prompt system
-- **[utility](plugins/utility/README.md)** - Common shell utilities, aimed at making cross platform work less painful
-- **[zfunctions](plugins/zfunctions/README.md)** - Lazy load a Fish-like functions directory
+- **[prompt](plugins/prompt/README.md)** - Load and initialize the built-in zsh prompt
+  system
+- **[utility](plugins/utility/README.md)** - Common shell utilities, aimed at making
+  cross platform work less painful
+- **[zfunctions](plugins/zfunctions/README.md)** - Lazy load a Fish-like functions
+  directory
 
 ## Customization
 
-Zephyr uses Zsh's zstyles to let you easily customize your config. Unlike environment variables which pollute your environment, zstyles make it easy to handle more robust configuration.
+Zephyr uses Zsh's zstyles to let you easily customize your config. Unlike environment
+variables which pollute your environment, zstyles make it easy to handle more robust
+configuration.
 
 **Reminder:** `zstyle` settings need to be set prior to loading Zephyr.
 
@@ -126,7 +141,8 @@ The customizations are detailed below.
 
 ### Common
 
-To selectively load plugins when sourcing zephyr.plugin.zsh directly, use the `zstyle ':zephyr:load' plugins ...` array. Order matters.
+To selectively load plugins when sourcing zephyr.plugin.zsh directly, use the
+`zstyle ':zephyr:load' plugins ...` array. Order matters.
 
 ```zsh
 zstyle ':zephyr:load' plugins \
@@ -144,6 +160,18 @@ zstyle ':zephyr:load' plugins \
   macos \
   confd
 ```
+
+Or, to skip the list and take a ready-made one, use
+`zstyle ':zephyr:load' plugins-preset ...`. There are two: `default` is the list above,
+and is what you get when you set neither zstyle, while `all` adds the plugins that are
+otherwise opt-in.
+
+```zsh
+zstyle ':zephyr:load' plugins-preset 'all'
+```
+
+A `plugins` list of your own wins over any preset. The `macos` plugin is left out of a
+preset entirely off macOS, and everything else checks its own requirements as it loads.
 
 To use your home directory instead of using [XDG Base Directories][xdg-base-dirs]:
 
@@ -189,11 +217,11 @@ subplugins][antidote].
 
 _Q: Why don't you also include popular plugins the way Prezto does (eg:
 zsh-autosuggestions, zsh-history-substring-search)?_ \
-**A:** These kinds of utilities are already
-available as standalone plugins. Zephyr aims to include only core Zsh functionality that
-you can't already easily get via a [plugin manager][antidote], with a few exceptions for
-convenience. I have experimented with including submodules similar to Prezto, but was
-not happy with the result. Simpler is better.
+**A:** These kinds of utilities are already available as standalone plugins. Zephyr aims
+to include only core Zsh functionality that you can't already easily get via a [plugin
+manager][antidote], with a few exceptions for convenience. I have experimented with
+including submodules similar to Prezto, but was not happy with the result. Simpler is
+better.
 
 ## Credits
 
@@ -210,6 +238,7 @@ Zephyr is a derivative work of the following great projects:
 [prezto-license]: https://github.com/sorin-ionescu/prezto/blob/master/LICENSE
 [zsh-utils]: https://github.com/belak/zsh-utils
 [zsh-utils-license]: https://github.com/belak/zsh-utils/blob/main/LICENSE
-[terminal-img]: https://raw.githubusercontent.com/mattmc3/zephyr/resources/img/terminal.png
+[terminal-img]:
+  https://raw.githubusercontent.com/mattmc3/zephyr/resources/img/terminal.png
 [starship]: https://starship.rs
 [xdg-base-dirs]: https://specifications.freedesktop.org/basedir-spec/latest/

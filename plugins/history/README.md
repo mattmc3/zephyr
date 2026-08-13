@@ -30,11 +30,11 @@ This plugin sets no functions.
 
 This plugin adds the following aliases:
 
-| alias          | description                                    |
-| -------------- | ---------------------------------------------- |
-| `hist`         | `fc -li`: show history with timestamps         |
+| alias          | description                                     |
+| -------------- | ----------------------------------------------- |
+| `hist`         | `fc -li`: show history with timestamps          |
 | `histsync`     | `fc -RI`: read new events from the history file |
-| `history-stat` | Show the most frequently used history commands |
+| `history-stat` | Show the most frequently used history commands  |
 
 ## Variables
 
@@ -46,8 +46,8 @@ This plugin sets the following variables:
 | `SAVEHIST` | Number of events to save to the history file (default: 100000)  |
 | `HISTSIZE` | Number of events to keep in memory per session (default: 20000) |
 
-Absent a zstyle, the defaults only raise `SAVEHIST` and `HISTSIZE`. A larger value
-set before this plugin loads is left alone.
+Absent a zstyle, the defaults only raise `SAVEHIST` and `HISTSIZE`. A larger value set
+before this plugin loads is left alone.
 
 ## Customizations
 
@@ -73,7 +73,10 @@ To skip setting history aliases:
 
 ## Auxiliary history
 
-The aux history feature records every command to a structured file alongside the standard `HISTFILE`. Each record includes the session ID, working directory, command, exit status, per-pipe exit statuses, and timestamps. SQLite and JSONL backends are available independently and can run simultaneously.
+The aux history feature records every command to a structured file alongside the
+standard `HISTFILE`. Each record includes the session ID, working directory, command,
+exit status, per-pipe exit statuses, and timestamps. SQLite and JSONL backends are
+available independently and can run simultaneously.
 
 Enable one or both backends:
 

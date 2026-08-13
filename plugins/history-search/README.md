@@ -2,13 +2,13 @@
 
 > Search history from Up and Down using what's already typed.
 
-Type part of a command and press Up. The line is matched as a substring against
-history, newest first, and Up keeps walking back through matches while Down walks
-forward. Past the newest match, the line you typed comes back.
+Type part of a command and press Up. The line is matched as a substring against history,
+newest first, and Up keeps walking back through matches while Down walks forward. Past
+the newest match, the line you typed comes back.
 
-On a multi-line command, Up and Down move between the lines instead, and a
-half-typed `PS2` construct is pulled into one buffer first so the whole thing can be
-edited at once.
+On a multi-line command, Up and Down move between the lines instead, and a half-typed
+`PS2` construct is pulled into one buffer first so the whole thing can be edited at
+once.
 
 Works on its own, with no dependency on the rest of Zephyr.
 
@@ -27,16 +27,15 @@ This plugin sets no Zsh options.
 
 This plugin adds the following functions:
 
-| function                        | description                                                     |
-| ------------------------------- | --------------------------------------------------------------- |
-| `up-line-or-history-search`     | Widget: search back, or move up a line in a multi-line command. |
-| `down-line-or-history-search`   | Widget: search forward, or move down a line.                    |
-| `history-search-bindkeys`       | Bind Up and Down in the emacs, viins, and vicmd keymaps.        |
+| function                      | description                                                     |
+| ----------------------------- | --------------------------------------------------------------- |
+| `up-line-or-history-search`   | Widget: search back, or move up a line in a multi-line command. |
+| `down-line-or-history-search` | Widget: search forward, or move down a line.                    |
+| `history-search-bindkeys`     | Bind Up and Down in the emacs, viins, and vicmd keymaps.        |
 
 The rest are internal, and all share the `history-search-` prefix:
-`history-search-in-progress`, `history-search-step`,
-`history-search-pull-prebuffer`, `history-search-highlight`, and
-`history-search-highlight-last`.
+`history-search-in-progress`, `history-search-step`, `history-search-pull-prebuffer`,
+`history-search-highlight`, and `history-search-highlight-last`.
 
 ## Aliases
 
@@ -48,8 +47,8 @@ This plugin sets no variables intended for you to read.
 
 ## Customizations
 
-To skip this plugin entirely, leaving Up and Down at their Zsh defaults. Do this if
-you use another history search plugin, such as zsh-history-substring-search:
+To skip this plugin entirely, leaving Up and Down at their Zsh defaults. Do this if you
+use another history search plugin, such as zsh-history-substring-search:
 
 `zstyle ':zephyr:plugin:history-search' 'skip' 'yes'`
 

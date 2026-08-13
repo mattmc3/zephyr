@@ -4,7 +4,8 @@
 
 ## Description
 
-Sets `brew` environment variables from `brew shellenv` and adds brewed completions to `fpath`.
+Sets `brew` environment variables from `brew shellenv` and adds brewed completions to
+`fpath`.
 
 ## Options
 
@@ -38,7 +39,8 @@ To cache the results of `brew shellenv`:
 
 `zstyle ':zephyr:plugin:homebrew' 'use-cache' 'yes'`
 
-To set keg-only brews whose completions are added to `fpath` (default: `curl ruby sqlite`):
+To set keg-only brews whose completions are added to `fpath` (default:
+`curl ruby sqlite`):
 
 `zstyle ':zephyr:plugin:homebrew' 'keg-only-brews' 'curl ruby sqlite'`
 
