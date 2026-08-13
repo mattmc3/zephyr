@@ -7,7 +7,9 @@
 #   _zsh_aux_hist_<name>_init <file>     prepare the file, non-zero if unusable
 #   _zsh_aux_hist_<name>_insert <file> <sid> <cwd> <cmd> <ret> <pipes> <start> <end>
 # plus a default path in $_zsh_aux_hist_defaults and its name in
-# $_zsh_aux_hist_backends.
+# $_zsh_aux_hist_backends. A backend that can revisit a record it already wrote may
+# also provide, to run before the command does:
+#   _zsh_aux_hist_<name>_start <file> <sid> <cwd> <cmd> <start>
 
 0=${(%):-%N}
 if (( ! ${+functions[gen-uuid7]} )); then
@@ -23,6 +25,20 @@ _zsh_aux_hist_state[loaded]=1
 
 typeset -ga _zsh_aux_hist_backends=()
 typeset -gA _zsh_aux_hist_defaults=()
+
+# Resolve the file a backend writes to, preparing it the first time. Sets $REPLY,
+# and returns non-zero when the backend is off or its file is unusable.
+_zsh_aux_hist_resolve() {
+  local backend="$1" f
+  zstyle -t ":zephyr:plugin:history:aux:$backend" enable || return 1
+  zstyle -s ":zephyr:plugin:history:aux:$backend" histfile 'f' \
+    || f="${_zsh_aux_hist_defaults[$backend]}"
+  if [[ "${_zsh_aux_hist_state[${backend}_init]}" != "$f" ]]; then
+    "_zsh_aux_hist_${backend}_init" "$f" && _zsh_aux_hist_state[${backend}_init]="$f"
+  fi
+  [[ "${_zsh_aux_hist_state[${backend}_init]}" == "$f" ]] || return 1
+  REPLY="$f"
+}
 
 _zsh_aux_hist_preexec() {
   local _ignore_space=$options[hist_ignore_space]
@@ -40,6 +56,17 @@ _zsh_aux_hist_preexec() {
 
   _zsh_aux_hist_state[cmd]="$cmd"
   _zsh_aux_hist_state[start_ts]="$EPOCHREALTIME"
+  # Where the command was launched, not where it left the shell sitting.
+  _zsh_aux_hist_state[cwd]="$PWD"
+
+  # Written before the command runs, so one that outlives the shell is on disk.
+  local backend
+  for backend in $_zsh_aux_hist_backends; do
+    (( $+functions[_zsh_aux_hist_${backend}_start] )) || continue
+    _zsh_aux_hist_resolve "$backend" || continue
+    "_zsh_aux_hist_${backend}_start" "$REPLY" "${_zsh_aux_hist_state[session]}" \
+      "$PWD" "$cmd" "${_zsh_aux_hist_state[start_ts]}" &|
+  done
 }
 
 _zsh_aux_hist_precmd() {
@@ -53,7 +80,7 @@ _zsh_aux_hist_precmd() {
   local ret="${_ps[-1]}"
   [[ -z "${_zsh_aux_hist_state[cmd]:-}" ]] && return 0
 
-  local end_ts start_ts cmd cwd sid backend f
+  local end_ts start_ts cmd cwd sid backend
   cmd="${_zsh_aux_hist_state[cmd]}"
 
   if [[ ( "$_ignore_dups" == on || "$_ignore_all_dups" == on ) \
@@ -65,25 +92,20 @@ _zsh_aux_hist_precmd() {
 
   end_ts="$EPOCHREALTIME"
   start_ts="${_zsh_aux_hist_state[start_ts]:-0}"
-  cwd="$PWD"
+  cwd="${_zsh_aux_hist_state[cwd]:-$PWD}"
   sid="${_zsh_aux_hist_state[session]}"
 
   # A backend is prepared once per file it writes to, and only if it is enabled, so
   # the cost of a backend you never turn on is one zstyle lookup per command.
   for backend in $_zsh_aux_hist_backends; do
-    zstyle -t ":zephyr:plugin:history:aux:$backend" enable || continue
-    zstyle -s ":zephyr:plugin:history:aux:$backend" histfile 'f' \
-      || f="${_zsh_aux_hist_defaults[$backend]}"
-    if [[ "${_zsh_aux_hist_state[${backend}_init]}" != "$f" ]]; then
-      "_zsh_aux_hist_${backend}_init" "$f" && _zsh_aux_hist_state[${backend}_init]="$f"
-    fi
-    [[ "${_zsh_aux_hist_state[${backend}_init]}" == "$f" ]] && \
-      "_zsh_aux_hist_${backend}_insert" "$f" "$sid" "$cwd" "$cmd" "$ret" "$my_pipestatus" "$start_ts" "$end_ts" &|
+    _zsh_aux_hist_resolve "$backend" || continue
+    "_zsh_aux_hist_${backend}_insert" "$REPLY" "$sid" "$cwd" "$cmd" "$ret" "$my_pipestatus" "$start_ts" "$end_ts" &|
   done
 
   _zsh_aux_hist_state[last_cmd]="$cmd"
   unset '_zsh_aux_hist_state[cmd]'
   unset '_zsh_aux_hist_state[start_ts]'
+  unset '_zsh_aux_hist_state[cwd]'
 }
 
 # Every backend is loaded, whether or not it is enabled, so a zstyle set after this

@@ -106,12 +106,26 @@ Each record contains:
 | field        | type    | description                                          |
 | ------------ | ------- | ---------------------------------------------------- |
 | `sid`        | text    | UUID v7 session identifier                           |
-| `cwd`        | text    | Current working directory the command ran in         |
+| `cwd`        | text    | Directory the command was launched from              |
 | `cmd`        | text    | The command being run                                |
 | `ret`        | integer | Exit status of the command                           |
 | `pipestatus` | text    | Comma-separated exit statuses of each pipeline stage |
 | `start_ts`   | real    | Unix timestamp (fractional) when command started     |
 | `end_ts`     | real    | Unix timestamp (fractional) when command ended       |
+
+The sqlite backend writes each command twice: once as it starts, and once when it
+finishes. A command that outlives its shell, or one still running, is on disk with
+`end_ts`, `ret`, and `pipestatus` left NULL, and the finish write fills them in. It
+also carries a `duration` column, `end_ts - start_ts` in seconds, generated rather
+than stored:
+
+```sh
+sqlite3 ~/.local/share/zsh/zsh_history.db \
+  'SELECT cmd, round(duration, 2) FROM zsh_history WHERE duration > 5 ORDER BY duration DESC LIMIT 10;'
+```
+
+The json backend appends one line per command and cannot revisit it, so it writes
+only when the command finishes.
 
 ### Querying
 
