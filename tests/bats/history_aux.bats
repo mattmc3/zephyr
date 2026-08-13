@@ -149,6 +149,60 @@ EOS
 # sqlite: schema
 #
 
+@test "a new database gets the schema and the current version" {
+  need_sqlite3
+  aux_session "$sqlite_on" <<'EOS'
+_zsh_aux_hist_resolve sqlite
+print "resolve: $?"
+print "version: $(aux_sql 'PRAGMA user_version;')"
+print "table: $(aux_sql "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='zsh_history';")"
+print "index: $(aux_sql "SELECT count(*) FROM sqlite_master WHERE type='index' AND name='idx_zsh_history_sid_start_ts';")"
+EOS
+  assert_success
+  assert_line "resolve: 0"
+  assert_line "version: 2"
+  assert_line "table: 1"
+  assert_line "index: 1"
+}
+
+@test "preparing an already migrated database changes nothing" {
+  need_sqlite3
+  aux_session "$sqlite_on" <<'EOS'
+aux_run 'echo first'
+aux_wait 5 aux_finished 1
+_zsh_aux_hist_sqlite_init "$(aux_db)"
+print "second init: $?"
+print "version: $(aux_sql 'PRAGMA user_version;')"
+print "rows: $(aux_sql 'SELECT count(*) FROM zsh_history;')"
+EOS
+  assert_success
+  assert_line "second init: 0"
+  assert_line "version: 2"
+  assert_line "rows: 1"
+}
+
+# Two commands recorded at the same instant in one session cannot both keep their
+# row once the pairing index is unique. Better to stop than to drop history.
+@test "a database that cannot take the unique index says so" {
+  need_sqlite3
+  db="$TEST_HOME/.local/share/zsh/zsh_history.db"
+  mkdir -p "${db%/*}"
+  sqlite3 "$db" <<'SQL'
+CREATE TABLE zsh_history (id INTEGER PRIMARY KEY, sid TEXT, cwd TEXT, cmd TEXT,
+  ret INTEGER, pipestatus TEXT, start_ts REAL, end_ts REAL);
+PRAGMA user_version=1;
+INSERT INTO zsh_history(sid,cmd,start_ts) VALUES('s','echo a',1.0),('s','echo b',1.0);
+SQL
+  aux_session "$sqlite_on" <<'EOS'
+_zsh_aux_hist_resolve sqlite 2>/dev/null
+print "resolve: $?"
+print "rows kept: $(aux_sql 'SELECT count(*) FROM zsh_history;')"
+EOS
+  assert_success
+  assert_line "resolve: 1"
+  assert_line "rows kept: 2"
+}
+
 @test "an existing v1 database keeps its rows and gains the duration column" {
   need_sqlite3
   db="$TEST_HOME/.local/share/zsh/zsh_history.db"
