@@ -50,12 +50,16 @@ _zsh_aux_hist_sqlite_init() {
   setopt local_options
   local db="$1" current_ver i
 
-  mkdir -p "${db:h}" || return 1
+  mkdir -p -m 700 "${db:h}" || return 1
 
   (( $+commands[sqlite3] )) || {
     printf 'zsh_aux_history: sqlite3 required for sqlite backend\n' >&2
     return 1
   }
+
+  # chmod before WAL, so the -wal and -shm files inherit it rather than 644.
+  [[ -e "$db" ]] || sqlite3 "$db" 'PRAGMA user_version;' >/dev/null 2>&1
+  chmod 600 "$db" 2>/dev/null
 
   sqlite3 "$db" "PRAGMA journal_mode=WAL;" >/dev/null 2>&1 || return 1
 

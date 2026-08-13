@@ -9,14 +9,16 @@ _zsh_aux_hist_json_init() {
   emulate -L zsh
   setopt local_options
   local f="$1"
-  mkdir -p "${f:h}" || return 1
+  mkdir -p -m 700 "${f:h}" || return 1
 
   (( $+commands[jq] )) || {
     printf 'zsh_aux_history: jq required for json backend\n' >&2
     return 1
   }
 
-  [[ -f "$f" ]] || touch "$f"
+  # Every command you have run, and where you ran it, is nobody else's business.
+  [[ -f "$f" ]] || touch "$f" || return 1
+  chmod 600 "$f" 2>/dev/null
 }
 
 _zsh_aux_hist_json_insert() {

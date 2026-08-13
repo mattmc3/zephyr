@@ -317,24 +317,27 @@ EOS
   assert_line "cmd: echo kept"
 }
 
-# The dup has to be caught before the start write, or its row is left behind
-# with nothing to finish it.
-@test "a repeated command is skipped under hist_ignore_dups" {
+#
+# Privacy
+#
+
+@test "the history files are readable only by their owner" {
   need_sqlite3
-  aux_session "$sqlite_on" <<'EOS'
-setopt hist_ignore_dups
-aux_run 'echo same'
-_zsh_aux_hist_preexec 'echo same'
-print "pending: $(aux_pending)"
-aux_run 'echo other'
-aux_wait 5 aux_finished 2
-print "rows: $(aux_sql 'SELECT count(*) FROM zsh_history;')"
-print "unfinished: $(aux_sql 'SELECT count(*) FROM zsh_history WHERE end_ts IS NULL;')"
+  need_jq
+  aux_session "$sqlite_on
+$json_on" <<'EOS'
+aux_run 'echo private'
+aux_wait 5 aux_finished 1
+aux_wait 5 aux_lines 1
+zmodload zsh/stat
+zstat -H s -F '%OU' "$(aux_db)"
+print "db: $s[mode]"
+zstat -H s -F '%OU' "$(aux_jsonl)"
+print "jsonl: $s[mode]"
 EOS
   assert_success
-  assert_line "pending: none"
-  assert_line "rows: 2"
-  assert_line "unfinished: 0"
+  assert_line "db: -rw-------"
+  assert_line "jsonl: -rw-------"
 }
 
 @test "an empty command line records nothing" {

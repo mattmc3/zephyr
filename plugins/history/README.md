@@ -101,6 +101,14 @@ Default paths (XDG-aware):
 
 **Dependencies:** the sqlite backend requires `sqlite3`; the json backend requires `jq`.
 
+Both files are created `0600`, and a directory either backend has to create is `0700`.
+A directory that already exists keeps the mode it has, since it is usually the one
+holding `HISTFILE` too.
+
+A command starting with a space is left out, under `HIST_IGNORE_SPACE`, and
+`HIST_REDUCE_BLANKS` is applied to the recorded text. Nothing else is filtered: a
+repeated command gets its own row, since a log of what ran is the point.
+
 Each record contains:
 
 | field        | type    | description                                          |
