@@ -64,7 +64,7 @@ fi
 # Use auxiliary history backends if enabled.
 if zstyle -t ':zephyr:plugin:history:aux:sqlite' enable \
    || zstyle -t ':zephyr:plugin:history:aux:json' enable; then
-  source ${0:a:h}/zsh_aux_history.zsh
+  source ${0:a:h}/lib/aux_common.zsh
 fi
 
 #region MARK LOADED
