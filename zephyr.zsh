@@ -5,25 +5,46 @@
 ZEPHYR_HOME=${0:a:h}
 source $ZEPHYR_HOME/lib/bootstrap.zsh
 
-# Set which plugins to load. It doesn't really matter if we include plugins we don't
-# need (eg: running Linux, not macOS) because the plugins themselves check and exit
-# if requirements aren't met.
-zstyle -a ':zephyr:load' plugins '_zephyr_plugins' ||
-  _zephyr_plugins=(
-    environment
-    homebrew
-    color
-    compstyle
-    completion
-    directory
-    editor
-    history
-    prompt
-    utility
-    zfunctions
-    macos
-    confd
-  )
+# Every plugin Zephyr ships, in the order they load.
+_zephyr_all_plugins=(
+  environment
+  homebrew
+  color
+  compstyle
+  completion
+  directory
+  editor
+  history
+  history-search
+  autosuggest
+  prompt
+  utility
+  zfunctions
+  macos
+  confd
+)
+
+# These take over keys, so they are opt-in.
+_zephyr_optout_plugins=(history-search autosuggest)
+
+# Nothing for macos to do off a Mac. Other plugins check their own requirements.
+[[ "$OSTYPE" == darwin* ]] || _zephyr_all_plugins=(${_zephyr_all_plugins:#macos})
+
+# Name the plugins you want, in the order you want them:
+#   zstyle ':zephyr:load' plugins zfunctions directory editor history
+# Or take a ready-made list, 'default' or 'all':
+#   zstyle ':zephyr:load' plugins-preset 'all'
+if ! zstyle -a ':zephyr:load' plugins '_zephyr_plugins'; then
+  zstyle -s ':zephyr:load' plugins-preset '_zephyr_preset' || _zephyr_preset=default
+  case "$_zephyr_preset" in
+    all) _zephyr_plugins=($_zephyr_all_plugins) ;;
+    default) _zephyr_plugins=(${_zephyr_all_plugins:|_zephyr_optout_plugins}) ;;
+    *)
+      echo >&2 "zephyr: Unknown plugins-preset '$_zephyr_preset'."
+      _zephyr_plugins=(${_zephyr_all_plugins:|_zephyr_optout_plugins})
+      ;;
+  esac
+fi
 
 for _zephyr_plugin in $_zephyr_plugins; do
   # Allow overriding plugins.
@@ -44,4 +65,4 @@ for _zephyr_plugin in $_zephyr_plugins; do
 done
 
 # Clean up.
-unset _zephyr_plugin{s,} _initfiles
+unset _zephyr_plugin{s,} _zephyr_{all,optout}_plugins _zephyr_preset _initfiles
