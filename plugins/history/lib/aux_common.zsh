@@ -43,6 +43,8 @@ _zsh_aux_hist_resolve() {
 _zsh_aux_hist_preexec() {
   local _ignore_space=$options[hist_ignore_space]
   local _reduce_blanks=$options[hist_reduce_blanks]
+  local _ignore_dups=$options[hist_ignore_dups]
+  local _ignore_all_dups=$options[hist_ignore_all_dups]
   emulate -L zsh
   setopt local_options extended_glob
 
@@ -53,6 +55,13 @@ _zsh_aux_hist_preexec() {
   if [[ "$_reduce_blanks" == on ]]; then
     cmd="${${${cmd//[[:blank:]][[:blank:]]##/ }##[[:blank:]]##}%%[[:blank:]]##}"
   fi
+
+  # Before the start write, or a repeat leaves a row that never finishes.
+  if [[ ( "$_ignore_dups" == on || "$_ignore_all_dups" == on ) \
+        && "$cmd" == "${_zsh_aux_hist_state[last_cmd]:-}" ]]; then
+    return 0
+  fi
+  _zsh_aux_hist_state[last_cmd]="$cmd"
 
   _zsh_aux_hist_state[cmd]="$cmd"
   _zsh_aux_hist_state[start_ts]="$EPOCHREALTIME"
@@ -71,24 +80,16 @@ _zsh_aux_hist_preexec() {
 
 _zsh_aux_hist_precmd() {
   local -a _ps=("${pipestatus[@]}")
-  local _ignore_dups=$options[hist_ignore_dups]
-  local _ignore_all_dups=$options[hist_ignore_all_dups]
   emulate -L zsh
   setopt local_options
 
   local my_pipestatus="${(j:,:)_ps}"
   local ret="${_ps[-1]}"
+  # Empty when preexec passed on this command, dups included.
   [[ -z "${_zsh_aux_hist_state[cmd]:-}" ]] && return 0
 
   local end_ts start_ts cmd cwd sid backend
   cmd="${_zsh_aux_hist_state[cmd]}"
-
-  if [[ ( "$_ignore_dups" == on || "$_ignore_all_dups" == on ) \
-        && "$cmd" == "${_zsh_aux_hist_state[last_cmd]:-}" ]]; then
-    unset '_zsh_aux_hist_state[cmd]'
-    unset '_zsh_aux_hist_state[start_ts]'
-    return 0
-  fi
 
   end_ts="$EPOCHREALTIME"
   start_ts="${_zsh_aux_hist_state[start_ts]:-0}"
@@ -102,7 +103,6 @@ _zsh_aux_hist_precmd() {
     "_zsh_aux_hist_${backend}_insert" "$REPLY" "$sid" "$cwd" "$cmd" "$ret" "$my_pipestatus" "$start_ts" "$end_ts" &|
   done
 
-  _zsh_aux_hist_state[last_cmd]="$cmd"
   unset '_zsh_aux_hist_state[cmd]'
   unset '_zsh_aux_hist_state[start_ts]'
   unset '_zsh_aux_hist_state[cwd]'

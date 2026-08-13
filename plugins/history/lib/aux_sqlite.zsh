@@ -114,8 +114,10 @@ _zsh_aux_hist_sqlite_run() {
       value=${value//$'\t'/\\t}
       printf ".parameter set %s \"'%s'\"\n" "${params[i]}" "$value"
     done
-    printf 'PRAGMA busy_timeout=%d;\n%s\n;\n' "$_zsh_aux_hist_sqlite_busy_ms" "$sql"
-  } | sqlite3 "$db" >/dev/null 2>&1
+    printf '%s\n;\n' "$sql"
+    # -cmd, so the timeout is in force before .parameter touches the database.
+    # Set any later and a locked database fails the binds, leaving a NULL row.
+  } | sqlite3 -cmd ".timeout $_zsh_aux_hist_sqlite_busy_ms" "$db" >/dev/null 2>&1
 }
 
 # The command as it starts, with no outcome yet. A fast command lets the finish
