@@ -89,7 +89,12 @@ function run_promptinit {
   local -a prompt_argv
   zstyle -a ':zephyr:plugin:prompt' theme 'prompt_argv' \
     || prompt_argv=(starship zephyr)
-  if [[ $TERM == (dumb|linux|*bsd*) ]]; then
+  # Consoles that cannot render a themed prompt get a plain one, unless asked
+  # otherwise. dumb has no zle at all, so it is off regardless.
+  if [[ "$TERM" == dumb ]] ||
+     { [[ "$TERM" == (linux|*bsd*) ]] &&
+       ! zstyle -t ':zephyr:plugin:prompt' force }
+  then
     prompt 'off'
   elif (( $#prompt_argv > 0 )); then
     prompt "$prompt_argv[@]"

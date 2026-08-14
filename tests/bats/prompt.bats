@@ -87,6 +87,61 @@ EOS
   assert_line "prompt: off"
 }
 
+@test "the linux console turns the prompt off by default" {
+  zephyr_zsh <<'EOS'
+export TERM=linux
+zstyle ':zephyr:plugin:prompt' theme walters
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/prompt/prompt.plugin.zsh
+run_promptinit
+print "prompt: ${prompt_theme[1]:-none}"
+EOS
+  assert_success
+  assert_line "prompt: off"
+}
+
+@test "force keeps the theme in the linux console" {
+  zephyr_zsh <<'EOS'
+export TERM=linux
+zstyle ':zephyr:plugin:prompt' force yes
+zstyle ':zephyr:plugin:prompt' theme walters
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/prompt/prompt.plugin.zsh
+run_promptinit
+print "prompt: ${prompt_theme[1]:-none}"
+EOS
+  assert_success
+  assert_line "prompt: walters"
+}
+
+@test "a bsd console turns the prompt off by default" {
+  zephyr_zsh <<'EOS'
+export TERM=netbsd6
+zstyle ':zephyr:plugin:prompt' theme walters
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/prompt/prompt.plugin.zsh
+run_promptinit
+print "prompt: ${prompt_theme[1]:-none}"
+EOS
+  assert_success
+  assert_line "prompt: off"
+}
+
+# dumb has no zle, so it is off whatever the zstyle says.
+@test "a dumb terminal stays off even with force" {
+  zephyr_zsh <<'EOS'
+export TERM=dumb
+zstyle ':zephyr:plugin:prompt' force yes
+zstyle ':zephyr:plugin:prompt' theme walters
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+source $ZEPHYR_HOME/plugins/prompt/prompt.plugin.zsh
+run_promptinit
+print "prompt: ${prompt_theme[1]:-none}"
+EOS
+  assert_success
+  assert_line "prompt: off"
+}
+
 @test "the theme zstyle picks the prompt" {
   zephyr_zsh <<'EOS'
 zstyle ':zephyr:plugin:prompt' theme off

@@ -58,4 +58,11 @@ To cache the prompt initialization:
 
 `zstyle ':zephyr:plugin:prompt' 'use-cache' 'yes'`
 
+Console terminals get a plain prompt, since the default theme needs glyphs they
+cannot draw. To use your theme there anyway, which works if it is ASCII:
+
+`zstyle ':zephyr:plugin:prompt' 'force' 'yes'`
+
+A `dumb` terminal has no line editor, so it gets no theme either way.
+
 [16.2.8]: https://zsh.sourceforge.io/Doc/Release/Options.html#Prompting
