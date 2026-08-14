@@ -1,0 +1,14 @@
+#!/bin/zsh
+
+### Make a temp directory and cd into it, printing where it went. An argument
+### prefixes the name.
+###   mktmpcd          # $TMPDIR/tmp.XXXXXXXX
+###   mktmpcd build    # $TMPDIR/build.XXXXXXXX
+#function mktmpcd {
+  emulate -L zsh
+
+  # The template is spelled out because GNU and BSD mktemp disagree about -t.
+  local dir tmp=${${TMPDIR:-/tmp}%/}
+  dir=$(mktemp -d "$tmp/${1:-tmp}.XXXXXXXX") || return 1
+  builtin cd -- "$dir" && print -r -- "$PWD"
+#}

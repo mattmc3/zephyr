@@ -11,8 +11,8 @@ teardown() { zephyr_teardown; }
 @test "bootstrap alone provides every shared function" {
   zephyr_zsh <<'EOS'
 source $ZEPHYR_HOME/lib/bootstrap.zsh
-for f in cached-eval gen-uuid7 is-autoloadable is-callable is-true is-macos \
-         is-linux is-bsd is-cygwin is-termux is-term-family is-tmux; do
+for f in cached-eval gen-uuid7 mkcd mktmpcd is-autoloadable is-callable is-true \
+         is-macos is-linux is-bsd is-cygwin is-termux is-term-family is-tmux; do
   (( $+functions[$f] )) || print "missing: $f"
 done
 print done
@@ -289,4 +289,57 @@ EOS
   zephyr_zsh 'source $ZEPHYR_HOME/lib/bootstrap.zsh; cached-eval; print "exit: $?"'
   assert_success
   assert_line "exit: 1"
+}
+
+#
+# mkcd and mktmpcd
+#
+
+@test "mkcd makes a directory, parents included, and cds into it" {
+  zephyr_zsh <<'EOS'
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+mkcd $HOME/one/two/three
+print "pwd: ${PWD#$HOME/}"
+print "is a dir: $([[ -d $PWD ]] && print yes || print no)"
+EOS
+  assert_success
+  assert_line "pwd: one/two/three"
+  assert_line "is a dir: yes"
+}
+
+@test "mkcd with no argument fails and stays put" {
+  zephyr_zsh <<'EOS'
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+cd $HOME
+mkcd 2>/dev/null
+print "rc: $?"
+print "pwd: $([[ $PWD == $HOME ]] && print home || print $PWD)"
+EOS
+  assert_success
+  assert_line "rc: 1"
+  assert_line "pwd: home"
+}
+
+@test "mktmpcd lands in a new temp directory and prints it" {
+  zephyr_zsh <<'EOS'
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+mktmpcd > $HOME/printed
+print "printed matches pwd: $([[ $PWD == $(<$HOME/printed) ]] && print yes || print no)"
+print "under tmpdir: $([[ $PWD == ${${TMPDIR:-/tmp}%/}/* ]] && print yes || print no)"
+print "empty: $([[ -z $(print -rn -- *(DN)) ]] && print yes || print no)"
+EOS
+  assert_success
+  assert_line "printed matches pwd: yes"
+  assert_line "under tmpdir: yes"
+  assert_line "empty: yes"
+}
+
+@test "mktmpcd takes a name prefix" {
+  zephyr_zsh <<'EOS'
+source $ZEPHYR_HOME/lib/bootstrap.zsh
+mktmpcd build >/dev/null
+print "prefix: ${${PWD:t}%.*}"
+EOS
+  assert_success
+  assert_line "prefix: build"
 }

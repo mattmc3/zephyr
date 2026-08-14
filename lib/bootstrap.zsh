@@ -21,6 +21,6 @@ setopt extended_glob interactive_comments
 () {
   emulate -L zsh
   fpath=($ZEPHYR_HOME/functions $fpath)
-  autoload -Uz zephyr-bootstrap cached-eval gen-uuid7
+  autoload -Uz zephyr-bootstrap cached-eval gen-uuid7 mkcd mktmpcd
   zephyr-bootstrap
 }

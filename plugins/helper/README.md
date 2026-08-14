@@ -20,13 +20,15 @@ The one-line predicates are defined in [lib/bootstrap.zsh](../../lib/bootstrap.z
 | `is-cygwin`              | Checks if the OS is Cygwin.                                        |
 | `is-termux`              | Checks if the OS is Termux.                                        |
 
-The two with real bodies are autoloaded from [functions/](../../functions), so they cost
-nothing until you call them:
+The ones with real bodies are autoloaded from [functions/](../../functions), so they
+cost nothing until you call them:
 
 | function                   | description                                                                                                                      |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `cached-eval <cmd> [args]` | Cache the output of a command and source it, refreshing after 20 hours. `--clear` first drops one cache, or all with no command. |
 | `gen-uuid7`                | Generate a time-ordered UUID v7 into `$REPLY`.                                                                                   |
+| `mkcd <dir>`               | Make a directory, parents included, and cd into it.                                                                              |
+| `mktmpcd [prefix]`         | Make a temp directory and cd into it, printing where it went.                                                                    |
 
 `mkdirvar` is gone. It never worked, and nothing used it.
 

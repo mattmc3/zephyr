@@ -1,0 +1,10 @@
+#!/bin/zsh
+
+### Make a directory and cd into it, parents included.
+###   mkcd ~/src/new/project
+#function mkcd {
+  emulate -L zsh
+
+  [[ -n "${1:-}" ]] || { print -ru2 -- "mkcd: expecting a directory argument"; return 1 }
+  mkdir -p -- "$1" && builtin cd -- "$1"
+#}
