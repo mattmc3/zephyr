@@ -2,6 +2,9 @@
 #
 # color: Make the terminal more colorful.
 #
+
+0=${(%):-%N}
+zstyle -t ':zephyr:lib:bootstrap' loaded || source ${0:a:h:h:h}/lib/bootstrap.zsh
 #endregion
 
 # Return if requirements are not met.
