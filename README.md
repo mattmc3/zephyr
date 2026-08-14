@@ -173,6 +173,47 @@ zstyle ':zephyr:load' plugins-preset 'all'
 A `plugins` list of your own wins over any preset. The `macos` plugin is left out of a
 preset entirely off macOS, and everything else checks its own requirements as it loads.
 
+### Plugins from elsewhere
+
+A bare plugin name is always Zephyr's own, so nothing you clone can quietly replace one.
+To load plugins out of another tree, register it under a name of your choosing and say
+where each plugin comes from:
+
+```zsh
+zstyle ':zephyr:load:contrib' omz ${ZDOTDIR:-$HOME/.zsh}/contrib/ohmyzsh
+zstyle ':zephyr:load' plugins environment editor omz:git omz:history
+```
+
+A registered tree holds `plugins/<name>/<name>.plugin.zsh`, the same layout Zephyr uses,
+which is also how an Oh-My-Zsh clone is laid out. Clone one wherever you pointed the
+zstyle:
+
+```zsh
+git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh \
+  ${ZDOTDIR:-$HOME/.zsh}/contrib/ohmyzsh
+```
+
+`omz:history` is then that tree's history plugin and `history` is still Zephyr's, so the
+two can be loaded side by side or one without the other. A prefix that isn't registered
+lists the names that are, and a plugin missing from a tree names the directory searched.
+
+Being found is not the same as working. Many Oh-My-Zsh plugins expect `$ZSH`,
+`$ZSH_CACHE_DIR`, and Oh-My-Zsh's own library functions to exist already, none of which a
+bare clone provides.
+
+Your own plugins and your overrides both live in `$ZSH_CUSTOM`, which answers bare names
+only. A plugin found there replaces Zephyr's of the same name rather than adding to it,
+and a plugin Zephyr has never heard of loads from there by name alone. It defaults to
+your Zsh config directory.
+
+```zsh
+export ZSH_CUSTOM=${ZDOTDIR:-$HOME/.zsh}
+zstyle ':zephyr:load' plugins editor mine
+```
+
+Qualified names skip `$ZSH_CUSTOM` entirely: `omz:git` is that tree's git, always. If you
+keep an override for a tree's plugin there, load it as a bare name instead.
+
 To use your home directory instead of using [XDG Base Directories][xdg-base-dirs]:
 
 ```zsh

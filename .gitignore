@@ -3,7 +3,7 @@
 *.zwc.old
 .external/
 .prompts/
-contribs/
+contrib/
 prompts/*/
 !prompts/functions
 .cache/
