@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 ### Source a command's Zsh output, caching it in $__zsh_cache_dir for 20 hours.
 ### Only for commands with stable output.

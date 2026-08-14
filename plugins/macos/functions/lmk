@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 ##? lmk - Have Siri let me know when a process is complete.
 ##?
 ##? Example:

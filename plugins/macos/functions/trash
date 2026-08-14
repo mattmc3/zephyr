@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 ##? trash - Move files to macOS trash
 
 #function trash {

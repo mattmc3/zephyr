@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 #
 # .zstyles - Set zstyle options for Zephyr and other plugins/features.
 #

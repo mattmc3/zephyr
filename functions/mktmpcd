@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 ### Make a temp directory and cd into it, printing where it went. An argument
 ### prefixes the name.

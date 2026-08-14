@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 ##? usage: zephyr <command>
 # To check, run: shellcheck -e SC3043 -e SC2016 ./zephyr
 

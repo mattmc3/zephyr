@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 ##? pfs - Print the current Finder selection
 #function pfs {
 osascript 2>&1 <<EOF

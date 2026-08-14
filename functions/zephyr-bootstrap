@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 ### Set up everything Zephyr's plugins expect: Zsh locations, the post_zshrc and
 ### accept-line events, and the shared predicates. Called by lib/bootstrap.zsh.

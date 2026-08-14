@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 ### Generate a UUID v7 (time-ordered). Result is stored in REPLY.
 #function gen-uuid7 {

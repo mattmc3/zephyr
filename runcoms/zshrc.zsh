@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 #
 # .zshrc - Execute commands at the start of an interactive session.
 #

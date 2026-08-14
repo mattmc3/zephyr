@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 ### Make a directory and cd into it, parents included.
 ###   mkcd ~/src/new/project
