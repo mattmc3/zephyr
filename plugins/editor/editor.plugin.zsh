@@ -249,6 +249,22 @@ function copybuffer {
 }
 zle -N copybuffer
 
+# Home and End take the current line, then the whole buffer. $WIDGET says which end.
+# Moves the cursor rather than calling the -hist widgets, which walk history.
+function goto-line-or-buffer-edge {
+  local -i edge
+  if [[ "$WIDGET" == beginning-of* ]]; then
+    [[ "$LBUFFER" == *$'\n'* ]] && edge=$(( ${#LBUFFER%$'\n'*} + 1 ))
+    (( CURSOR = CURSOR == edge ? 0 : edge ))
+  else
+    edge=$#BUFFER
+    [[ "$RBUFFER" == *$'\n'* ]] && edge=$(( CURSOR + ${#RBUFFER%%$'\n'*} ))
+    (( CURSOR = CURSOR == edge ? $#BUFFER : edge ))
+  fi
+}
+zle -N beginning-of-line-or-buffer goto-line-or-buffer-edge
+zle -N end-of-line-or-buffer goto-line-or-buffer-edge
+
 # Edit the current command in $EDITOR.
 autoload -Uz edit-command-line
 zle -N edit-command-line
@@ -416,8 +432,8 @@ fi
 # Global keybinds
 typeset -gA _zph_global_keybinds
 _zph_global_keybinds=(
-  "$key_info[Home]"   beginning-of-line
-  "$key_info[End]"    end-of-line
+  "$key_info[Home]"   beginning-of-line-or-buffer
+  "$key_info[End]"    end-of-line-or-buffer
   "$key_info[Delete]" delete-char
 )
 
@@ -460,6 +476,12 @@ done
 # Bind all global, vi, and vicmd keys to the vicmd keymap
 for _zph_key _zph_bind in ${(kv)_zph_global_keybinds} ${(kv)_zph_vicmd_keybinds}; do
   bindkey -M vicmd "$_zph_key" "$_zph_bind"
+done
+
+# terminfo names only the Home and End this terminal sends, so bind the xterm forms too.
+for _zph_keymap in emacs viins vicmd; do
+  bindkey-multiple -M "$_zph_keymap" beginning-of-line-or-buffer '^[[H'
+  bindkey-multiple -M "$_zph_keymap" end-of-line-or-buffer       '^[[F'
 done
 
 # Toggle comment at the start of the line. Note that we use pound-toggle for emacs

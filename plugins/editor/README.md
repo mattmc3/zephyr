@@ -7,6 +7,9 @@ Zsh line editor configuration and keybindings.
 **Ctrl-Z** - Push current command to background, or bring back with Ctrl-Z on empty line
 (enabled by default)
 
+**Home / End** - Go to the ends of the current line, and to the ends of the whole
+buffer when already there (enabled by default)
+
 **Ctrl-X Ctrl-S** - Add `sudo` to the beginning of the line (enabled by default)
 
 **Ctrl-X Ctrl-E** - Edit the current command in `$EDITOR` (enabled by default)

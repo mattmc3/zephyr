@@ -696,3 +696,60 @@ EOS
   assert_success
   assert_line "2: BUF=[] CUR=0 PRE=[]"
 }
+
+#
+# Home and End
+#
+
+@test "the line-or-buffer widgets are bound to Home and End" {
+  zephyr_plugin editor <<'EOS'
+print "home widget: ${widgets[beginning-of-line-or-buffer]:-none}"
+print "end widget: ${widgets[end-of-line-or-buffer]:-none}"
+for km in emacs viins vicmd; do
+  print "$km: $(bindkey -M $km '^[[H' | awk '{print $2}') $(bindkey -M $km '^[[F' | awk '{print $2}')"
+done
+EOS
+  assert_success
+  assert_line "home widget: user:goto-line-or-buffer-edge"
+  assert_line "end widget: user:goto-line-or-buffer-edge"
+  assert_line "emacs: beginning-of-line-or-buffer end-of-line-or-buffer"
+  assert_line "viins: beginning-of-line-or-buffer end-of-line-or-buffer"
+  assert_line "vicmd: beginning-of-line-or-buffer end-of-line-or-buffer"
+}
+
+# The -hist widgets would walk history from the edge. These do not.
+@test "Home and End stay put on a one-line buffer" {
+  zephyr_zle <<'EOS'
+type-keys 'echo one'
+press $'\e[H'
+press $'\e[H'
+press $'\e[F'
+press $'\e[F'
+EOS
+  assert_success
+  assert_line "2: BUF=[echo one] CUR=0 PRE=[]"
+  assert_line "3: BUF=[echo one] CUR=0 PRE=[]"
+  assert_line "4: BUF=[echo one] CUR=8 PRE=[]"
+  assert_line "5: BUF=[echo one] CUR=8 PRE=[]"
+}
+
+# Ctrl+V Ctrl+J puts a literal newline in the buffer, not a PS2 continuation.
+@test "Home and End take the line first, then the whole buffer" {
+  zephyr_zle <<'EOS'
+type-keys 'aa'
+press $'\x16\x0a'
+press 'bbbb'
+press $'\x16\x0a'
+press 'cc'
+press $'\e[H'
+press $'\e[H'
+press $'\e[F'
+press $'\e[F'
+EOS
+  assert_success
+  assert_line "5: BUF=[aa|bbbb|cc] CUR=10 PRE=[]"
+  assert_line "6: BUF=[aa|bbbb|cc] CUR=8 PRE=[]"
+  assert_line "7: BUF=[aa|bbbb|cc] CUR=0 PRE=[]"
+  assert_line "8: BUF=[aa|bbbb|cc] CUR=2 PRE=[]"
+  assert_line "9: BUF=[aa|bbbb|cc] CUR=10 PRE=[]"
+}
