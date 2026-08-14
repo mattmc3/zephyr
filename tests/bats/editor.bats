@@ -753,3 +753,28 @@ EOS
   assert_line "8: BUF=[aa|bbbb|cc] CUR=2 PRE=[]"
   assert_line "9: BUF=[aa|bbbb|cc] CUR=10 PRE=[]"
 }
+
+#
+# Ctrl+Z
+#
+
+# With nothing to resume, the line is left alone instead of running a doomed fg.
+@test "Ctrl+Z on an empty line with no jobs does nothing" {
+  zephyr_zle <<'EOS'
+press $'\x1a'
+type-keys 'echo after'
+EOS
+  assert_success
+  assert_line "1: BUF=[] CUR=0 PRE=[]"
+  assert_line "2: BUF=[echo after] CUR=10 PRE=[]"
+}
+
+@test "Ctrl+Z with a line typed stashes it" {
+  zephyr_zle <<'EOS'
+type-keys 'echo stashed'
+press $'\x1a'
+EOS
+  assert_success
+  assert_line "1: BUF=[echo stashed] CUR=12 PRE=[]"
+  assert_line "2: BUF=[] CUR=0 PRE=[]"
+}
