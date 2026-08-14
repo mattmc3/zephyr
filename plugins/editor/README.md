@@ -4,8 +4,10 @@ Zsh line editor configuration and keybindings.
 
 ## Features
 
-**Ctrl-Z** - Push current command to background, or bring back with Ctrl-Z on empty line
-(enabled by default)
+**Ctrl-Z** - Resume the job you suspended with Ctrl-Z, so the same key sends a job away
+and brings it back. Anything half-typed is stashed and returns when the job stops
+again, `fg` stays out of your history, and with no job to resume the line is left
+alone (enabled by default)
 
 **Home / End** - Go to the ends of the current line, and to the ends of the whole
 buffer when already there (enabled by default)

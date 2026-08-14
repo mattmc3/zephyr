@@ -769,12 +769,14 @@ EOS
   assert_line "2: BUF=[echo after] CUR=10 PRE=[]"
 }
 
-@test "Ctrl+Z with a line typed stashes it" {
+# The jobs check comes first, so a typed line is not stashed out of sight for a
+# resume that was never going to happen.
+@test "Ctrl+Z with no jobs leaves a typed line alone" {
   zephyr_zle <<'EOS'
-type-keys 'echo stashed'
+type-keys 'echo kept'
 press $'\x1a'
 EOS
   assert_success
-  assert_line "1: BUF=[echo stashed] CUR=12 PRE=[]"
-  assert_line "2: BUF=[] CUR=0 PRE=[]"
+  assert_line "1: BUF=[echo kept] CUR=9 PRE=[]"
+  assert_line "2: BUF=[echo kept] CUR=9 PRE=[]"
 }

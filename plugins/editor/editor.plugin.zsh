@@ -276,13 +276,10 @@ zle -C hist-complete complete-word _generic
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/fancy-ctrl-z/fancy-ctrl-z.plugin.zsh
 # https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
 function symmetric-ctrl-z {
-  if (( $#BUFFER )); then
-    zle push-input -w
-    zle clear-screen -w
-    return
-  fi
-  # Nothing to resume: say so rather than let fg fail after the prompt redraws.
+  # Nothing to resume: say so, and leave the line as it was.
   (( $#jobstates )) || { zle -M "symmetric-ctrl-z: no jobs"; return }
+  # A half-typed line is stashed, and comes back once the job stops again.
+  (( $#BUFFER )) && zle push-input -w
   # A leading space keeps fg out of history, given hist_ignore_space.
   [[ -o hist_ignore_space ]] && BUFFER=' fg' || BUFFER='fg'
   zle accept-line -w
