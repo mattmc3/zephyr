@@ -1,10 +1,7 @@
 #!/usr/bin/env bats
-# Every plugin has to load on its own, sourced straight out of its directory the way
-# a plugin manager does it: no zephyr.zsh, no bootstrap first, and no $ZEPHYR_HOME in
-# the environment. A plugin that needs anything from the bootstrap has to say so.
-#
-# The check is stderr, not exit status. Plugins whose requirements are unmet return 1
-# on purpose, and a missing function is a message rather than a failed source.
+# Every plugin has to load on its own the way a plugin manager sources it: no
+# zephyr.zsh, no bootstrap first, no $ZEPHYR_HOME. The check is stderr, not exit
+# status, since a plugin whose requirements are unmet returns 1 on purpose.
 
 load helpers/common
 
@@ -33,20 +30,21 @@ _standalone_stderr() {
 _assert_all_quiet() {
   local pre="${1:-}" plugin out errs=""
   for plugin in $(_all_plugins); do
-    out="$(_standalone_stderr "$plugin" "$pre")"
+    # bats runs under set -e, so drop the status rather than inherit it.
+    out="$(_standalone_stderr "$plugin" "$pre")" || true
     [[ -z "$out" ]] || errs+="$plugin: $out"$'\n'
   done
-  [[ -z "$errs" ]] && return 0
-  printf 'plugins failed to load standalone:\n%s' "$errs" >&2
-  return 1
+  if [[ -n "$errs" ]]; then
+    printf 'plugins failed to load standalone:\n%s' "$errs" >&2
+    return 1
+  fi
 }
 
 @test "every plugin loads on its own" {
   _assert_all_quiet
 }
 
-# use-cache routes work through cached-eval, which lives in functions/ and only
-# exists once the bootstrap has put that directory on $fpath.
+# cached-eval is only autoloadable once the bootstrap has put functions/ on $fpath.
 @test "every plugin loads on its own with use-cache set" {
   _assert_all_quiet "zstyle ':zephyr:plugin:*' use-cache yes"
 }
