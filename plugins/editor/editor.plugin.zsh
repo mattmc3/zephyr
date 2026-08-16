@@ -173,10 +173,13 @@ function zle-keymap-select {
 }
 zle -N zle-keymap-select
 
-# Expands .... to ../..
+# Expands .... to ../.., and each dot after that to another /.. . Three dots are
+# left alone so things like `go test ./...` still should work.
 function dot-expansion {
-  if [[ $LBUFFER = *.. ]]; then
+  if [[ $LBUFFER = *../.. ]]; then
     LBUFFER+='/..'
+  elif [[ $LBUFFER = *... ]]; then
+    LBUFFER="${LBUFFER%...}../.."
   else
     LBUFFER+='.'
   fi

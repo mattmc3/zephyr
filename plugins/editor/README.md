@@ -24,8 +24,8 @@ buffer when already there (enabled by default)
 
 **Space** - Expand aliases automatically as you type (disabled by default)
 
-**Dot expansion** - Type `...` to expand to `../..`, `....` to `../../..`, etc (disabled
-by default)
+**Dot expansion** - Type `....` to expand to `../..`, `.....` to `../../..`, etc. Three
+dots stay as typed so `go test ./...` works (disabled by default)
 
 **Magic enter** - Press enter on empty line to run `ls` or `git status` if in a git repo
 (disabled by default)

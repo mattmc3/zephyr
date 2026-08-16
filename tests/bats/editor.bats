@@ -228,6 +228,28 @@ EOS
   assert_line "dot: dot-expansion"
 }
 
+# Three dots stay literal so Go's ./... survives.
+@test "dot-expansion starts at the fourth dot" {
+  zephyr_plugin editor <<'EOS'
+for n in 1 2 3 4 5 6; do
+  LBUFFER=''
+  repeat $n dot-expansion
+  print "$n: $LBUFFER"
+done
+LBUFFER='go test ./'
+repeat 3 dot-expansion
+print "go: $LBUFFER"
+EOS
+  assert_success
+  assert_line "1: ."
+  assert_line "2: .."
+  assert_line "3: ..."
+  assert_line "4: ../.."
+  assert_line "5: ../../.."
+  assert_line "6: ../../../.."
+  assert_line "go: go test ./..."
+}
+
 # Resetting keymaps is off by default: it discards bindings made before the plugin
 # loads, and deleting keymaps from a deferred call segfaults Zsh (issue #40).
 @test "keymaps are not reset by default" {
