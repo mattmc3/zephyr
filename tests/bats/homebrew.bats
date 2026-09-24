@@ -106,6 +106,21 @@ EOS
   assert_line "brewdeps: 1"
 }
 
+@test "brewinfo passes installed leaves to brew desc" {
+  stub_command brew "
+    case \$1 in
+      shellenv) print 'export HOMEBREW_PREFIX=$BREW_PREFIX' ;;
+      leaves) print -l foo example/tap/bar ;;
+      desc) print -r -- \"\$@\" ;;
+      *) exit 1 ;;
+    esac
+  "
+  # Expand the alias after the plugin has been sourced.
+  zephyr_plugin homebrew 'eval brewinfo'
+  assert_success
+  assert_line "desc foo example/tap/bar"
+}
+
 @test "the alias skip zstyle suppresses them" {
   zephyr_zsh <<'EOS'
 zstyle ':zephyr:plugin:homebrew:alias' skip yes

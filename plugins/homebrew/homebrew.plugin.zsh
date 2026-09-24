@@ -56,7 +56,7 @@ unset _keg{,only}
 # Set aliases.
 if ! zstyle -t ':zephyr:plugin:homebrew:alias' skip; then
   alias brewup="brew update && brew upgrade && brew cleanup"
-  alias brewinfo="brew leaves | xargs brew desc --eval-all"
+  alias brewinfo="brew leaves | xargs brew desc"
 
   brewdeps() {
     emulate -L zsh; setopt local_options
