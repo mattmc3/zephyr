@@ -10,6 +10,10 @@ The suggestion lives in `POSTDISPLAY`, not in the line, and is recomputed on eve
 redraw rather than by wrapping the editing widgets, so widgets added later need no
 special care. Needs zsh 5.9 for the `memo=` highlight tag.
 
+As in Fish, an entry whose command doesn't exist is skipped for an older match, so a
+typo like `pwdd` isn't suggested every time you type `pwd`. Aliases, functions,
+builtins, reserved words, and executable paths all count as commands.
+
 Nothing is suggested on an empty line, on a multi-line or `PS2` buffer, in vi command
 mode, or during an incremental search.
 
@@ -42,8 +46,8 @@ This plugin adds the following functions:
 | `autosuggest-bindkeys`     | Bind the take keys in the emacs and viins keymaps.             |
 
 The rest are internal, and all share the `autosuggest-` prefix:
-`autosuggest-suppressed`, `autosuggest-fetch`, `autosuggest-take`, `autosuggest-clear`,
-and `autosuggest-highlight-last`.
+`autosuggest-suppressed`, `autosuggest-command-exists`, `autosuggest-fetch`,
+`autosuggest-take`, `autosuggest-clear`, and `autosuggest-highlight-last`.
 
 ## Aliases
 

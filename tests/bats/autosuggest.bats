@@ -209,3 +209,66 @@ EOS
   assert_line "2: BUF=[] CUR=0 PRE=[]"
   assert_line "4: RH=[]"
 }
+
+# Like Fish, a line whose command does not exist is skipped, so a typo like
+# `pwdd` stops coming back. The search carries on to an older match.
+@test "a line whose command does not exist is not suggested" {
+  ZEPHYR_ZLE_RC="$TEST_HOME/rc.zsh"
+  write_file "$ZEPHYR_ZLE_RC" \
+    "print -s 'ls -la'" \
+    "print -s 'lsx --bogus'"
+  zephyr_zle <<'EOS'
+type-keys 'ls'
+press right
+EOS
+  assert_success
+  assert_line "2: BUF=[ls -la] CUR=6 PRE=[]"
+}
+
+@test "nothing is suggested when every match is a missing command" {
+  ZEPHYR_ZLE_RC="$TEST_HOME/rc.zsh"
+  write_file "$ZEPHYR_ZLE_RC" "print -s 'pwdd'"
+  zephyr_zle <<'EOS'
+type-keys 'pwd'
+probe-hl
+EOS
+  assert_success
+  assert_line "2: RH=[]"
+}
+
+# Aliases, functions, builtins, reserved words, assignments, and paths all
+# count as commands.
+@test "aliases, functions, assignments, and paths are valid commands" {
+  ZEPHYR_ZLE_RC="$TEST_HOME/rc.zsh"
+  write_file "$ZEPHYR_ZLE_RC" \
+    "alias myalias='echo hi'" \
+    "function myfunc { : }" \
+    "print -s 'myalias one'" \
+    "print -s 'myfunc two'" \
+    "print -s 'FOO=1 BAR=\"a b\" myfunc three'" \
+    "print -s 'if true; then :; fi'" \
+    "print -s './run.sh four'" \
+    "print '#!/bin/sh' >\$HOME/run.sh; chmod +x \$HOME/run.sh; cd \$HOME"
+  zephyr_zle <<'EOS'
+type-keys 'myal'
+press right
+press $'\x15'
+type-keys 'myf'
+press right
+press $'\x15'
+type-keys 'FOO'
+press right
+press $'\x15'
+type-keys 'if'
+press right
+press $'\x15'
+type-keys './r'
+press right
+EOS
+  assert_success
+  assert_output_contains "BUF=[myalias one]"
+  assert_output_contains "BUF=[myfunc two]"
+  assert_output_contains 'BUF=[FOO=1 BAR="a b" myfunc three]'
+  assert_output_contains "BUF=[if true; then :; fi]"
+  assert_output_contains "BUF=[./run.sh four]"
+}

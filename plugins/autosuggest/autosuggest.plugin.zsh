@@ -32,14 +32,44 @@ typeset -g _zph_suggest_buffer=
 typeset -g _zph_suggest_result=
 typeset -g _zph_suggest_miss=
 
-# The default strategy: the most recent history entry starting with $1. Replace it
-# with your own, which sets $suggestion rather than printing, since a command
-# substitution on every keypress means a fork on every keypress:
+# The default strategy: the most recent history entry starting with $1 whose command
+# exists. Replace it with your own, which sets $suggestion rather than printing, since
+# a command substitution on every keypress means a fork on every keypress:
 #   zstyle ':zephyr:plugin:autosuggest' strategy 'my-suggester'
 function autosuggest-history {
   emulate -L zsh
   setopt extended_glob
-  suggestion=${history[(r)${(b)1}*]}
+  local pattern="${(b)1}*"
+  suggestion=${history[(r)$pattern]}
+  [[ -z "$suggestion" ]] || autosuggest-command-exists "$suggestion" && return
+
+  # The newest match was a typo, so walk the older ones. Only paid after a miss.
+  local -i n
+  for n in ${(On)${(k)history[(R)$pattern]}}; do
+    suggestion=$history[$n]
+    autosuggest-command-exists "$suggestion" && return
+  done
+  suggestion=
+}
+
+# True when the line's command is something that runs, as Fish checks, so a
+# typo like `pwdd` is never suggested. All lookups, no forks.
+function autosuggest-command-exists {
+  emulate -L zsh
+  setopt extended_glob
+  local word
+  for word in ${(z)1}; do
+    # Leading assignments, as in `FOO=1 make`, are not the command.
+    [[ "$word" == [[:IDENT:]]##=* ]] && continue
+    word=${(Q)word}
+    (( $+aliases[$word] || $+functions[$word] || $+builtins[$word] ||
+       $+commands[$word] || $reswords[(Ie)$word] )) && return 0
+    # A path, or anything that is not a plain word, such as `(`.
+    [[ "$word" == */* ]] && { [[ -x ${word/#\~/$HOME} ]]; return }
+    [[ "$word" == [[:IDENT:]-.+]## ]] || return 0
+    return 1
+  done
+  return 0
 }
 
 # True when a suggestion would be in the way rather than helpful.
