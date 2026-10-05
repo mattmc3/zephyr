@@ -48,6 +48,22 @@ function up {
   cd "$dotdots"
 }
 
+# Fish-style directory history, rotating the dirstack auto_pushd fills. pushd_minus
+# swaps what + and - mean, so check it on each call.
+#   zstyle ':zephyr:plugin:directory:dirhistory' skip 'yes'
+if ! zstyle -t ':zephyr:plugin:directory:dirhistory' skip; then
+  function prevd {
+    local back=+ n=${1:-1}
+    [[ -o pushd_minus ]] && back=-
+    pushd -q $back$n
+  }
+  function nextd {
+    local fwd=- n=$(( ${1:-1} - 1 ))
+    [[ -o pushd_minus ]] && fwd=+
+    pushd -q $fwd$n
+  }
+fi
+
 #region MARK LOADED
 zstyle ':zephyr:plugin:directory' loaded 'yes'
 #endregion

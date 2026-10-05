@@ -109,3 +109,88 @@ EOS
   assert_output_contains "usage: up [<num>]"
   assert_line "exit: 1"
 }
+
+#
+# Directory history. Fish-style prevd and nextd walk the dirstack auto_pushd
+# fills, so every body below cds first.
+#
+
+@test "prevd goes back and nextd goes forward again" {
+  zephyr_plugin directory <<'EOS'
+mkdir -p $HOME/a/b
+cd $HOME/a; cd $HOME/a/b
+prevd
+print "prevd: ${PWD:t}"
+nextd
+print "nextd: ${PWD:t}"
+EOS
+  assert_success
+  assert_line "prevd: a"
+  assert_line "nextd: b"
+}
+
+@test "prevd and nextd take a count" {
+  zephyr_plugin directory <<'EOS'
+mkdir -p $HOME/a/b/c
+cd $HOME/a; cd $HOME/a/b; cd $HOME/a/b/c
+prevd 2
+print "prevd: ${PWD:t}"
+nextd 2
+print "nextd: ${PWD:t}"
+EOS
+  assert_success
+  assert_line "prevd: a"
+  assert_line "nextd: c"
+}
+
+# The dirstack is a ring. Two cds plus the start dir makes three entries.
+@test "walking past the oldest entry wraps around" {
+  zephyr_plugin directory <<'EOS'
+mkdir -p $HOME/a/b
+cd $HOME/a; cd $HOME/a/b
+prevd 3
+print "pwd: ${PWD:t}"
+EOS
+  assert_success
+  assert_line "pwd: b"
+}
+
+@test "prevd with an empty dirstack fails" {
+  zephyr_plugin directory 'prevd 2>/dev/null; print "exit: $?"'
+  assert_success
+  assert_line "exit: 1"
+}
+
+@test "the dirhistory skip zstyle leaves prevd and nextd undefined" {
+  zephyr_zsh <<'EOS'
+zstyle ':zephyr:plugin:directory:dirhistory' skip yes
+source $ZEPHYR_HOME/plugins/directory/directory.plugin.zsh
+print "prevd: $+functions[prevd]"
+print "nextd: $+functions[nextd]"
+EOS
+  assert_success
+  assert_line "prevd: 0"
+  assert_line "nextd: 0"
+}
+
+# pushd_minus swaps what + and - mean, and a user can unset it after loading.
+@test "prevd and nextd work with pushd_minus unset" {
+  zephyr_plugin directory <<'EOS'
+unsetopt pushd_minus
+mkdir -p $HOME/a/b/c
+cd $HOME/a; cd $HOME/a/b; cd $HOME/a/b/c
+prevd
+print "prevd: ${PWD:t}"
+nextd
+print "nextd: ${PWD:t}"
+prevd 2
+print "prevd 2: ${PWD:t}"
+nextd 2
+print "nextd 2: ${PWD:t}"
+EOS
+  assert_success
+  assert_line "prevd: b"
+  assert_line "nextd: c"
+  assert_line "prevd 2: a"
+  assert_line "nextd 2: c"
+}

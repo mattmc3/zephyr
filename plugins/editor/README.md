@@ -12,6 +12,9 @@ alone (enabled by default)
 **Home / End** - Go to the ends of the current line, and to the ends of the whole
 buffer when already there (enabled by default)
 
+**Alt-Left / Alt-Right** - Move by word, or on an empty line walk the directory history
+with the directory plugin's `prevd` and `nextd` (enabled by default)
+
 **Ctrl-X Ctrl-S** - Add `sudo` to the beginning of the line (enabled by default)
 
 **Ctrl-X Ctrl-E** - Edit the current command in `$EDITOR` (enabled by default)

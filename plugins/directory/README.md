@@ -23,9 +23,18 @@ This plugin sets the following Zsh options:
 
 This plugin adds the following functions:
 
-| function   | description                             |
-| ---------- | --------------------------------------- |
-| `up <num>` | Quickly go up any number of directories |
+| function      | description                                      |
+| ------------- | ------------------------------------------------ |
+| `up <num>`    | Quickly go up any number of directories          |
+| `prevd [num]` | Go back through the directory history, like Fish |
+| `nextd [num]` | Go forward through the directory history         |
+
+## Directory history
+
+`prevd` and `nextd` walk the directories you have been in, as Fish does. `auto_pushd`
+records them, so the history is the dirstack `dirh` prints, and walking off either end
+wraps around. With the editor plugin loaded, Alt-Left and Alt-Right on an empty line
+call them for you.
 
 ## Aliases
 
@@ -51,6 +60,10 @@ To skip setting directory related aliases, you can set:
 To always skip aliases, you can set:
 
 `zstyle ':zephyr:plugin:*:alias' 'skip' 'yes'`
+
+To skip directory history, you can set:
+
+`zstyle ':zephyr:plugin:directory:dirhistory' 'skip' 'yes'`
 
 [16.2.1]: https://zsh.sourceforge.io/Doc/Release/Options.html#Changing-Directories
 [16.2.3]: https://zsh.sourceforge.io/Doc/Release/Options.html#Expansion-and-Globbing

@@ -802,3 +802,60 @@ EOS
   assert_line "1: BUF=[echo kept] CUR=9 PRE=[]"
   assert_line "2: BUF=[echo kept] CUR=9 PRE=[]"
 }
+
+#
+# Alt-arrows: directory history on an empty line, word movement otherwise.
+#
+
+@test "Alt-arrows are bound to the dirhistory widgets, Ctrl-arrows to words" {
+  zephyr_plugin editor <<'EOS'
+for km in emacs viins vicmd; do
+  print "$km: $(bindkey -M $km '^[[1;3D' | awk '{print $2}') $(bindkey -M $km '^[[1;9C' | awk '{print $2}')"
+done
+bindkey -M emacs '^[[1;5D'
+EOS
+  assert_success
+  assert_line "emacs: prevd-or-backward-word nextd-or-forward-word"
+  assert_line "viins: prevd-or-backward-word nextd-or-forward-word"
+  assert_line "vicmd: prevd-or-backward-word nextd-or-forward-word"
+  assert_line '"^[[1;5D" emacs-backward-word'
+}
+
+@test "Alt-Left and Alt-Right change directory on an empty line" {
+  ZEPHYR_ZLE_PLUGINS="directory editor"
+  zephyr_zle <<'EOS'
+enter "mkdir -p \$HOME/a/b"
+enter "cd \$HOME/a"
+enter "cd \$HOME/a/b"
+press $'\e[1;3D'
+probe-pwd
+press $'\e[1;3C'
+probe-pwd
+EOS
+  assert_success
+  assert_line "5: PWD=a"
+  assert_line "7: PWD=b"
+}
+
+@test "Alt-Left moves by word on a line with text" {
+  ZEPHYR_ZLE_PLUGINS="directory editor"
+  zephyr_zle <<'EOS'
+type-keys "echo one two"
+press $'\e[1;3D'
+EOS
+  assert_success
+  assert_output_contains "BUF=[echo one two] CUR=9"
+}
+
+# No directory plugin means no prevd, so an empty line stays where it is.
+@test "Alt-Left leaves the directory alone without prevd" {
+  zephyr_zle <<'EOS'
+enter "mkdir -p \$HOME/a/b"
+enter "cd \$HOME/a"
+enter "cd \$HOME/a/b"
+press $'\e[1;3D'
+probe-pwd
+EOS
+  assert_success
+  assert_line "5: PWD=b"
+}

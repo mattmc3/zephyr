@@ -72,8 +72,8 @@ key_info+=(
 
 # Mod plus another key
 key_info+=(
-  'AltLeft'         "${key_info[Escape]}${key_info[Left]} \e[1;3D"
-  'AltRight'        "${key_info[Escape]}${key_info[Right]} \e[1;3C"
+  'AltLeft'         "${key_info[Escape]}${key_info[Left]} \e[1;3D \e[1;9D"
+  'AltRight'        "${key_info[Escape]}${key_info[Right]} \e[1;3C \e[1;9C"
   'ControlLeft'     '\e[1;5D \e[5D \e\e[D \eOd'
   'ControlRight'    '\e[1;5C \e[5C \e\e[C \eOc'
   'ControlPageUp'   '\e[5;5~'
@@ -268,6 +268,30 @@ function goto-line-or-buffer-edge {
 zle -N beginning-of-line-or-buffer goto-line-or-buffer-edge
 zle -N end-of-line-or-buffer goto-line-or-buffer-edge
 
+# A cd inside a widget leaves the prompt showing the directory you left.
+function zephyr-redraw-prompt {
+  local fn
+  for fn in $precmd_functions; do
+    (( $+functions[$fn] )) && $fn
+  done
+  zle .reset-prompt
+}
+
+# An empty line walks the directory history from the directory plugin's prevd and
+# nextd. A line with text, or no prevd, moves by word. $WIDGET says which way.
+function dirhistory-or-word {
+  local dir=${WIDGET%%-*}
+  if [[ -z "$BUFFER" ]] && (( $+functions[$dir] )); then
+    $dir 2>/dev/null && zephyr-redraw-prompt
+  elif [[ "$KEYMAP" == vicmd || "$_zph_editor_layout" == vi ]]; then
+    zle .vi-${WIDGET#*-or-}
+  else
+    zle .emacs-${WIDGET#*-or-}
+  fi
+}
+zle -N prevd-or-backward-word dirhistory-or-word
+zle -N nextd-or-forward-word dirhistory-or-word
+
 # Edit the current command in $EDITOR.
 autoload -Uz edit-command-line
 zle -N edit-command-line
@@ -455,15 +479,21 @@ _zph_vicmd_keybinds=(
 
 # Special case for ControlLeft and ControlRight because they have multiple
 # possible binds.
-for _zph_key in "${(s: :)key_info[ControlLeft]}" "${(s: :)key_info[AltLeft]}"; do
+for _zph_key in "${(s: :)key_info[ControlLeft]}"; do
   bindkey -M emacs "$_zph_key" emacs-backward-word
   bindkey -M viins "$_zph_key" vi-backward-word
   bindkey -M vicmd "$_zph_key" vi-backward-word
 done
-for _zph_key in "${(s: :)key_info[ControlRight]}" "${(s: :)key_info[AltRight]}"; do
+for _zph_key in "${(s: :)key_info[ControlRight]}"; do
   bindkey -M emacs "$_zph_key" emacs-forward-word
   bindkey -M viins "$_zph_key" vi-forward-word
   bindkey -M vicmd "$_zph_key" vi-forward-word
+done
+
+# Alt-arrows move by word too, and walk the directory history on an empty line.
+for _zph_keymap in emacs viins vicmd; do
+  bindkey-multiple -M $_zph_keymap prevd-or-backward-word ${(s: :)key_info[AltLeft]}
+  bindkey-multiple -M $_zph_keymap nextd-or-forward-word  ${(s: :)key_info[AltRight]}
 done
 
 # Bind all global and viins keys to the emacs keymap
