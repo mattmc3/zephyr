@@ -96,8 +96,10 @@ function run_compinit {
     # Cache for 20 hours, so it regenerates the first time a shell opens each day.
     # A changed fpath also has to invalidate, or new completions stay missing for
     # those 20 hours. Stamp fpath before compinit, since -i prunes insecure dirs
-    # from it and the next startup would never match a post-compinit stamp.
-    local stampfile=$ZSH_COMPDUMP.fpath stamped= wanted="$fpath"
+    # from it and the next startup would never match a post-compinit stamp. Missing
+    # and repeated dirs are dropped, since an inherited FPATH can carry stale ones.
+    local -aU live=(${^fpath}(N-/))
+    local stampfile=$ZSH_COMPDUMP.fpath stamped= wanted="$live"
     [[ -r $stampfile ]] && stamped="$(<$stampfile)"
     [[ "$wanted" == "$stamped" ]] || command rm -f "$ZSH_COMPDUMP" "$ZSH_COMPDUMP.zwc"
 

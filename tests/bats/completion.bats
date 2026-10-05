@@ -136,7 +136,8 @@ EOS
 @test "the fpath stamp is written next to the dumpfile" {
   zephyr_plugin completion <<'EOS'
 zstyle ':zephyr:plugin:completion' use-cache yes
-wanted="$fpath"
+typeset -aU live=(${^fpath}(N-/))
+wanted="$live"
 run_compinit
 print "stamped: $([[ -s $ZSH_COMPDUMP.fpath ]] && print yes || print no)"
 print "matches: $([[ "$(<$ZSH_COMPDUMP.fpath)" == "$wanted" ]] && print yes || print no)"
@@ -213,6 +214,51 @@ EOS
   assert_success
   assert_line "unchanged reuses: yes"
   assert_line "rebuilt after install: yes"
+}
+
+# FPATH is exported, so a nested shell inherits the parent's fpath. Missing dirs
+# and repeats say nothing about the dumpfile, so the stamp ignores both.
+@test "a missing or repeated fpath entry reuses the cache" {
+  write_file "$TEST_HOME/warm.zsh" \
+    'zstyle ":zephyr:plugin:completion" use-cache yes' \
+    'eval "$TWEAK"' \
+    'source $ZEPHYR_HOME/lib/bootstrap.zsh' \
+    'source $ZEPHYR_HOME/plugins/completion/completion.plugin.zsh' \
+    'run_compinit'
+  zephyr_plugin completion <<'EOS'
+dump=$XDG_CACHE_HOME/zsh/zcompdump
+zsh -f $HOME/warm.zsh
+print '# SENTINEL' >>$dump
+
+TWEAK='fpath=($HOME/gone $fpath)' zsh -f $HOME/warm.zsh
+print "missing dir reuses: $([[ "$(<$dump)" == *SENTINEL* ]] && print yes || print no)"
+
+TWEAK='fpath=($fpath $fpath)' zsh -f $HOME/warm.zsh
+print "repeated dir reuses: $([[ "$(<$dump)" == *SENTINEL* ]] && print yes || print no)"
+EOS
+  assert_success
+  assert_line "missing dir reuses: yes"
+  assert_line "repeated dir reuses: yes"
+}
+
+# Order decides which dir wins when two ship the same completion.
+@test "a reordered fpath rebuilds the dumpfile" {
+  write_file "$TEST_HOME/warm.zsh" \
+    'zstyle ":zephyr:plugin:completion" use-cache yes' \
+    'eval "$TWEAK"' \
+    'source $ZEPHYR_HOME/lib/bootstrap.zsh' \
+    'source $ZEPHYR_HOME/plugins/completion/completion.plugin.zsh' \
+    'run_compinit'
+  zephyr_plugin completion <<'EOS'
+dump=$XDG_CACHE_HOME/zsh/zcompdump
+zsh -f $HOME/warm.zsh
+print '# SENTINEL' >>$dump
+
+TWEAK='fpath=(${(Oa)fpath})' zsh -f $HOME/warm.zsh
+print "rebuilt: $([[ "$(<$dump)" == *SENTINEL* ]] && print no || print yes)"
+EOS
+  assert_success
+  assert_line "rebuilt: yes"
 }
 
 @test "run_compinit -f forces a rebuild" {
