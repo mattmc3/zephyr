@@ -135,9 +135,20 @@ function run_compinit {
     zephyr-compaudit-warn &!
   fi
 
-  # Recompiles only if stale, and renames atomically, so concurrent shells are safe.
-  autoload -Uz zrecompile
-  zrecompile -q -p "$ZSH_COMPDUMP" &!
+  # Compile the dumpfile in the background, only when the .zwc is stale. Not with
+  # zrecompile: it writes the .zwc in place, so shells starting together (restored
+  # terminal sessions) read each other's half-written file and print "invalid zwc
+  # file". Compiling to a file of this shell's own and renaming it over means a
+  # reader sees the old .zwc or the new one, never part of one. compdump already
+  # writes the dumpfile itself that way.
+  {
+    local zwc=$ZSH_COMPDUMP.zwc tmp=$ZSH_COMPDUMP.$$.zwc
+    if [[ -s $ZSH_COMPDUMP && ( ! -s $zwc || $ZSH_COMPDUMP -nt $zwc ) ]]; then
+      zcompile -R -- $tmp $ZSH_COMPDUMP 2>/dev/null &&
+        command mv -f -- $tmp $zwc ||
+        command rm -f -- $tmp
+    fi
+  } &!
 }
 
 # Let's talk about compinit for a second...
