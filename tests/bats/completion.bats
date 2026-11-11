@@ -261,6 +261,61 @@ EOS
   assert_line "rebuilt: yes"
 }
 
+# The .zwc is compiled by a disowned job, so these wait on a pipe instead: it only
+# closes once every shell and every background job holding its write end has exited.
+@test "the dumpfile is compiled to a .zwc, and recompiled once it is stale" {
+  write_file "$TEST_HOME/warm.zsh" \
+    'zstyle ":zephyr:plugin:completion" use-cache yes' \
+    'source $ZEPHYR_HOME/lib/bootstrap.zsh' \
+    'source $ZEPHYR_HOME/plugins/completion/completion.plugin.zsh' \
+    'run_compinit'
+  zephyr_plugin completion <<'EOS'
+dump=$XDG_CACHE_HOME/zsh/zcompdump
+zsh -f $HOME/warm.zsh | cat
+print "compiled: $(zcompile -t $dump.zwc | head -1)"
+
+# Back-date rather than touch the dumpfile: -nt is only second-accurate on some
+# systems, so a dumpfile changed the same second it was compiled looks up to date.
+touch -t 200001010000 $dump.zwc
+touch -t 200001010001 $HOME/stale
+zsh -f $HOME/warm.zsh | cat
+print "recompiled: $(zcompile -t $dump.zwc | head -1)"
+print "fresh: $([[ $dump.zwc -nt $HOME/stale ]] && print yes || print no)"
+print "leftovers: ${#${(@f)$(print -l $dump*.zwc(N) $dump.zwc.old(N))}:#$dump.zwc}"
+EOS
+  assert_success
+  assert_line "compiled: zwc file (read) for zsh-$(zsh -fc 'print $ZSH_VERSION')"
+  assert_line "recompiled: zwc file (read) for zsh-$(zsh -fc 'print $ZSH_VERSION')"
+  assert_line "fresh: yes"
+  assert_line "leftovers: 0"
+}
+
+# Restoring a terminal session starts many shells at once. When the .zwc was written
+# in place, each read the others' half-written file: "invalid zwc file".
+@test "shells starting together never see a half-written .zwc" {
+  write_file "$TEST_HOME/warm.zsh" \
+    'zstyle ":zephyr:plugin:completion" use-cache yes' \
+    'source $ZEPHYR_HOME/lib/bootstrap.zsh' \
+    'source $ZEPHYR_HOME/plugins/completion/completion.plugin.zsh' \
+    'run_compinit'
+  zephyr_plugin completion <<'EOS'
+dump=$XDG_CACHE_HOME/zsh/zcompdump
+zsh -f $HOME/warm.zsh | cat
+for round in {1..10}; do
+  touch -t 200001010000 $dump.zwc
+  { for i in {1..12}; do zsh -f $HOME/warm.zsh & done; wait } 2>&1 | cat
+done
+print "valid: $(zcompile -t $dump.zwc | head -1)"
+print "leftovers: ${#${(@f)$(print -l $dump*.zwc(N) $dump.zwc.old(N))}:#$dump.zwc}"
+EOS
+  assert_success
+  refute_output_contains "invalid zwc"
+  refute_output_contains "can't open zwc"
+  refute_output_contains "mv:"
+  assert_line "valid: zwc file (read) for zsh-$(zsh -fc 'print $ZSH_VERSION')"
+  assert_line "leftovers: 0"
+}
+
 @test "run_compinit -f forces a rebuild" {
   zephyr_plugin completion <<'EOS'
 zstyle ':zephyr:plugin:completion' use-cache yes
